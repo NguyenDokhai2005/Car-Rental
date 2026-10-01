@@ -1,0 +1,94 @@
+# ${DOMAIN} được thay bằng biến môi trường lúc container khởi động.
+# Các biến của Nginx như $host, $request_uri được giữ nguyên.
+
+upstream web_upstream {
+    server web:3000;
+}
+
+upstream api_upstream {
+    server api:4000;
+}
+
+# Giới hạn số request theo IP cho khu vực đăng nhập (lớp phòng thủ thứ hai sau rate limit của API)
+limit_req_zone $binary_remote_addr zone=auth_zone:10m rate=20r/m;
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${DOMAIN};
+
+    # Let's Encrypt kiểm tra quyền sở hữu domain qua đường dẫn này
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name ${DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 1d;
+    ssl_session_tickets off;
+
+    server_tokens off;
+    add_header Strict-Transport-Security "max-age=15552000" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+    gzip_min_length 1024;
+
+    proxy_http_version 1.1;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # ---- API ----
+    location /api/ {
+        client_max_body_size 6m;   # ảnh xe tối đa 5 MB (SPEC §7)
+        # Header bảo mật đã do Nginx đặt ở trên; bỏ bản của API (helmet) để không bị lặp
+        proxy_hide_header Strict-Transport-Security;
+        proxy_hide_header X-Content-Type-Options;
+        proxy_hide_header X-Frame-Options;
+        proxy_hide_header Referrer-Policy;
+        proxy_pass http://api_upstream;
+    }
+
+    location /api/auth/ {
+        limit_req zone=auth_zone burst=10 nodelay;
+        limit_req_status 429;
+        # Header bảo mật đã do Nginx đặt ở trên; bỏ bản của API (helmet) để không bị lặp
+        proxy_hide_header Strict-Transport-Security;
+        proxy_hide_header X-Content-Type-Options;
+        proxy_hide_header X-Frame-Options;
+        proxy_hide_header Referrer-Policy;
+        proxy_pass http://api_upstream;
+    }
+
+    # ---- Ảnh xe công khai: Nginx đọc thẳng từ ổ đĩa, không qua API ----
+    # GPLX nằm ở kho riêng, không mount vào Nginx.
+    location /uploads/ {
+        alias /var/uploads/;
+        expires 30d;
+        add_header Cache-Control "public";
+        add_header X-Content-Type-Options "nosniff" always;
+    }
+
+    # ---- Giao diện web ----
+    location / {
+        proxy_pass http://web_upstream;
+    }
+}

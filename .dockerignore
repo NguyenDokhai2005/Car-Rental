@@ -1,0 +1,14 @@
+.git
+.github
+**/node_modules
+**/.next
+**/dist
+**/*.tsbuildinfo
+.env
+.env.*
+!.env.example
+docs
+*.md
+infra
+docker-compose.yml
+**/.gitkeep

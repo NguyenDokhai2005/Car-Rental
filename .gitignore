@@ -8,3 +8,5 @@ uploads/
 *.log
 
 *.tsbuildinfo
+
+!.env.production.example
