@@ -1,0 +1,278 @@
+// Schema Car-Rental. Thiết kế chi tiết ở SPEC.md §5.
+//
+// Prisma không diễn đạt được CHECK, EXCLUDE (chống trùng lịch) và index có điều kiện.
+// Những phần đó viết bằng SQL thô trong migration "init_constraints"; đừng thêm chúng vào đây
+// và đừng sửa migration đã commit, hãy tạo migration mới.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enum ----------
+
+enum UserRole {
+  renter
+  owner
+  admin
+
+  @@map("user_role")
+}
+
+enum UserStatus {
+  active
+  blocked
+
+  @@map("user_status")
+}
+
+enum LicenseStatus {
+  none
+  pending
+  verified
+  rejected
+
+  @@map("license_status")
+}
+
+enum VehicleStatus {
+  pending
+  approved
+  rejected
+  hidden
+
+  @@map("vehicle_status")
+}
+
+enum Transmission {
+  automatic
+  manual
+
+  @@map("transmission")
+}
+
+enum FuelType {
+  petrol
+  diesel
+  electric
+
+  @@map("fuel_type")
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  in_use
+  completed
+  rejected
+  cancelled
+  expired
+
+  @@map("booking_status")
+}
+
+enum PaymentProvider {
+  vnpay
+  momo
+
+  @@map("payment_provider")
+}
+
+enum PaymentStatus {
+  created
+  paid
+  failed
+  refunded
+
+  @@map("payment_status")
+}
+
+// ---------- Bảng ----------
+
+model User {
+  id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email               String        @unique
+  passwordHash        String        @map("password_hash")
+  fullName            String        @map("full_name")
+  phone               String
+  role                UserRole
+  status              UserStatus    @default(active)
+  licenseStatus       LicenseStatus @default(none) @map("license_status")
+  licenseNumber       String?       @map("license_number")
+  licenseClass        String?       @map("license_class")
+  licenseExpiresOn    DateTime?     @map("license_expires_on") @db.Date
+  licenseFrontKey     String?       @map("license_front_key")
+  licenseBackKey      String?       @map("license_back_key")
+  licenseRejectReason String?       @map("license_reject_reason")
+  licenseReviewedById String?       @map("license_reviewed_by") @db.Uuid
+  licenseReviewedAt   DateTime?     @map("license_reviewed_at") @db.Timestamptz(6)
+  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  licenseReviewedBy User?  @relation("LicenseReviewer", fields: [licenseReviewedById], references: [id], onDelete: SetNull)
+  reviewedLicenses  User[] @relation("LicenseReviewer")
+
+  refreshTokens      RefreshToken[]
+  vehicles           Vehicle[]          @relation("VehicleOwner")
+  reviewedVehicles   Vehicle[]          @relation("VehicleReviewer")
+  bookings           Booking[]          @relation("BookingRenter")
+  cancelledBookings  Booking[]          @relation("BookingCanceller")
+  licenseLogsActor   LicenseAccessLog[] @relation("LogActor")
+  licenseLogsTarget  LicenseAccessLog[] @relation("LogTarget")
+
+  @@index([role, status])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model Vehicle {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId      String        @map("owner_id") @db.Uuid
+  title        String
+  brand        String
+  model        String
+  year         Int           @db.SmallInt
+  plateNumber  String        @unique @map("plate_number")
+  seats        Int           @db.SmallInt
+  transmission Transmission
+  fuel         FuelType
+  description  String        @default("")
+  city         String
+  district     String
+  pricePerDay  Int           @map("price_per_day")
+  depositRate  Int           @default(30) @map("deposit_rate") @db.SmallInt
+  status       VehicleStatus @default(pending)
+  rejectReason String?       @map("reject_reason")
+  reviewedById String?       @map("reviewed_by") @db.Uuid
+  reviewedAt   DateTime?     @map("reviewed_at") @db.Timestamptz(6)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  owner    User  @relation("VehicleOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  reviewer User? @relation("VehicleReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  images   VehicleImage[]
+  blocks   VehicleBlock[]
+  bookings Booking[]
+
+  @@index([status, city, pricePerDay])
+  @@index([ownerId])
+  @@map("vehicles")
+}
+
+model VehicleImage {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vehicleId  String   @map("vehicle_id") @db.Uuid
+  storageKey String   @map("storage_key")
+  position   Int      @db.SmallInt
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@unique([vehicleId, position])
+  @@map("vehicle_images")
+}
+
+model VehicleBlock {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vehicleId String   @map("vehicle_id") @db.Uuid
+  startAt   DateTime @map("start_at") @db.Timestamptz(6)
+  endAt     DateTime @map("end_at") @db.Timestamptz(6)
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId, startAt])
+  @@map("vehicle_blocks")
+}
+
+model Booking {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  renterId        String        @map("renter_id") @db.Uuid
+  vehicleId       String        @map("vehicle_id") @db.Uuid
+  startAt         DateTime      @map("start_at") @db.Timestamptz(6)
+  endAt           DateTime      @map("end_at") @db.Timestamptz(6)
+  status          BookingStatus @default(pending)
+  rentalDays      Int           @map("rental_days") @db.SmallInt
+  pricePerDay     Int           @map("price_per_day")
+  totalAmount     Int           @map("total_amount")
+  depositAmount   Int           @map("deposit_amount")
+  expiresAt       DateTime?     @map("expires_at") @db.Timestamptz(6)
+  ownerApprovedAt DateTime?     @map("owner_approved_at") @db.Timestamptz(6)
+  rejectReason    String?       @map("reject_reason")
+  startedAt       DateTime?     @map("started_at") @db.Timestamptz(6)
+  completedAt     DateTime?     @map("completed_at") @db.Timestamptz(6)
+  cancelledAt     DateTime?     @map("cancelled_at") @db.Timestamptz(6)
+  cancelledById   String?       @map("cancelled_by") @db.Uuid
+  refundAmount    Int           @default(0) @map("refund_amount")
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  renter      User  @relation("BookingRenter", fields: [renterId], references: [id], onDelete: Restrict)
+  vehicle     Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  cancelledBy User? @relation("BookingCanceller", fields: [cancelledById], references: [id], onDelete: SetNull)
+
+  payments Payment[]
+
+  @@index([renterId, createdAt(sort: Desc)])
+  @@index([vehicleId, startAt])
+  @@index([status, createdAt])
+  @@map("bookings")
+}
+
+model Payment {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId      String          @map("booking_id") @db.Uuid
+  provider       PaymentProvider
+  txnRef         String          @unique @map("txn_ref")
+  providerTxnId  String?         @map("provider_txn_id")
+  amount         Int
+  status         PaymentStatus   @default(created)
+  rawPayload     Json?           @map("raw_payload")
+  paidAt         DateTime?       @map("paid_at") @db.Timestamptz(6)
+  refundedAmount Int?            @map("refunded_amount")
+  refundedAt     DateTime?       @map("refunded_at") @db.Timestamptz(6)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Restrict)
+
+  @@unique([provider, providerTxnId])
+  @@index([bookingId])
+  @@map("payments")
+}
+
+model LicenseAccessLog {
+  id           BigInt   @id @default(autoincrement())
+  actorId      String   @map("actor_id") @db.Uuid
+  targetUserId String   @map("target_user_id") @db.Uuid
+  fileKey      String   @map("file_key")
+  ipAddress    String?  @map("ip_address") @db.Inet
+  accessedAt   DateTime @default(now()) @map("accessed_at") @db.Timestamptz(6)
+
+  actor      User @relation("LogActor", fields: [actorId], references: [id], onDelete: Restrict)
+  targetUser User @relation("LogTarget", fields: [targetUserId], references: [id], onDelete: Restrict)
+
+  @@index([targetUserId, accessedAt(sort: Desc)])
+  @@index([actorId, accessedAt(sort: Desc)])
+  @@map("license_access_logs")
+}
