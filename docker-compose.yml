@@ -1,0 +1,3 @@
+# Chạy `docker compose up -d db` từ thư mục gốc. Định nghĩa dịch vụ nằm trong infra/.
+include:
+  - infra/docker-compose.yml
