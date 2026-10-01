@@ -103,18 +103,20 @@ Khách tải ảnh GPLX → `license_status = pending` → admin xem và duyệt
 
 ## 7. API
 
-Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` (409). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
+Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` (409), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
 
 ### Auth
 | Method | Path | Quyền | Mô tả |
 | --- | --- | --- | --- |
-| POST | /auth/register | công khai | Đăng ký (chọn renter hoặc owner, không cho tự chọn admin) |
-| POST | /auth/login | công khai | Trả access token (15 phút) + refresh token (cookie httpOnly, 7 ngày) |
-| POST | /auth/refresh | cookie | Cấp access token mới |
-| POST | /auth/logout | đăng nhập | Thu hồi refresh token |
+| POST | /auth/register | công khai | Đăng ký `{ email, password, fullName, phone, role }`; `role` chỉ nhận `renter` hoặc `owner`. Trả 201 kèm hồ sơ, chưa đăng nhập |
+| POST | /auth/login | công khai | `{ email, password }`. Trả `{ accessToken, expiresIn, user }` (access token 15 phút) và đặt refresh token vào cookie httpOnly `refresh_token` (7 ngày, path `/api/auth`) |
+| POST | /auth/refresh | cookie | Đổi refresh token lấy access token mới. Mỗi lần dùng, refresh token cũ bị thu hồi và cấp token mới (xoay vòng). Dùng lại token đã thu hồi bị coi là bị lộ: thu hồi mọi refresh token của người dùng |
+| POST | /auth/logout | cookie | Thu hồi refresh token trong cookie, xóa cookie. Không cần access token còn hạn; gọi lặp lại vẫn trả 204 |
 | GET | /me | đăng nhập | Hồ sơ hiện tại |
-| PATCH | /me | đăng nhập | Sửa hồ sơ |
+| PATCH | /me | đăng nhập | Sửa `fullName`, `phone`. Không sửa được email, role, trạng thái |
 | POST | /me/license | renter | Tải GPLX |
+
+Mật khẩu 8 đến 128 ký tự, băm argon2id. Đăng nhập, đăng ký và refresh có giới hạn tốc độ theo IP. Mặc định mọi endpoint yêu cầu đăng nhập; endpoint công khai phải đánh dấu rõ. Tài khoản `blocked` bị từ chối ngay cả khi access token còn hạn.
 
 ### Xe (công khai)
 | Method | Path | Mô tả |
