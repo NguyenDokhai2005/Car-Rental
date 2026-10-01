@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #1d5fd1;
+  --color-primary-50: #eef4fd;
+  --color-primary-100: #d6e4f7;
+  --color-ink: #0f1b2d;
+  --color-muted: #4a5a70;
+  --color-line: #dde5f0;
+  --color-surface: #f5f8fc;
+  --color-placeholder: #e3ecf8;
+  --color-footer-text: #b7c5da;
+  --color-cta-text: #dce8fb;
+
+  --container-page: 1200px;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
