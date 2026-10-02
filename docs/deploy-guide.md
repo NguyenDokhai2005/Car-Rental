@@ -49,8 +49,8 @@ Thứ tự làm: **1** chuẩn bị, **2** tạo EC2, **3** trỏ domain, **4** 
 
 - Cần thẻ thanh toán quốc tế để đăng ký. Bật xác thực hai lớp (MFA) cho tài khoản gốc ngay.
 - **Đặt cảnh báo chi phí trước khi tạo gì**: Billing → Budgets → tạo ngân sách 5 USD/tháng có gửi email.
-- Chính sách miễn phí của AWS đã thay đổi nhiều lần. Theo thông tin mình biết, tài khoản tạo từ giữa năm 2025 nằm ở "Free plan" (có tín dụng dùng thử và giới hạn khoảng 6 tháng), còn tài khoản cũ có 12 tháng với 750 giờ mỗi tháng cho loại máy nhỏ. **Hãy kiểm tra mục Billing → Free Tier trong tài khoản của bạn để biết chính xác bạn được gì và đến khi nào**, và nhớ ngày hết hạn. Đây cũng là rủi ro đã ghi trong PLAN; hết hạn thì chuyển sang Oracle (mục 10).
-- Mỗi địa chỉ IPv4 công khai của AWS bị tính phí theo giờ (khoảng 3,6 USD/tháng nếu chạy liên tục), kể cả đang gắn vào máy. Khoản này có thể được tín dụng trang trải; hãy kiểm tra trên trang Free Tier.
+- **Chính sách Free Tier hiện hành** (tài khoản tạo từ 15/7/2025, theo trang [AWS Free Tier FAQs](https://aws.amazon.com/free/faqs/)): tài khoản mới tự vào **Free plan**, kéo dài **tối đa 6 tháng hoặc đến khi hết tín dụng**, tùy cái nào đến trước. Bạn nhận **100 USD khi đăng ký** và có thể nhận thêm **tối đa 100 USD** khi hoàn thành các hoạt động khám phá dịch vụ (tổng tối đa 200 USD). Khi Free plan hết hạn, AWS **tạm khóa tài khoản** và bạn có khoảng **90 ngày** để nâng lên Paid plan, nếu không sẽ mất quyền truy cập. Free plan chỉ cho dùng một số dịch vụ và loại máy; EC2 hiện cho `t3.micro`, `t3.small`, `t4g.micro`, `t4g.small`, `c7i-flex.large`, `m7i-flex.large`. **Hãy ghi lại ngày hết hạn** và đặt nhắc lịch trước một tháng, vì hết hạn thì web ngừng chạy. Danh sách loại máy và điều kiện có thể đổi, hãy xem lại trong console khi tạo máy (nhãn *Free tier eligible*).
+- Mỗi địa chỉ IPv4 công khai của AWS bị tính phí theo giờ (khoảng 3,6 USD/tháng nếu chạy liên tục), kể cả đang gắn vào máy. Với Free plan khoản này được trừ vào tín dụng, nên tín dụng của bạn sẽ hết dần theo tiền máy, ổ đĩa và địa chỉ IP. Theo dõi tại *Billing → Credits* và *Cost Explorer*.
 
 ### 1.2 Domain
 
@@ -84,7 +84,7 @@ Vào AWS Console, chọn region gần Việt Nam (ví dụ **Asia Pacific (Singa
 | --- | --- |
 | Name | `carrental-prod` |
 | AMI | **Ubuntu Server 24.04 LTS** (64-bit x86) |
-| Instance type | Loại có nhãn **Free tier eligible**. `t3.micro` (1 GB RAM) chạy được nhưng chật; nếu console cho phép loại 2 GB (ví dụ `t3.small`) trong gói miễn phí của bạn thì chọn loại đó |
+| Instance type | **`t3.small`** (2 GB RAM, x86) là lựa chọn khuyên dùng: đủ thoải mái cho cả stack. `t3.micro` (1 GB) rẻ hơn nhưng chật và phải tạo swap. Chỉ chọn loại có nhãn **Free tier eligible**. Tiền máy được trừ vào tín dụng, nên máy to hơn thì tín dụng hết nhanh hơn |
 | Key pair | **Import key pair** → dán nội dung file `carrental.pub` (hoặc tạo key mới trong console) |
 | Network settings | Tạo security group mới với 3 quy tắc: **SSH (22) nguồn "My IP"**, **HTTP (80) từ Anywhere**, **HTTPS (443) từ Anywhere** |
 | Storage | **20 đến 30 GiB gp3** (image Docker và dữ liệu cần chỗ) |

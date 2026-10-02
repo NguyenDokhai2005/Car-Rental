@@ -45,12 +45,14 @@ Trong Console: **Compute → Instances → Create instance**.
 | --- | --- |
 | Name | `carrental-prod` |
 | Image | Bấm *Change image* → **Canonical Ubuntu 24.04** |
-| Shape | Bấm *Change shape* → tab **Ampere** → **VM.Standard.A1.Flex**, đặt **2 OCPU và 12 GB RAM** |
+| Shape | Bấm *Change shape* → tab **Ampere** → **VM.Standard.A1.Flex**. Khuyên dùng **1 OCPU và 6 GB RAM** (mặc định, dễ tạo nhất); nếu muốn dùng hết hạn mức thì 2 OCPU và 12 GB |
 | Networking | *Create new virtual cloud network* và *Create new public subnet* (mặc định), bật **Automatically assign public IPv4 address** |
 | SSH keys | *Paste public keys* → dán nội dung file `carrental.pub` |
-| Boot volume | **50 GB** (gói miễn phí cho tổng khoảng 200 GB ổ đĩa) |
+| Boot volume | **50 GB** (tối thiểu của Oracle là khoảng 47 GB; tổng ổ đĩa miễn phí là 200 GB) |
 
-Vì sao 2 OCPU và 12 GB: dư sức cho cả stack (db, api, web, nginx), và còn lại một nửa hạn mức ARM miễn phí cho việc khác sau này. Nếu cần, bạn có thể chọn 4 OCPU và 24 GB.
+**Hạn mức máy ARM miễn phí (theo trang Always Free chính thức của Oracle tại thời điểm cập nhật):** tổng cộng **2 OCPU và 12 GB RAM** (tính theo giờ: 1.500 giờ OCPU và 9.000 giờ GB mỗi tháng), chia cho một máy 2 OCPU hoặc hai máy 1 OCPU. Các tài liệu và bài viết cũ vẫn ghi 4 OCPU và 24 GB, đó là mức của tài khoản tạo từ trước; **hãy kiểm tra mức của chính bạn** tại *Governance & Administration → Limits, Quotas and Usage*, chọn service *Compute*, dòng *Cores for Standard.A1 based VM and BM Instances*. Vượt hạn mức thì phần vượt bị tính tiền.
+
+Vì sao chọn 1 OCPU và 6 GB: dư sức cho cả stack (db, api, web, nginx giới hạn tổng khoảng 1,2 GB RAM), dễ tạo hơn hẳn khi Oracle hết chỗ, và còn nửa hạn mức để tạo thêm một máy nhỏ hoặc nâng cấu hình sau (có thể chỉnh OCPU và RAM trên máy đang chạy qua *More actions → Edit shape*).
 
 Bấm **Create**. Khi máy chuyển sang trạng thái *Running*, ghi lại **Public IP address**, gọi là `<IP>`.
 
@@ -58,11 +60,11 @@ Bấm **Create**. Khi máy chuyển sang trạng thái *Running*, ghi lại **Pu
 
 Đây là lỗi rất thường gặp với máy ARM miễn phí: Oracle hết chỗ trong Availability Domain đó. Thử lần lượt:
 
-1. Chọn **Availability Domain khác** ở mục Placement (nếu region có nhiều AD).
-2. Giảm cấu hình xuống 1 OCPU và 6 GB RAM, tạo được rồi tăng sau (có thể chỉnh trên máy đang chạy).
+1. Chọn **Availability Domain khác** ở mục Placement (nếu region có nhiều AD). Region có nhiều AD thường dễ hơn region chỉ có một.
+2. **Bắt đầu nhỏ**: 1 OCPU và 6 GB RAM thường tạo được dễ hơn nhiều so với 2 OCPU và 12 GB; tạo được rồi mới tăng sau.
 3. Thử lại vào giờ khác trong ngày (đêm và sáng sớm theo giờ của region thường dễ hơn).
-4. Nhiều người báo rằng nâng tài khoản lên **Pay As You Go** giúp tạo được máy dễ hơn mà vẫn miễn phí khi chỉ dùng tài nguyên Always Free. Chỉ làm nếu bạn chấp nhận tài khoản gắn thẻ và đã đặt Budget cảnh báo ở mục 1.
-5. Phương án cuối: máy **VM.Standard.E2.1.Micro** (AMD, 1 GB RAM) cũng miễn phí và ít bị hết chỗ hơn, nhưng yếu như EC2 `t3.micro`; khi đó phải tạo swap theo `deploy-guide.md` mục 4.1.
+4. **Nâng tài khoản lên Pay As You Go.** Trang chính thức của Oracle nêu rõ đây là một cách xử lý lỗi hết chỗ, và tài nguyên Always Free vẫn miễn phí sau khi nâng; chỉ phần dùng **vượt** hạn mức mới bị tính tiền. Chỉ làm nếu bạn chấp nhận tài khoản gắn thẻ, đã đặt Budget cảnh báo ở mục 1, và nên đặt thêm *compartment quota* để không thể vô tình tạo tài nguyên có phí.
+5. Phương án cuối: máy **VM.Standard.E2.1.Micro** (AMD, 1 GB RAM) cũng miễn phí và ít bị hết chỗ hơn, nhưng yếu như EC2 `t3.micro`. Hướng dẫn riêng, gồm cấu hình giảm bộ nhớ và cách build image trên máy Windows rồi chuyển lên: **[deploy-micro.md](deploy-micro.md)**.
 
 ### IP cố định (khuyên dùng)
 
@@ -135,7 +137,7 @@ Khác biệt cần nhớ khi đọc `deploy-guide.md`:
 
 | Rủi ro | Cách giảm |
 | --- | --- |
-| Máy bị **thu hồi** vì nhàn rỗi lâu (Oracle có chính sách như vậy cho tài nguyên Always Free dùng rất ít) | Máy có web, API, PostgreSQL chạy thường xuyên thường đủ hoạt động. Lên Pay As You Go vẫn miễn phí trong hạn mức và nhiều người cho rằng giảm rủi ro này |
+| Máy bị **thu hồi** vì nhàn rỗi. Theo Oracle, trong **7 ngày liên tiếp** nếu cả ba điều sau cùng đúng thì máy bị coi là nhàn rỗi: CPU (phân vị 95) dưới 20%, mạng dưới 20%, và với máy A1 thì RAM dưới 20% | Một web ít người dùng rất dễ rơi vào cả ba điều kiện (với 6 GB RAM, 20% là khoảng 1,2 GB). Cách đáng tin nhất là **nâng lên Pay As You Go**: các nguồn công khai cho biết tài khoản có phương thức thanh toán thì không bị thu hồi kiểu này, và tài nguyên Always Free vẫn miễn phí. Đừng dựa vào việc tự tạo tải giả. Đặt Budget và quota như ở mục 2 |
 | Tài khoản bị khóa hoặc dừng | **Luôn có bản sao lưu bên ngoài Oracle**: chạy `pg_dump` (xem `deploy-guide.md` mục 9) và tải về máy bạn bằng `scp` định kỳ. PLAN Ngày 6 sẽ tự động hóa việc này |
 | Hết chỗ ARM khi cần dựng lại máy | Giữ lại máy cũ chạy được thì đừng xóa. Bản sao lưu DB cộng mã trong GitHub đủ để dựng lại ở nơi khác |
 | Chỉ có một nhà cung cấp miễn phí | Hãy giữ `infra/` và Dockerfile độc lập với nhà cung cấp (đã như vậy), để chuyển sang nơi khác chỉ mất vài giờ |
