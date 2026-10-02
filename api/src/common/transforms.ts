@@ -15,3 +15,9 @@ export function normalizePhone({ value }: TransformFnParams): unknown {
 
 export const PHONE_PATTERN = /^(\+84|0)\d{9}$/;
 export const PHONE_MESSAGE = "Số điện thoại không hợp lệ (ví dụ 0901234567 hoặc +84901234567).";
+
+// Dạng chuẩn của biển số: chỉ chữ và số, viết hoa. "51K-123.45", "51k 123.45" và "51K12345" là cùng một xe,
+// nên phải quy về một dạng trước khi kiểm tra trùng và lưu.
+export function normalizePlate({ value }: TransformFnParams): unknown {
+  return typeof value === "string" ? value.toUpperCase().replace(/[^A-Z0-9]/g, "") : value;
+}
