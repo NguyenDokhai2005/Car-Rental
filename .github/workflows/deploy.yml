@@ -1,0 +1,43 @@
+name: Deploy
+
+# Tự đưa bản mới lên máy chủ SAU KHI CI xanh trên nhánh main.
+#
+# Job deploy chạy trên self-hosted runner đặt trong máy ảo VMware (máy chủ nằm sau NAT nên GitHub không SSH vào được;
+# runner tự kết nối ra GitHub nên không phải mở cổng router).
+#
+# AN TOÀN (repo công khai, runner chạy mã ngay trên máy của bạn):
+#   - Chỉ chạy khi CI vừa chạy cho một lần PUSH vào main trong chính repo này.
+#   - Không bao giờ chạy cho Pull Request: các job CI của PR chạy trên máy do GitHub cấp (ubuntu-latest).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Deploy lần lượt, không cái nào chen vào cái nào, và không hủy giữa chừng một lần deploy đang chạy.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy lên máy ảo VMware
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: [self-hosted, linux, carrental-vm]
+    timeout-minutes: 30
+    # Có thể bật "Required reviewers" cho environment này để mỗi lần deploy phải chờ bạn bấm duyệt (xem docs/ci-cd.md).
+    environment: production
+    steps:
+      # Lấy đúng commit đã được CI kiểm tra, không phải "main mới nhất" (tránh deploy mã chưa qua CI).
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Deploy
+        run: bash infra/scripts/ci-deploy.sh

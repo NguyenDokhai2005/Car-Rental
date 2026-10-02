@@ -1,6 +1,6 @@
 # CI/CD với GitHub Actions
 
-PLAN Ngày 6. Hiện đã có **CI** (kiểm tra tự động). **CD** (tự đưa lên máy chủ) làm ở bước sau.
+PLAN Ngày 6. **CI** (kiểm tra tự động, `ci.yml`) và **CD** (tự đưa lên máy chủ, `deploy.yml`) đều đã viết. CD cần cài một lần *self-hosted runner* trong máy ảo (xem mục CD bên dưới).
 
 ## CI: `.github/workflows/ci.yml`
 
@@ -64,6 +64,100 @@ Nếu các lệnh này qua trên máy bạn thì CI gần như chắc chắn xan
 | Job Docker lỗi `pnpm install --frozen-lockfile` | Cùng nguyên nhân như `ERR_PNPM_OUTDATED_LOCKFILE` ở trên |
 | Hỏng chỉ trên CI mà chạy được ở máy mình | So sánh phiên bản: CI dùng Node 22 và pnpm 9.15.9 (khớp Dockerfile). Kiểm tra bằng `node -v` và `pnpm -v` |
 
-## CD: sắp làm
+## CD: `.github/workflows/deploy.yml`
 
-Server của dự án là máy ảo VMware ở nhà, **nằm sau mạng NAT nên GitHub không SSH vào được**. Cách làm đã chọn: cài **self-hosted runner trong máy ảo**; runner tự kết nối ra GitHub, nhận job deploy và chạy `docker compose` ngay trong máy ảo, không phải mở cổng router. Job deploy chỉ chạy khi push vào `main` và sau khi CI xanh. File `.env.production` (mật khẩu DB, khóa JWT) nằm cố định trên máy ảo, không đưa lên GitHub.
+Tự đưa bản mới lên máy ảo VMware sau khi CI xanh trên `main`.
+
+### Vì sao cần "self-hosted runner"
+
+Máy ảo nằm sau mạng NAT tại nhà nên **GitHub không SSH vào được**. Thay vào đó cài một chương trình **runner** ngay trong máy ảo. Runner tự kết nối ra GitHub (chỉ chiều đi ra, không phải mở cổng router), hỏi "có việc gì cho tôi không", nhận job deploy và chạy tại chỗ.
+
+```text
+Merge PR vào main
+      │
+      ▼
+CI chạy trên máy GitHub (ci.yml) ──đỏ──▶ dừng, không deploy
+      │ xanh
+      ▼
+deploy.yml: job giao cho runner trong máy ảo VMware
+      │
+      ▼
+checkout đúng commit đã qua CI ─▶ infra/scripts/ci-deploy.sh
+      │
+      ▼
+build ─▶ up -d ─▶ chờ db/api/web khỏe ─▶ kiểm tra https://localhost/ (200) và /api/me (401)
+```
+
+### Điều kiện chạy (an toàn cho repo công khai)
+
+Job `deploy` chỉ chạy khi **cả bốn** điều kiện đúng: CI thành công, sự kiện là **push** (không phải PR), nhánh là `main`, và commit nằm trong **chính repo này** (không phải fork). Các job CI của Pull Request chạy trên máy do GitHub cấp (`ubuntu-latest`) nên mã của PR **không bao giờ chạm tới máy ảo của bạn**.
+
+Workflow lấy đúng commit CI đã kiểm tra (`head_sha`), không phải "main mới nhất", để không deploy nhầm mã chưa qua CI.
+
+### `infra/scripts/ci-deploy.sh` làm gì
+
+1. `docker compose build`.
+2. `docker compose up -d` (migration chạy tự động khi API khởi động), rồi tạo lại container Nginx để nhận cấu hình mới.
+3. Chờ `db`, `api`, `web` ở trạng thái healthy (tối đa 3 phút mỗi dịch vụ).
+4. Kiểm tra từ ngoài qua Nginx: `https://localhost/` phải trả 200 và `https://localhost/api/me` phải trả 401 (API sống và đang chặn người chưa đăng nhập).
+
+Khi có bước nào hỏng, script **in trạng thái và log gần nhất** ngay trong log của workflow và thoát với mã lỗi, nên job hiện đỏ kèm nguyên nhân mà bạn không phải SSH vào máy. Dữ liệu trong PostgreSQL và ảnh upload nằm trong volume Docker nên **không mất sau mỗi lần deploy**.
+
+Đã thử trên Docker ở máy phát triển: deploy lần đầu, deploy lại (giữ nguyên người dùng đã đăng ký), thiếu file cấu hình (báo lỗi rõ), bản hỏng (job đỏ kèm log nguyên nhân), và khôi phục bằng bản tốt.
+
+### Cài runner (làm một lần, trong máy ảo)
+
+**1. Đặt file cấu hình ra ngoài thư mục mã.** Checkout của workflow bị dọn sạch mỗi lần chạy, nên `.env.production` (mật khẩu DB, khóa JWT) phải nằm cố định ở nơi khác:
+
+```bash
+mkdir -p ~/carrental-config
+cp ~/car-rental/.env.production ~/carrental-config/.env.production
+chmod 600 ~/carrental-config/.env.production
+docker volume ls | grep letsencrypt     # phải thấy carrental_letsencrypt (chứng chỉ HTTPS đã tạo ở lần cài đầu)
+```
+
+Nếu muốn đặt ở chỗ khác, đặt biến `CARRENTAL_ENV_FILE` cho runner.
+
+**2. Lấy lệnh cài từ GitHub.** Repo → **Settings → Actions → Runners → New self-hosted runner**, chọn **Linux** và **x64**. Trang này hiện sẵn các lệnh tải và cấu hình kèm **mã xác thực tạm thời (hết hạn sau khoảng 1 giờ)**. Làm theo trang đó, trong thư mục `~/actions-runner` của máy ảo, với hai điều chỉnh khi chạy `./config.sh`:
+- Tên runner: `carrental-vm`.
+- Khi hỏi nhãn (labels): nhập `carrental-vm`. Workflow tìm đúng nhãn này.
+
+**3. Cài thành dịch vụ để tự chạy khi máy ảo bật:**
+
+```bash
+cd ~/actions-runner
+sudo ./svc.sh install
+sudo ./svc.sh start
+sudo ./svc.sh status        # phải thấy "active (running)"
+```
+
+Quay lại trang Runners trên GitHub: runner `carrental-vm` phải ở trạng thái **Idle** (chấm xanh).
+
+**4. (Khuyên dùng) Bắt buộc duyệt tay mỗi lần deploy.** Repo → **Settings → Environments → production → Required reviewers**, thêm chính bạn. Khi đó mỗi lần CI xanh, workflow dừng lại chờ bạn bấm **Approve** rồi mới chạy trên máy ảo. Tắt đi khi bạn đã tin tưởng quy trình.
+
+**5. Kiểm tra cài đặt:** Settings → Actions → General:
+- **Fork pull request workflows from outside collaborators**: chọn *Require approval for all outside collaborators*.
+- **Workflow permissions**: *Read repository contents permission*.
+
+**6. Thử:** merge một thay đổi nhỏ vào `main`, vào tab **Actions**: sau khi **CI** xanh, workflow **Deploy** chạy. Mở `https://192.168.205.129` để xem bản mới.
+
+### Quay lại bản cũ
+
+Cách sạch nhất: tạo PR **revert** commit gây lỗi, merge vào `main`; CI xanh thì deploy tự đưa bản cũ lên. Lưu ý migration cơ sở dữ liệu **không tự lùi**: bản cũ vẫn chạy được nếu migration mới chỉ thêm bảng hoặc cột. Sao lưu trước khi deploy bản có migration lớn.
+
+### Bảo mật của self-hosted runner (nghiêm túc)
+
+- Runner chạy mã **ngay trên máy ảo** với quyền người dùng `ubuntu` (thuộc nhóm `docker`, gần như root trên máy ảo). Repo công khai nên chỉ mã đã merge vào `main` được chạy ở đây; đừng bao giờ thêm nhãn `carrental-vm` vào job chạy trên Pull Request.
+- Giữ máy ảo **tách biệt** khỏi dữ liệu cá nhân trên Windows (đúng như đang làm với VMware).
+- Mật khẩu và khóa JWT chỉ nằm trong `~/carrental-config/` trên máy ảo, **không** đưa lên GitHub.
+- Bật *Required reviewers* (bước 4) khi mới bắt đầu để có thêm một lớp duyệt thủ công.
+
+### Lỗi thường gặp (CD)
+
+| Triệu chứng | Nguyên nhân và cách xử lý |
+| --- | --- |
+| Job Deploy cứ ở trạng thái *Queued* | Runner chưa chạy hoặc sai nhãn. Trên máy ảo `sudo ./svc.sh status`; trang Runners phải hiện *Idle* và có nhãn `carrental-vm` |
+| `Thiếu .../.env.production` | Chưa làm bước 1 (đặt file ở `~/carrental-config/`) |
+| Job đỏ ở bước chờ khỏe lại | Xem phần log in sẵn trong job: thường là cấu hình sai (khóa JWT quá ngắn, mật khẩu DB không khớp volume cũ) |
+| Máy ảo tắt hoặc khởi động lại | Runner (đã cài thành dịch vụ) tự chạy lại. Nếu máy ảo tắt lúc đang deploy, chạy lại workflow bằng *Re-run jobs* |
+| Deploy bị treo ở bước build | Máy ảo thiếu RAM. Tăng RAM máy ảo lên 6 GB trong cài đặt VMware |
