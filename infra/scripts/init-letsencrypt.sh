@@ -21,7 +21,13 @@ STAGING="$(get_var LETSENCRYPT_STAGING)"
 [ -n "$DOMAIN" ] && [ "$DOMAIN" != "example.com" ] || { echo "Hãy đặt DOMAIN thật trong $ENV_FILE."; exit 1; }
 [ -n "$EMAIL" ] || { echo "Hãy đặt LETSENCRYPT_EMAIL trong $ENV_FILE."; exit 1; }
 
+# LOW_MEMORY=1 (máy 1 GB RAM): dùng thêm file giảm bộ nhớ và không build image trên máy chủ (image nạp bằng docker load).
 COMPOSE=(docker compose -f infra/docker-compose.prod.yml --env-file "$ENV_FILE")
+BUILD_FLAG="--build"
+if [ "$(get_var LOW_MEMORY)" = "1" ]; then
+  COMPOSE=(docker compose -f infra/docker-compose.prod.yml -f infra/docker-compose.micro.yml --env-file "$ENV_FILE")
+  BUILD_FLAG=""
+fi
 CERTBOT=("${COMPOSE[@]}" run --rm --entrypoint)
 
 STAGING_ARG=""
@@ -43,7 +49,7 @@ echo "==> 1/4 Tạo chứng chỉ tạm để Nginx khởi động được"
     -subj '/CN=localhost'"
 
 echo "==> 2/4 Khởi động Nginx (kéo theo db, api, web)"
-"${COMPOSE[@]}" up -d --build nginx
+"${COMPOSE[@]}" up -d $BUILD_FLAG nginx
 
 echo "==> 3/4 Xóa chứng chỉ tạm và xin chứng chỉ thật${STAGING_ARG:+ (STAGING)}"
 "${CERTBOT[@]}" sh certbot -c "rm -rf /etc/letsencrypt/live/$DOMAIN /etc/letsencrypt/archive/$DOMAIN /etc/letsencrypt/renewal/$DOMAIN.conf"
