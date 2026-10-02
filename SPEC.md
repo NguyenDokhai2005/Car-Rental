@@ -22,7 +22,9 @@ Quy tắc chung: mọi endpoint kiểm tra quyền **sở hữu** (owner chỉ t
 
 ## 2. Luồng chính
 
-**Đăng xe:** owner tạo xe (trạng thái `pending`) → tải ảnh → admin duyệt (`approved`) hoặc từ chối kèm lý do (`rejected`) → xe `approved` mới hiện công khai. Owner sửa xe đã duyệt thì xe về `pending` nếu đổi thông tin quan trọng (biển số, loại xe, giá).
+**Đăng xe:** owner tạo xe (trạng thái `pending`) → tải ảnh → admin duyệt (`approved`) hoặc từ chối kèm lý do (`rejected`) → xe `approved` mới hiện công khai. Owner sửa xe đã duyệt thì xe về `pending` nếu đổi thông tin quan trọng: biển số, hãng, mẫu, năm, số chỗ, hộp số, nhiên liệu, giá thuê, tỷ lệ cọc. Sửa mô tả, thành phố, quận thì xe giữ nguyên trạng thái. Xe `rejected` mà owner sửa lại thì về `pending` để admin duyệt lại, và lý do từ chối bị xóa.
+
+**Trạng thái xe:** `pending` (chờ duyệt) → `approved` (công khai) hoặc `rejected` (kèm lý do). Owner ẩn xe `approved` thì thành `hidden` (không hiện công khai, không nhận đơn mới, đơn đã có vẫn giữ nguyên) và hiện lại thì về `approved` mà không cần duyệt lại. Chỉ xe `approved` mới ẩn được; chỉ xe `hidden` mới hiện lại được.
 
 **Thuê xe:**
 1. Khách tìm xe theo thành phố, giá, số chỗ, khoảng ngày.
@@ -67,7 +69,7 @@ Mọi chuyển khác trả 409 `INVALID_STATE`. Chỉ các trạng thái `pendin
 
 - **Tiền:** số nguyên VND. `total = ngày_thuê × giá_ngày` (làm tròn lên theo 24 giờ **(đề xuất)**); `deposit = 30% × total` **(đề xuất)**, làm tròn VND.
 - **Thời gian:** UTC (`timestamptz`), hiển thị theo `Asia/Ho_Chi_Minh`. Thuê tối thiểu 1 ngày, tối đa 30 ngày **(đề xuất)**; `start_at` phải ở tương lai.
-- **Chống trùng lịch:** ràng buộc `EXCLUDE USING gist` trong DB (xem README). Vi phạm → 409 `BOOKING_OVERLAP`. Lịch chặn của owner cũng là một dòng giữ lịch (đề xuất: bảng `vehicle_blocks`, kiểm tra thêm ở tầng ứng dụng trong cùng transaction).
+- **Chống trùng lịch:** ràng buộc `EXCLUDE USING gist` trong DB (xem README). Vi phạm → 409 `BOOKING_OVERLAP`. Lịch chặn của owner cũng là một dòng giữ lịch (bảng `vehicle_blocks`). `EXCLUDE` không chạy chéo hai bảng, nên tạo lịch chặn và tạo đơn đều lấy khóa tư vấn theo xe (`pg_advisory_xact_lock`) rồi kiểm tra bảng còn lại trong cùng transaction.
 - **Chính sách hủy và hoàn cọc (đề xuất):**
 
 | Thời điểm hủy | Hoàn cọc |
@@ -103,7 +105,7 @@ Khách tải ảnh GPLX → `license_status = pending` → admin xem và duyệt
 
 ## 7. API
 
-Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` (409), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
+Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` / `PLATE_TAKEN` / `BLOCK_OVERLAP` / `BLOCK_CONFLICTS_BOOKING` (409), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
 
 ### Auth
 | Method | Path | Quyền | Mô tả |
@@ -123,19 +125,24 @@ Mật khẩu 8 đến 128 ký tự, băm argon2id. Đăng nhập, đăng ký và
 | --- | --- | --- |
 | GET | /vehicles | Tìm: `city, minPrice, maxPrice, seats, startAt, endAt, sort, page, limit`; chỉ xe `approved` và còn trống trong khoảng ngày |
 | GET | /vehicles/:id | Chi tiết xe + ảnh |
-| GET | /vehicles/:id/availability | Các khoảng đã bị giữ lịch theo tháng |
+| GET | /vehicles/:id/availability | Các khoảng đã bị giữ lịch theo tháng. Query `month=YYYY-MM` (mặc định tháng hiện tại, tính theo giờ Việt Nam). Trả `{ vehicleId, month, busy: [{ startAt, endAt }] }` gồm đơn `pending/confirmed/in_use` và lịch chặn, không phân biệt loại và không lộ thông tin người thuê. Xe không `approved` trả 404 |
 
 ### Xe (owner)
+Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của chính mình; xe của người khác trả 404, không trả 403, để không lộ sự tồn tại.
+
 | Method | Path | Mô tả |
 | --- | --- | --- |
-| GET | /owner/vehicles | Xe của tôi |
-| POST | /owner/vehicles | Tạo xe (`pending`) |
-| PATCH | /owner/vehicles/:id | Sửa |
+| GET | /owner/vehicles | Xe của tôi. Query `status, page, limit` |
+| POST | /owner/vehicles | Tạo xe (`pending`). Body: `brand, model, year, plateNumber, seats, transmission, fuel, description?, city, district, pricePerDay, depositRate?` (mặc định 30). `title` do hệ thống tạo từ hãng, mẫu, năm. Biển số lưu ở dạng chuẩn (chỉ chữ và số, viết hoa, ví dụ `51K12345`); trùng trả 409 `PLATE_TAKEN` bất kể cách viết |
+| GET | /owner/vehicles/:id | Chi tiết xe của tôi |
+| PATCH | /owner/vehicles/:id | Sửa (các trường như khi tạo, đều tùy chọn). Không sửa được `status`. Đổi trạng thái theo mục 2 |
 | POST | /owner/vehicles/:id/images | Tải ảnh (multipart, jpg/png/webp, ≤ 5 MB, ≤ 10 ảnh) |
 | DELETE | /owner/vehicles/:id/images/:imageId | Xóa ảnh |
-| POST | /owner/vehicles/:id/hide | Ẩn/hiện xe |
-| POST | /owner/vehicles/:id/blocks | Chặn lịch |
-| DELETE | /owner/vehicles/:id/blocks/:blockId | Bỏ chặn |
+| POST | /owner/vehicles/:id/hide | Ẩn/hiện xe. Body `{ hidden: boolean }`. Sai trạng thái trả 409 `INVALID_STATE`; gọi lặp lại vẫn thành công |
+| GET | /owner/vehicles/:id/blocks | Danh sách lịch chặn |
+| POST | /owner/vehicles/:id/blocks | Chặn lịch. Body `{ startAt, endAt, reason? }` (ISO 8601 có múi giờ). Chồng lịch chặn khác trả 409 `BLOCK_OVERLAP`; chồng đơn đang giữ lịch trả 409 `BLOCK_CONFLICTS_BOOKING` |
+| DELETE | /owner/vehicles/:id/blocks/:blockId | Bỏ chặn (204) |
+| GET | /owner/vehicles/:id/calendar | Lịch tháng của xe cho chủ xe. Query `month=YYYY-MM`. Như `availability` nhưng có `kind`: `booked` hoặc `blocked` |
 
 ### Đơn
 | Method | Path | Quyền | Mô tả |

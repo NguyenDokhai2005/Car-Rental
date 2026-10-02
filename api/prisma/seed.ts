@@ -36,18 +36,18 @@ type CarSeed = {
 const HCM = "TP. Hồ Chí Minh";
 
 const CARS: CarSeed[] = [
-  { key: "vios", title: "Toyota Vios 2022", brand: "Toyota", model: "Vios", year: 2022, plate: "51K-123.45", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 7", price: 650000, owner: "tran", status: "approved" },
-  { key: "accent", title: "Hyundai Accent 2023", brand: "Hyundai", model: "Accent", year: 2023, plate: "51L-234.56", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 1", price: 600000, owner: "tran", status: "approved" },
-  { key: "vf6", title: "VinFast VF 6 2024", brand: "VinFast", model: "VF 6", year: 2024, plate: "51K-345.67", seats: 5, transmission: "automatic", fuel: "electric", city: HCM, district: "Thủ Đức", price: 1100000, owner: "le", status: "approved" },
-  { key: "cx5", title: "Mazda CX-5 2021", brand: "Mazda", model: "CX-5", year: 2021, plate: "51H-456.78", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Bình Thạnh", price: 1200000, owner: "tran", status: "approved" },
-  { key: "xpander", title: "Mitsubishi Xpander 2023", brand: "Mitsubishi", model: "Xpander", year: 2023, plate: "51G-567.89", seats: 7, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 2", price: 950000, owner: "le", status: "approved" },
-  { key: "seltos", title: "Kia Seltos 2022", brand: "Kia", model: "Seltos", year: 2022, plate: "51F-678.90", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 10", price: 850000, owner: "le", status: "approved" },
-  { key: "city", title: "Honda City 2021", brand: "Honda", model: "City", year: 2021, plate: "51A-789.01", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Tân Bình", price: 620000, owner: "tran", status: "approved" },
-  { key: "vf5", title: "VinFast VF 5 2023", brand: "VinFast", model: "VF 5", year: 2023, plate: "51K-890.12", seats: 5, transmission: "automatic", fuel: "electric", city: HCM, district: "Quận 9", price: 780000, owner: "le", status: "approved" },
-  { key: "everest", title: "Ford Everest 2022", brand: "Ford", model: "Everest", year: 2022, plate: "51D-901.23", seats: 7, transmission: "automatic", fuel: "diesel", city: HCM, district: "Quận 7", price: 1600000, owner: "le", status: "approved" },
+  { key: "vios", title: "Toyota Vios 2022", brand: "Toyota", model: "Vios", year: 2022, plate: "51K12345", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 7", price: 650000, owner: "tran", status: "approved" },
+  { key: "accent", title: "Hyundai Accent 2023", brand: "Hyundai", model: "Accent", year: 2023, plate: "51L23456", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 1", price: 600000, owner: "tran", status: "approved" },
+  { key: "vf6", title: "VinFast VF 6 2024", brand: "VinFast", model: "VF 6", year: 2024, plate: "51K34567", seats: 5, transmission: "automatic", fuel: "electric", city: HCM, district: "Thủ Đức", price: 1100000, owner: "le", status: "approved" },
+  { key: "cx5", title: "Mazda CX-5 2021", brand: "Mazda", model: "CX-5", year: 2021, plate: "51H45678", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Bình Thạnh", price: 1200000, owner: "tran", status: "approved" },
+  { key: "xpander", title: "Mitsubishi Xpander 2023", brand: "Mitsubishi", model: "Xpander", year: 2023, plate: "51G56789", seats: 7, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 2", price: 950000, owner: "le", status: "approved" },
+  { key: "seltos", title: "Kia Seltos 2022", brand: "Kia", model: "Seltos", year: 2022, plate: "51F67890", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 10", price: 850000, owner: "le", status: "approved" },
+  { key: "city", title: "Honda City 2021", brand: "Honda", model: "City", year: 2021, plate: "51A78901", seats: 5, transmission: "automatic", fuel: "petrol", city: HCM, district: "Tân Bình", price: 620000, owner: "tran", status: "approved" },
+  { key: "vf5", title: "VinFast VF 5 2023", brand: "VinFast", model: "VF 5", year: 2023, plate: "51K89012", seats: 5, transmission: "automatic", fuel: "electric", city: HCM, district: "Quận 9", price: 780000, owner: "le", status: "approved" },
+  { key: "everest", title: "Ford Everest 2022", brand: "Ford", model: "Everest", year: 2022, plate: "51D90123", seats: 7, transmission: "automatic", fuel: "diesel", city: HCM, district: "Quận 7", price: 1600000, owner: "le", status: "approved" },
   // Hai xe chờ admin duyệt
-  { key: "xl7", title: "Suzuki XL7 2022", brand: "Suzuki", model: "XL7", year: 2022, plate: "51B-012.34", seats: 7, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 3", price: 800000, owner: "tran", status: "pending" },
-  { key: "fortuner", title: "Toyota Fortuner 2021", brand: "Toyota", model: "Fortuner", year: 2021, plate: "51C-123.40", seats: 7, transmission: "manual", fuel: "diesel", city: HCM, district: "Quận 12", price: 1400000, owner: "le", status: "pending" },
+  { key: "xl7", title: "Suzuki XL7 2022", brand: "Suzuki", model: "XL7", year: 2022, plate: "51B01234", seats: 7, transmission: "automatic", fuel: "petrol", city: HCM, district: "Quận 3", price: 800000, owner: "tran", status: "pending" },
+  { key: "fortuner", title: "Toyota Fortuner 2021", brand: "Toyota", model: "Fortuner", year: 2021, plate: "51C12340", seats: 7, transmission: "manual", fuel: "diesel", city: HCM, district: "Quận 12", price: 1400000, owner: "le", status: "pending" },
 ];
 
 async function main() {
