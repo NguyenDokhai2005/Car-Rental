@@ -1,0 +1,106 @@
+# Production trên một máy chủ. Chạy từ thư mục gốc repo:
+#   docker compose -f infra/docker-compose.prod.yml --env-file .env.production up -d
+# Chỉ Nginx mở cổng ra ngoài; PostgreSQL, API, Web chỉ nói chuyện với nhau qua mạng nội bộ.
+name: carrental
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    mem_limit: 320m
+    environment:
+      POSTGRES_USER: carrental
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Thiếu POSTGRES_PASSWORD trong .env.production}
+      POSTGRES_DB: carrental
+      TZ: UTC
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carrental -d carrental"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: api/Dockerfile
+    restart: unless-stopped
+    mem_limit: 384m
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "4000"
+      DATABASE_URL: postgresql://carrental:${POSTGRES_PASSWORD}@db:5432/carrental
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Thiếu JWT_ACCESS_SECRET trong .env.production}
+      CORS_ORIGIN: https://${DOMAIN:?Thiếu DOMAIN trong .env.production}
+      UPLOAD_DIR: /data/uploads
+      NODE_OPTIONS: --max-old-space-size=256
+    # Áp dụng migration chưa chạy rồi mới nhận request. Migration lỗi thì API không lên, tránh chạy với DB sai cấu trúc.
+    command: ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node dist/main"]
+    volumes:
+      - uploads:/data/uploads
+    healthcheck:
+      # Không có curl trong image; 401 nghĩa là API đang chạy và đang chặn request chưa đăng nhập.
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/me').then(r=>process.exit(r.status===401?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    restart: unless-stopped
+    mem_limit: 320m
+    environment:
+      NODE_OPTIONS: --max-old-space-size=256
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    mem_limit: 64m
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      # Image nginx tự thay ${DOMAIN} trong *.template rồi ghi vào /etc/nginx/conf.d
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - certbot-www:/var/www/certbot:ro
+      - letsencrypt:/etc/letsencrypt:ro
+      - uploads:/var/uploads:ro
+      # Tải lại cấu hình định kỳ để nhận chứng chỉ mới. Không ghi đè "command" của image: nếu lệnh khởi động
+      # không bắt đầu bằng "nginx" thì image bỏ qua bước thay ${DOMAIN} trong template.
+      - ./nginx/reload-certs.sh:/docker-entrypoint.d/90-reload-certs.sh:ro
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    mem_limit: 128m
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    # Thử gia hạn mỗi 12 giờ; certbot chỉ thực sự gia hạn khi còn dưới 30 ngày
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot; sleep 12h & wait $${!}; done"]
+
+volumes:
+  pgdata:
+  uploads:
+  letsencrypt:
+  certbot-www:
