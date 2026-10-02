@@ -72,6 +72,14 @@ check_code "https://localhost/" 200
 # API chưa đăng nhập phải trả 401: chứng tỏ API sống và đang chặn người lạ
 check_code "https://localhost/api/me" 401
 
+# Cập nhật các script sao lưu đã được cài vào đường dẫn cố định (chỉ khi đã chạy install-backup-cron.sh một lần).
+# Cron gọi bản chép này, không gọi trong thư mục checkout vì thư mục đó bị dọn mỗi lần deploy.
+BIN_DIR="$HOME/carrental-config/bin"
+if [ -d "$BIN_DIR" ]; then
+  install -m 755 infra/scripts/backup-db.sh infra/scripts/restore-test.sh "$BIN_DIR/"
+  echo "==> Đã cập nhật script sao lưu trong $BIN_DIR"
+fi
+
 # Dọn image cũ không còn dùng để khỏi đầy ổ đĩa
 docker image prune -f >/dev/null
 
