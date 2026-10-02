@@ -1,0 +1,36 @@
+# Ghi đè cho máy rất nhỏ (1 GB RAM, ví dụ Oracle VM.Standard.E2.1.Micro). Dùng CÙNG docker-compose.prod.yml:
+#   docker compose -f infra/docker-compose.prod.yml -f infra/docker-compose.micro.yml --env-file .env.production up -d
+# Hai việc khác bản thường:
+#   1. Giảm bộ nhớ của từng container để tổng nằm gọn trong 1 GB cùng hệ điều hành (bắt buộc có swap 2 GB).
+#   2. Không build image trên máy chủ (build Next.js trên CPU 1/8 lõi rất chậm và hết RAM). Image build sẵn
+#      trên máy khác rồi chuyển lên bằng "docker load" (xem docs/deploy-micro.md).
+services:
+  db:
+    mem_limit: 192m
+    # Mặc định PostgreSQL xin 128 MB bộ nhớ đệm và 100 kết nối; hạ xuống cho vừa máy nhỏ.
+    command: ["postgres", "-c", "shared_buffers=32MB", "-c", "max_connections=30", "-c", "work_mem=2MB", "-c", "maintenance_work_mem=16MB"]
+
+  api:
+    # image do "docker load" nạp vào; không có thì báo lỗi rõ ràng thay vì tự build
+    image: carrental-api:latest
+    pull_policy: never
+    build: !reset null
+    mem_limit: 288m
+    environment:
+      NODE_OPTIONS: --max-old-space-size=160
+      # Mỗi kết nối Prisma tốn bộ nhớ; hai là đủ cho lượng truy cập nhỏ.
+      DATABASE_URL: postgresql://carrental:${POSTGRES_PASSWORD}@db:5432/carrental?connection_limit=3
+
+  web:
+    image: carrental-web:latest
+    pull_policy: never
+    build: !reset null
+    mem_limit: 192m
+    environment:
+      NODE_OPTIONS: --max-old-space-size=128
+
+  nginx:
+    mem_limit: 32m
+
+  certbot:
+    mem_limit: 64m

@@ -1,0 +1,7 @@
+# Các file chạy bên trong container Linux phải luôn dùng ký tự xuống dòng LF, kể cả khi checkout trên Windows.
+# Nếu không, "#!/bin/sh" thành "#!/bin/sh\r" và container báo "not found".
+*.sh text eol=lf
+*.template text eol=lf
+*.conf text eol=lf
+Dockerfile text eol=lf
+docker-compose*.yml text eol=lf
