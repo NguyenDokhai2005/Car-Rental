@@ -43,16 +43,7 @@ export const STATUS_LABELS: Record<VehicleStatus, { label: string; tone: "info" 
   hidden: { label: "Đang ẩn", tone: "info" },
 };
 
-export const TRANSMISSION_LABELS: Record<CreateVehicleInput["transmission"], string> = {
-  automatic: "Số tự động",
-  manual: "Số sàn",
-};
-
-export const FUEL_LABELS: Record<CreateVehicleInput["fuel"], string> = {
-  petrol: "Xăng",
-  diesel: "Dầu",
-  electric: "Điện",
-};
+export { FUEL_LABELS, TRANSMISSION_LABELS } from "./labels";
 
 export function createVehicle(input: CreateVehicleInput): Promise<OwnerVehicle> {
   return apiFetch<OwnerVehicle>("/owner/vehicles", { method: "POST", body: input });

@@ -3,7 +3,11 @@ import Link from "next/link";
 import { CarCard } from "@/components/car-card";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
-import { CARS, type Car } from "@/lib/cars";
+import { searchVehicles, type PublicVehicle } from "@/lib/vehicles/public";
+import { vnToday } from "@/lib/vehicles/search-params";
+
+// Trang chủ lấy xe nổi bật từ API lúc có người truy cập. Không dựng sẵn lúc build vì khi build (CI, Docker) chưa có API.
+export const dynamic = "force-dynamic";
 
 const STEPS = [
   {
@@ -23,25 +27,21 @@ const STEPS = [
   },
 ];
 
-// Quận hiển thị theo thiết kế trang chủ (khác dữ liệu mẫu ở trang tìm xe).
-const FEATURED_DISTRICTS: Record<string, string> = {
-  vios: "Quận 7",
-  vf6: "Cầu Giấy",
-  cx5: "Hải Châu",
-  xpander: "Thủ Đức",
-};
+const INPUT = "w-full bg-transparent text-[15px] font-semibold text-ink outline-none placeholder:font-normal placeholder:text-[#8a99ae]";
 
-const FEATURED: Car[] = CARS.filter((car) => car.id in FEATURED_DISTRICTS)
-  .sort((a, b) => Object.keys(FEATURED_DISTRICTS).indexOf(a.id) - Object.keys(FEATURED_DISTRICTS).indexOf(b.id))
-  .map((car) => ({ ...car, district: FEATURED_DISTRICTS[car.id] }));
+// Xe nổi bật = 4 xe mới được duyệt gần nhất. Lỗi API thì ẩn mục này thay vì làm hỏng cả trang chủ.
+async function loadFeatured(): Promise<PublicVehicle[]> {
+  try {
+    return (await searchVehicles(new URLSearchParams({ sort: "newest", limit: "4" }))).items;
+  } catch {
+    return [];
+  }
+}
 
-const SEARCH_FIELDS = [
-  { label: "Địa điểm nhận xe", value: "TP. Hồ Chí Minh" },
-  { label: "Ngày nhận", value: "[Chọn ngày]" },
-  { label: "Ngày trả", value: "[Chọn ngày]" },
-];
+export default async function HomePage() {
+  const featured = await loadFeatured();
+  const today = vnToday();
 
-export default function HomePage() {
   return (
     <>
       <Header />
@@ -61,15 +61,18 @@ export default function HomePage() {
                 className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-4"
               >
                 <div className="flex gap-2.5">
-                  {SEARCH_FIELDS.map((field) => (
-                    <div
-                      key={field.label}
-                      className="flex min-w-0 flex-1 flex-col gap-1 rounded-[10px] border border-line bg-surface px-3.5 py-2.5"
-                    >
-                      <span className="text-xs font-medium text-muted">{field.label}</span>
-                      <span className="text-[15px] font-semibold text-ink">{field.value}</span>
-                    </div>
-                  ))}
+                  <label className="flex min-w-0 flex-1 flex-col gap-1 rounded-[10px] border border-line bg-surface px-3.5 py-2.5">
+                    <span className="text-xs font-medium text-muted">Địa điểm nhận xe</span>
+                    <input name="city" placeholder="TP. Hồ Chí Minh" maxLength={100} className={INPUT} />
+                  </label>
+                  <label className="flex min-w-0 flex-1 flex-col gap-1 rounded-[10px] border border-line bg-surface px-3.5 py-2.5">
+                    <span className="text-xs font-medium text-muted">Ngày nhận</span>
+                    <input type="date" name="startDate" min={today} className={INPUT} />
+                  </label>
+                  <label className="flex min-w-0 flex-1 flex-col gap-1 rounded-[10px] border border-line bg-surface px-3.5 py-2.5">
+                    <span className="text-xs font-medium text-muted">Ngày trả</span>
+                    <input type="date" name="endDate" min={today} className={INPUT} />
+                  </label>
                 </div>
                 <button
                   type="submit"
@@ -106,21 +109,23 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="flex justify-center py-16">
-          <div className="flex w-full max-w-page flex-col gap-8">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[32px] font-bold text-ink">Xe nổi bật</h2>
-              <Link href="/cars" className="text-[15px] font-semibold text-primary">
-                Xem tất cả xe
-              </Link>
+        {featured.length > 0 && (
+          <section className="flex justify-center py-16">
+            <div className="flex w-full max-w-page flex-col gap-8">
+              <div className="flex items-center justify-between">
+                <h2 className="text-[32px] font-bold text-ink">Xe mới đăng</h2>
+                <Link href="/cars" className="text-[15px] font-semibold text-primary">
+                  Xem tất cả xe
+                </Link>
+              </div>
+              <div className="flex gap-[18px]">
+                {featured.map((car) => (
+                  <CarCard key={car.id} car={car} />
+                ))}
+              </div>
             </div>
-            <div className="flex gap-[18px]">
-              {FEATURED.map((car) => (
-                <CarCard key={car.name} car={car} />
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section className="flex justify-center pb-[72px]">
           <div className="flex w-full max-w-page items-center justify-between gap-6 rounded-3xl bg-primary p-12">
