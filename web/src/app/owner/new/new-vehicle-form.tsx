@@ -6,9 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { ApiError } from "@/lib/api/client";
 import { UploadIcon } from "@/components/icons";
 import { createVehicle, uploadVehicleImage } from "@/lib/vehicles/api";
+import { Card, InfoFields, LocationFields, PriceFields, readVehicleForm } from "../vehicle-fields";
 import { ACCEPTED_TYPES, MAX_IMAGES, validateImageFile } from "@/lib/vehicles/image-rules";
-
-const INPUT = "h-12 w-full rounded-[10px] border border-[#c5d2e3] bg-white px-3.5 text-[15px] placeholder:text-[#8a99ae]";
 
 type Picked = {
   id: string;
@@ -17,76 +16,6 @@ type Picked = {
   status: "queued" | "uploading" | "done" | "error";
   error?: string;
 };
-
-function Field({
-  name,
-  label,
-  placeholder,
-  type = "text",
-  required = true,
-  min,
-  max,
-  disabled,
-}: {
-  name: string;
-  label: string;
-  placeholder?: string;
-  type?: string;
-  required?: boolean;
-  min?: number;
-  max?: number;
-  disabled?: boolean;
-}) {
-  return (
-    <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-      <span className="text-sm font-semibold text-ink">{label}</span>
-      <input
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        required={required}
-        min={min}
-        max={max}
-        disabled={disabled}
-        className={`${INPUT} disabled:bg-surface disabled:text-muted`}
-      />
-    </label>
-  );
-}
-
-function Select({
-  name,
-  label,
-  options,
-  disabled,
-}: {
-  name: string;
-  label: string;
-  options: { value: string; label: string }[];
-  disabled?: boolean;
-}) {
-  return (
-    <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-      <span className="text-sm font-semibold text-ink">{label}</span>
-      <select name={name} required disabled={disabled} className={`${INPUT} disabled:bg-surface disabled:text-muted`}>
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
-
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-7">
-      <h2 className="text-xl font-bold text-ink">{title}</h2>
-      {children}
-    </section>
-  );
-}
 
 function errorMessage(error: unknown): string {
   return error instanceof ApiError ? error.message : "Đã có lỗi xảy ra. Vui lòng thử lại.";
@@ -143,28 +72,13 @@ export function NewVehicleForm() {
     event.preventDefault();
     if (submitting) return;
     const form = new FormData(event.currentTarget);
-    const text = (name: string) => String(form.get(name) ?? "").trim();
-    const number = (name: string) => Number(form.get(name));
-
     setError(null);
     setSubmitting(true);
     try {
       let id = vehicleId;
       if (!id) {
-        const vehicle = await createVehicle({
-          brand: text("brand"),
-          model: text("model"),
-          year: number("year"),
-          plateNumber: text("plateNumber"),
-          seats: number("seats"),
-          transmission: text("transmission") as "automatic" | "manual",
-          fuel: text("fuel") as "petrol" | "diesel" | "electric",
-          description: text("description") || undefined,
-          city: text("city"),
-          district: text("district"),
-          pricePerDay: number("pricePerDay"),
-          depositRate: number("depositRate"),
-        });
+        const input = readVehicleForm(form);
+        const vehicle = await createVehicle({ ...input, description: input.description || undefined });
         id = vehicle.id;
         setVehicleId(id);
       }
@@ -207,46 +121,7 @@ export function NewVehicleForm() {
       </div>
 
       <Card title="1. Thông tin xe">
-        <div className="flex gap-4">
-          <Field name="brand" label="Hãng xe" placeholder="Toyota" disabled={locked} />
-          <Field name="model" label="Mẫu xe" placeholder="Vios" disabled={locked} />
-          <Field name="year" label="Năm sản xuất" placeholder="2022" type="number" min={1990} disabled={locked} />
-        </div>
-        <div className="flex gap-4">
-          <Field name="plateNumber" label="Biển số xe" placeholder="51K-123.45" disabled={locked} />
-          <Field name="seats" label="Số chỗ ngồi" placeholder="5" type="number" min={2} max={16} disabled={locked} />
-        </div>
-        <div className="flex gap-4">
-          <Select
-            name="transmission"
-            label="Hộp số"
-            disabled={locked}
-            options={[
-              { value: "automatic", label: "Số tự động" },
-              { value: "manual", label: "Số sàn" },
-            ]}
-          />
-          <Select
-            name="fuel"
-            label="Nhiên liệu"
-            disabled={locked}
-            options={[
-              { value: "petrol", label: "Xăng" },
-              { value: "diesel", label: "Dầu" },
-              { value: "electric", label: "Điện" },
-            ]}
-          />
-        </div>
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-semibold text-ink">Mô tả</span>
-          <textarea
-            name="description"
-            maxLength={2000}
-            disabled={locked}
-            placeholder="Tình trạng xe, quy định về quãng đường và nhiên liệu..."
-            className="h-[120px] resize-none rounded-[10px] border border-[#c5d2e3] bg-white p-3.5 text-[15px] placeholder:text-[#8a99ae] disabled:bg-surface"
-          />
-        </label>
+        <InfoFields disabled={locked} />
       </Card>
 
       <Card title="2. Ảnh xe">
@@ -317,17 +192,11 @@ export function NewVehicleForm() {
       </Card>
 
       <Card title="3. Giá và đặt cọc">
-        <div className="flex gap-4">
-          <Field name="pricePerDay" label="Giá mỗi ngày (đồng)" placeholder="650000" type="number" min={50000} disabled={locked} />
-          <Field name="depositRate" label="Tỷ lệ đặt cọc (%)" placeholder="30" type="number" min={0} max={100} disabled={locked} />
-        </div>
+        <PriceFields disabled={locked} />
       </Card>
 
       <Card title="4. Địa điểm nhận xe">
-        <div className="flex gap-4">
-          <Field name="city" label="Thành phố" placeholder="TP. Hồ Chí Minh" disabled={locked} />
-          <Field name="district" label="Quận hoặc huyện" placeholder="Quận 7" disabled={locked} />
-        </div>
+        <LocationFields disabled={locked} />
       </Card>
 
       {error && (
