@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminAccount } from "./admin-account";
 import { AdminReview } from "./admin-review";
 
 export const metadata = { title: "Duyệt xe và người dùng — Quản trị" };
@@ -42,6 +43,7 @@ export default function AdminPage() {
             ),
           )}
         </nav>
+        <AdminAccount />
       </aside>
       <main className="min-w-0 flex-1 p-10">
         <AdminReview />

@@ -1,16 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CheckIcon } from "@/components/icons";
-
-type Submission = { id: string; carName: string; owner: string; sentAt: string; location: string };
-
-// Dữ liệu mẫu theo thiết kế; thay bằng dữ liệu từ API duyệt xe khi có.
-const INITIAL: Submission[] = [
-  { id: "s1", carName: "Toyota Vios 2022", owner: "[Tên chủ xe]", sentAt: "01/10/2026", location: "Quận 7" },
-  { id: "s2", carName: "Hyundai Accent 2023", owner: "[Tên chủ xe]", sentAt: "30/09/2026", location: "Quận 1" },
-  { id: "s3", carName: "Kia Seltos 2022", owner: "[Tên chủ xe]", sentAt: "29/09/2026", location: "Quận 10" },
-];
+import { AdminVehicle, approveVehicle, listPendingVehicles, rejectVehicle } from "@/lib/admin/api";
+import { ApiError } from "@/lib/api/client";
+import { formatVnd } from "@/lib/cars";
+import { FUEL_LABELS, TRANSMISSION_LABELS } from "@/lib/vehicles/api";
 
 const CHECKLIST = [
   "Ảnh rõ, đúng xe",
@@ -21,34 +16,82 @@ const CHECKLIST = [
 
 const ROW_GRID = "grid grid-cols-[286px_196px_1fr] items-center px-6";
 
+function formatDate(iso: string): string {
+  return new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date(iso));
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof ApiError ? error.message : "Đã có lỗi xảy ra. Vui lòng thử lại.";
+}
+
+type Load = { status: "loading" } | { status: "error"; message: string } | { status: "ready" };
+
 export function AdminReview() {
-  const [items, setItems] = useState(INITIAL);
-  const [selectedId, setSelectedId] = useState("s2");
-  const [checked, setChecked] = useState<boolean[]>([true, true, false, false]);
+  const [items, setItems] = useState<AdminVehicle[]>([]);
+  const [load, setLoad] = useState<Load>({ status: "loading" });
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [imageIndex, setImageIndex] = useState(0);
+  const [checked, setChecked] = useState<boolean[]>(CHECKLIST.map(() => false));
   const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [tab, setTab] = useState<"cars" | "licenses">("cars");
 
-  const selected = items.find((i) => i.id === selectedId) ?? items[0];
+  const refresh = useCallback(async () => {
+    try {
+      const { items: pending } = await listPendingVehicles();
+      setItems(pending);
+      setSelectedId((current) => (pending.some((v) => v.id === current) ? current : (pending[0]?.id ?? null)));
+      setLoad({ status: "ready" });
+    } catch (e) {
+      setLoad({ status: "error", message: errorMessage(e) });
+    }
+  }, []);
+
+  useEffect(() => {
+    // Lần tải đầu: dữ liệu về là cập nhật trạng thái bất đồng bộ, không phải đặt đồng bộ trong effect.
+    void refresh();
+  }, [refresh]);
+
+  const selected = items.find((v) => v.id === selectedId) ?? null;
+
+  function resetForm() {
+    setChecked(CHECKLIST.map(() => false));
+    setReason("");
+    setImageIndex(0);
+    setActionError(null);
+  }
 
   function select(id: string) {
     setSelectedId(id);
-    setChecked([false, false, false, false]);
-    setReason("");
+    resetForm();
   }
 
-  function resolve() {
-    if (!selected) return;
-    const rest = items.filter((i) => i.id !== selected.id);
-    setItems(rest);
-    setChecked([false, false, false, false]);
-    setReason("");
-    if (rest[0]) setSelectedId(rest[0].id);
+  async function decide(action: "approve" | "reject") {
+    if (!selected || busy) return;
+    setBusy(true);
+    setActionError(null);
+    try {
+      if (action === "approve") await approveVehicle(selected.id);
+      else await rejectVehicle(selected.id, reason.trim());
+      resetForm();
+      await refresh();
+    } catch (e) {
+      setActionError(errorMessage(e));
+      // Xe có thể vừa được chủ xe sửa hoặc admin khác xử lý: tải lại danh sách để thấy trạng thái mới nhất.
+      if (e instanceof ApiError && e.status === 409) await refresh();
+    } finally {
+      setBusy(false);
+    }
   }
 
   const tabs = [
     { id: "cars" as const, label: `Xe chờ duyệt (${items.length})` },
-    { id: "licenses" as const, label: "Giấy phép lái xe chờ xác minh (2)" },
+    { id: "licenses" as const, label: "Giấy phép lái xe chờ xác minh" },
   ];
+
+  const hasImages = (selected?.images.length ?? 0) > 0;
+  const mainImage = selected?.images[imageIndex] ?? selected?.images[0];
 
   return (
     <div className="flex flex-col gap-7">
@@ -74,13 +117,19 @@ export function AdminReview() {
         <p className="rounded-2xl border border-line bg-white p-8 text-center text-[15px] text-muted">
           Danh sách giấy phép lái xe chờ xác minh sẽ hiển thị ở đây.
         </p>
+      ) : load.status === "loading" ? (
+        <p className="text-muted">Đang tải danh sách xe chờ duyệt...</p>
+      ) : load.status === "error" ? (
+        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+          {load.message}
+        </p>
       ) : (
         <div className="flex items-start gap-7">
           <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-line bg-white">
             <div className={`${ROW_GRID} h-[45px] bg-surface text-[13px] font-semibold text-muted`}>
               <span>Xe</span>
               <span>Chủ xe</span>
-              <span>Ngày gửi</span>
+              <span>Cập nhật lần cuối</span>
             </div>
             {items.length === 0 && (
               <p className="px-6 py-8 text-center text-[15px] text-muted">Không còn xe nào chờ duyệt.</p>
@@ -95,27 +144,66 @@ export function AdminReview() {
                 }`}
               >
                 <span className="flex items-center gap-3.5">
-                  <span className="flex h-[52px] w-[72px] shrink-0 items-center justify-center rounded-[10px] bg-placeholder text-[11px] font-medium text-primary">
-                    [Ảnh]
+                  <span className="flex h-[52px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-placeholder text-[11px] font-medium text-primary">
+                    {item.images[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px)
+                      <img src={item.images[0].url} alt="" className="size-full object-cover" />
+                    ) : (
+                      "Chưa có ảnh"
+                    )}
                   </span>
-                  <span className="text-base font-semibold text-ink">{item.carName}</span>
+                  <span className="text-base font-semibold text-ink">{item.title}</span>
                 </span>
-                <span className="text-base text-ink">{item.owner}</span>
-                <span className="text-base text-muted">{item.sentAt}</span>
+                <span className="text-base text-ink">{item.owner.fullName}</span>
+                <span className="text-base text-muted">{formatDate(item.updatedAt)}</span>
               </button>
             ))}
           </div>
 
           {selected && (
             <aside className="flex w-[420px] shrink-0 flex-col gap-4 rounded-2xl border border-line bg-white p-6">
-              <div className="flex h-[200px] items-center justify-center rounded-xl bg-placeholder text-base font-medium text-primary">
-                [Ảnh xe đang xem]
+              <div className="flex h-[200px] items-center justify-center overflow-hidden rounded-xl bg-placeholder text-base font-medium text-primary">
+                {mainImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px)
+                  <img src={mainImage.url} alt={selected.title} className="size-full object-cover" />
+                ) : (
+                  "Xe chưa có ảnh"
+                )}
               </div>
+              {selected.images.length > 1 && (
+                <div className="flex flex-wrap gap-2">
+                  {selected.images.map((image, index) => (
+                    <button
+                      key={image.id}
+                      onClick={() => setImageIndex(index)}
+                      aria-label={`Xem ảnh ${index + 1}`}
+                      aria-pressed={index === imageIndex}
+                      className={`h-12 w-16 overflow-hidden rounded-lg border-2 ${
+                        index === imageIndex ? "border-primary" : "border-transparent"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý */}
+                      <img src={image.url} alt="" className="size-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="flex flex-col gap-1">
-                <h2 className="text-[22px] font-bold text-ink">{selected.carName}</h2>
+                <h2 className="text-[22px] font-bold text-ink">{selected.title}</h2>
                 <p className="text-sm text-muted">
-                  Chủ xe: {selected.owner} - {selected.location}, TP. Hồ Chí Minh
+                  {selected.district}, {selected.city} · Biển số {selected.plateNumber}
                 </p>
+                <p className="text-sm text-muted">
+                  {selected.seats} chỗ · {TRANSMISSION_LABELS[selected.transmission]} · {FUEL_LABELS[selected.fuel]}
+                </p>
+                <p className="text-sm text-ink">
+                  {formatVnd(selected.pricePerDay)} mỗi ngày · cọc {selected.depositRate}%
+                </p>
+                <p className="text-sm text-muted">
+                  Chủ xe: {selected.owner.fullName} · {selected.owner.phone} · {selected.owner.email}
+                </p>
+                {selected.description && <p className="text-sm text-ink">{selected.description}</p>}
               </div>
 
               <div className="flex flex-col gap-2.5">
@@ -145,22 +233,34 @@ export function AdminReview() {
                 <textarea
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
+                  maxLength={500}
                   placeholder="Ghi rõ để chủ xe sửa lại"
                   className="h-20 resize-none rounded-[10px] border border-[#c5d2e3] bg-white p-3.5 text-[15px] placeholder:text-[#8a99ae]"
                 />
               </label>
 
+              {!hasImages && (
+                <p className="rounded-[10px] bg-[#fff6e5] px-3.5 py-3 text-sm text-[#8a5a00]">
+                  Xe chưa có ảnh nào nên chưa thể duyệt. Hãy từ chối kèm lý do để chủ xe bổ sung ảnh.
+                </p>
+              )}
+              {actionError && (
+                <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+                  {actionError}
+                </p>
+              )}
+
               <div className="flex gap-3">
                 <button
-                  onClick={resolve}
-                  disabled={!checked.every(Boolean)}
+                  onClick={() => void decide("approve")}
+                  disabled={busy || !hasImages || !checked.every(Boolean)}
                   className="h-12 flex-1 rounded-xl bg-primary text-[15px] font-semibold text-white disabled:opacity-50"
                 >
-                  Duyệt xe
+                  {busy ? "Đang xử lý..." : "Duyệt xe"}
                 </button>
                 <button
-                  onClick={resolve}
-                  disabled={reason.trim() === ""}
+                  onClick={() => void decide("reject")}
+                  disabled={busy || reason.trim() === ""}
                   className="h-12 flex-1 rounded-xl border border-[#c5d2e3] bg-white text-[15px] font-semibold text-[#c0281c] disabled:opacity-50"
                 >
                   Từ chối
