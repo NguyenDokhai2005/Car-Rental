@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/auth-context";
+import { authErrorMessage } from "@/lib/auth/messages";
+import { postLoginPath } from "@/lib/auth/redirect";
 
 const ROLES = [
   { id: "renter", title: "Thuê xe", note: "Tìm và đặt xe cho chuyến đi" },
   { id: "owner", title: "Cho thuê xe", note: "Đăng xe và nhận đơn" },
-];
+] as const;
 
 const FIELDS = [
   { name: "fullName", label: "Họ và tên", type: "text", placeholder: "Nguyễn Văn A", autoComplete: "name" },
@@ -16,20 +20,46 @@ const FIELDS = [
 ];
 
 export function RegisterForm() {
-  const [role, setRole] = useState("renter");
+  const { register } = useAuth();
+  const router = useRouter();
+  const [role, setRole] = useState<"renter" | "owner">("renter");
   const [agreed, setAgreed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submitting || !agreed) return;
+    const form = new FormData(event.currentTarget);
+    const field = (name: string) => String(form.get(name) ?? "");
+    setError(null);
+    setSubmitting(true);
+    try {
+      const user = await register({
+        fullName: field("fullName").trim(),
+        email: field("email").trim(),
+        phone: field("phone").trim(),
+        password: field("password"),
+        role,
+      });
+      router.replace(postLoginPath(user.role, null));
+    } catch (e) {
+      setError(authErrorMessage(e));
+      setSubmitting(false);
+    }
+  }
 
   return (
-    <form action="/login" className="flex w-[440px] flex-col gap-5">
+    <form onSubmit={onSubmit} className="flex w-[440px] flex-col gap-5">
       <div className="flex flex-col gap-2">
         <h1 className="text-[34px] font-bold text-ink">Tạo tài khoản</h1>
         <p className="text-base text-muted">
-          Bạn có thể vừa thuê xe vừa cho thuê xe cùng một tài khoản.
+          Mỗi tài khoản có một vai trò. Muốn dùng cả hai, hãy đăng ký thêm tài khoản bằng email khác.
         </p>
       </div>
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-sm font-semibold text-ink">Bạn muốn làm gì trước?</legend>
+        <legend className="mb-2 text-sm font-semibold text-ink">Bạn đăng ký với vai trò nào?</legend>
         <div className="flex gap-3">
           {ROLES.map((r) => {
             const selected = role === r.id;
@@ -56,7 +86,6 @@ export function RegisterForm() {
             );
           })}
         </div>
-        <input type="hidden" name="role" value={role} />
       </fieldset>
 
       {FIELDS.map((f) => (
@@ -84,12 +113,18 @@ export function RegisterForm() {
         Tôi đồng ý với điều khoản sử dụng và chính sách bảo mật.
       </label>
 
+      {error && (
+        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+          {error}
+        </p>
+      )}
+
       <button
         type="submit"
-        disabled={!agreed}
+        disabled={!agreed || submitting}
         className="h-[54px] rounded-xl bg-primary text-base font-semibold text-white disabled:opacity-50"
       >
-        Đăng ký
+        {submitting ? "Đang tạo tài khoản..." : "Đăng ký"}
       </button>
 
       <p className="flex justify-center gap-1.5 text-[15px]">

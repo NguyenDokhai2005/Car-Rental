@@ -194,6 +194,6 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 ## 10. Câu hỏi còn mở
 
 1. Chấp nhận các mặc định (cọc 30%, giữ chỗ 15 phút, chính sách hoàn cọc) hay đổi?
-2. Một tài khoản một vai trò có ổn không, hay cho một người vừa thuê vừa cho thuê?
+2. ~~Một tài khoản một vai trò~~ — đã chốt: một tài khoản một vai trò; sau đăng nhập chủ xe vào `/owner`, quản trị vào `/admin`, khách quay lại trang đang đứng trước khi đăng nhập.
 3. Chọn VNPay hay MoMo làm cổng đầu tiên?
 4. Có nhận xe có tài xế/giao xe tận nơi không (hiện tại: không)?

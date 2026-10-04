@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Footer } from "@/components/footer";
-import { HeaderLoggedIn } from "@/components/header";
+import { Header } from "@/components/header";
 import { formatVnd, type Car } from "@/lib/cars";
 
 const RENTAL_DAYS = 2;
@@ -68,7 +68,7 @@ export function CheckoutView({ car }: { car: Car }) {
 
   return (
     <>
-      <HeaderLoggedIn />
+      <Header />
       <main className="flex justify-center pt-8 pb-16">
         <div className="flex w-full max-w-page flex-col gap-7">
           <div className="flex items-center justify-center gap-3">

@@ -19,7 +19,7 @@ export default function RegisterPage() {
           <p className="text-sm font-medium text-primary">[Ảnh minh họa]</p>
         </div>
         <p className="w-[420px] text-center text-2xl leading-[34px] font-semibold text-ink">
-          Một tài khoản cho cả việc thuê và cho thuê xe
+          Thuê xe hoặc cho thuê xe, chọn vai trò phù hợp với bạn
         </p>
       </div>
     </div>

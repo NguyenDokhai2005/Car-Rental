@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeaderLoggedIn } from "@/components/header";
+import { Header } from "@/components/header";
 import { StatusPill } from "@/components/status-pill";
 import { formatVnd } from "@/lib/cars";
 import { OwnerRequests } from "./owner-requests";
@@ -32,7 +32,7 @@ function dayClass(day: number) {
 export default function OwnerDashboardPage() {
   return (
     <>
-      <HeaderLoggedIn variant="owner" active="/owner" />
+      <Header active="/owner" />
       <main className="flex justify-center pt-10 pb-14">
         <div className="flex w-full max-w-page flex-col gap-8">
           <div className="flex items-center justify-between">
