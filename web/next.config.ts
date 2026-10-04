@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   output: "standalone",
   // Monorepo: truy vết file từ thư mục gốc để standalone lấy đủ gói dùng chung.
   outputFileTracingRoot: path.join(process.cwd(), ".."),
+  // Cho phép build thử sang thư mục khác (NEXT_DIST_DIR) trong lúc dev server đang dùng .next; mặc định không đổi.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   // Không báo công nghệ trong header phản hồi.
   poweredByHeader: false,
   // Trình duyệt chỉ nói chuyện với một origin: /api/* được chuyển tiếp tới API. Nhờ vậy cookie làm mới

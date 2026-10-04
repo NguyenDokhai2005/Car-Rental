@@ -129,6 +129,13 @@ describe("Public vehicle search API", () => {
         expect(await get("transmission=manual")).toEqual([s.xpander.id]);
       });
 
+      it("tham số lặp (form HTML với ô tích chọn) hoạt động như danh sách phân cách bằng dấu phẩy", async () => {
+        const s = await seed();
+        expect(await get("seats=5&seats=7")).toHaveLength(5);
+        expect(await get("fuel=electric&fuel=diesel")).toEqual([s.vf5.id, s.everest.id]);
+        expect(await get("seats=7&seats=7,5")).toHaveLength(5);
+      });
+
       it("kết hợp nhiều bộ lọc là điều kiện VÀ", async () => {
         const s = await seed();
         expect(await get("city=Hà Nội&seats=7&fuel=diesel")).toEqual([s.everest.id]);

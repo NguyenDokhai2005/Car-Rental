@@ -22,14 +22,15 @@ export function normalizePlate({ value }: TransformFnParams): unknown {
   return typeof value === "string" ? value.toUpperCase().replace(/[^A-Z0-9]/g, "") : value;
 }
 
-// "5,7" hoặc "5, 7" thành ["5", "7"]; phần tử rỗng bị bỏ ("5,,7" và "5," đều thành ["5", "7"] hoặc ["5"]).
+// Nhận cả hai cách gửi danh sách trên URL: "seats=5,7" và tham số lặp "seats=5&seats=7" (form HTML với ô tích chọn
+// gửi kiểu thứ hai). Cả hai thành ["5", "7"]; phần tử rỗng bị bỏ ("5,,7" thành ["5", "7"]).
 export function splitList({ value }: TransformFnParams): unknown {
-  return typeof value === "string"
-    ? value
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean)
-    : value;
+  const parts: unknown[] = Array.isArray(value) ? value : [value];
+  if (!parts.every((part): part is string => typeof part === "string")) return value;
+  return parts
+    .flatMap((part) => part.split(","))
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 // Như splitList nhưng đổi từng phần tử sang số. Phần tử không phải số thành NaN để @IsInt từ chối.

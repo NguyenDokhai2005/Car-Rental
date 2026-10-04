@@ -58,6 +58,10 @@ services:
     mem_limit: 320m
     environment:
       NODE_OPTIONS: --max-old-space-size=256
+      # Máy chủ web gọi API trực tiếp trong mạng Docker khi render trang (trình duyệt vẫn đi qua Nginx).
+      API_URL: http://api:4000
+      # Địa chỉ công khai, dùng cho sitemap, robots và thẻ Open Graph.
+      SITE_URL: https://${DOMAIN}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 15s
