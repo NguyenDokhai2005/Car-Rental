@@ -1,10 +1,10 @@
-# Sao lưu và khôi phục PostgreSQL
+# Sao lưu và khôi phục dữ liệu (PostgreSQL và ảnh xe)
 
-PLAN Ngày 6, SPEC §8: sao lưu cơ sở dữ liệu hằng ngày bằng `pg_dump`, giữ 7 bản, và **thử khôi phục thật**.
+PLAN Ngày 6 và Ngày 8, SPEC §8: sao lưu cơ sở dữ liệu bằng `pg_dump` và ảnh xe tải lên bằng `tar` hằng ngày, giữ 7 bản mỗi loại, và **thử khôi phục thật**.
 
 ## Vì sao cần
 
-Toàn bộ dữ liệu người dùng, xe, đơn và thanh toán nằm trong **một volume Docker trên một máy ảo**. Máy ảo hỏng đĩa, bị xóa nhầm, hay một lệnh sai cũng có thể làm mất tất cả. Sao lưu là bảo hiểm duy nhất cho tình huống đó.
+Toàn bộ dữ liệu người dùng, xe, đơn và thanh toán nằm trong **một volume Docker trên một máy ảo**, và ảnh xe nằm ở một volume khác (`uploads`). CSDL chỉ lưu đường dẫn ảnh, không lưu ảnh: mất một trong hai thì xe mất ảnh. Máy ảo hỏng đĩa, bị xóa nhầm, hay một lệnh sai cũng có thể làm mất tất cả. Sao lưu là bảo hiểm duy nhất cho tình huống đó.
 
 Nguyên tắc cần nhớ: **một bản sao lưu chưa từng được thử khôi phục thì chưa phải bản sao lưu.** Vì vậy hệ thống tự thử khôi phục mỗi tuần.
 
@@ -13,16 +13,19 @@ Nguyên tắc cần nhớ: **một bản sao lưu chưa từng được thử kh
 | Script (`infra/scripts/`) | Việc làm | Lịch |
 | --- | --- | --- |
 | `backup-db.sh` | `pg_dump` định dạng nén `-Fc`, kiểm tra bản sao đọc lại được, xoay vòng giữ 7 bản | 03:00 hằng ngày |
-| `restore-test.sh` | Khôi phục bản mới nhất vào một database **tạm**, kiểm tra đủ bảng và đủ ràng buộc chống đặt trùng, rồi xóa database tạm. Không đụng database thật | 03:30 Chủ nhật hằng tuần |
-| `install-backup-cron.sh` | Cài hoặc gỡ hai dòng cron ở trên | Chạy tay một lần |
+| `backup-uploads.sh` | Đóng gói thư mục ảnh xe thành file `tar` (không nén vì ảnh đã là WebP), kiểm tra đọc lại được, xoay vòng giữ 7 bản | 03:05 hằng ngày, **sau** bản CSDL |
+| `restore-test.sh` | Khôi phục bản CSDL mới nhất vào một database **tạm**, kiểm tra đủ bảng và đủ ràng buộc chống đặt trùng. Nếu có bản ảnh thì giải nén thử và đối chiếu: mọi ảnh mà CSDL nhắc tới có file thật không. Rồi xóa database và thư mục tạm. Không đụng dữ liệu thật | 03:30 Chủ nhật hằng tuần |
+| `install-backup-cron.sh` | Cài hoặc gỡ ba dòng cron ở trên | Chạy tay một lần |
 
 Chi tiết quan trọng:
 
-- **Bản dở dang không bao giờ bị nhầm với bản hợp lệ.** Script ghi vào file `.partial` rồi mới đổi tên sau khi kiểm tra: file không rỗng và `pg_restore --list` đọc được mục lục. Mất điện hay hết ổ đĩa giữa chừng thì file dở bị xóa.
-- **Không chạy chồng nhau:** dùng `flock`, lần chạy thứ hai báo lỗi thay vì ghi đè.
-- **Quyền riêng tư:** thư mục và file sao lưu chỉ chủ sở hữu đọc được (`700` và `600`), vì chứa email, số điện thoại, mật khẩu đã băm của người dùng.
-- Nơi lưu: `~/carrental-backups/`, tên file `carrental-AAAAMMDD-GGPPSS.dump`, và `carrental-latest.dump` luôn trỏ tới bản mới nhất. Nhật ký: `~/carrental-backups/backup.log`.
+- **Bản dở dang không bao giờ bị nhầm với bản hợp lệ.** Script ghi vào file `.partial` rồi mới đổi tên sau khi kiểm tra (CSDL: file không rỗng và `pg_restore --list` đọc được mục lục; ảnh: `tar -t` đọc được). Mất điện hay hết ổ đĩa giữa chừng thì file dở bị xóa.
+- **Không chạy chồng nhau:** dùng `flock`, lần chạy thứ hai báo lỗi thay vì ghi đè. Sao lưu CSDL và sao lưu ảnh dùng hai khóa riêng nên không cản nhau.
+- **Vì sao ảnh sao lưu sau CSDL:** hai bản không chụp cùng một khoảnh khắc. Nếu có người tải ảnh giữa hai lần chạy, bản ảnh (chạy sau) có thêm một ảnh mà bản CSDL chưa biết: chỉ là file thừa, vô hại. Làm ngược lại thì CSDL nhắc tới một ảnh không có trong bản sao lưu, và xe sẽ hiện ảnh hỏng sau khi khôi phục.
+- **Quyền riêng tư:** thư mục và file sao lưu chỉ chủ sở hữu đọc được (`700` và `600`), vì bản CSDL chứa email, số điện thoại, mật khẩu đã băm của người dùng.
+- Nơi lưu: `~/carrental-backups/`, tên file `carrental-AAAAMMDD-GGPPSS.dump` và `uploads-AAAAMMDD-GGPPSS.tar`; `carrental-latest.dump` và `uploads-latest.tar` luôn trỏ tới bản mới nhất. Nhật ký: `~/carrental-backups/backup.log`.
 - Cron gọi các script ở `~/carrental-config/bin/` (đường dẫn cố định), không gọi trong thư mục checkout của runner vì thư mục đó bị dọn mỗi lần deploy. `ci-deploy.sh` tự cập nhật các bản chép này sau mỗi lần deploy.
+- Sao lưu ảnh chạy lệnh `tar` **bên trong container API** (nơi volume `uploads` đang được gắn), nên không cần kéo thêm image nào về máy chủ.
 
 ## Cài đặt trên máy ảo (làm một lần)
 
@@ -34,20 +37,23 @@ bash infra/scripts/install-backup-cron.sh --dry-run     # xem trước việc s�
 bash infra/scripts/install-backup-cron.sh               # cài thật
 ```
 
-Kiểm tra cron đang chạy và chạy thử ngay hai script:
+Đã cài từ trước (chỉ có hai dòng cron cũ) thì chạy lại lệnh cài thật ở trên: script an toàn khi chạy lại và sẽ thêm dòng sao lưu ảnh.
+
+Kiểm tra cron đang chạy và chạy thử ngay các script:
 
 ```bash
 systemctl is-active cron                    # phải ra "active"
-~/carrental-config/bin/backup-db.sh         # sao lưu thử
-~/carrental-config/bin/restore-test.sh      # khôi phục thử
+~/carrental-config/bin/backup-db.sh         # sao lưu CSDL thử
+~/carrental-config/bin/backup-uploads.sh    # sao lưu ảnh thử
+~/carrental-config/bin/restore-test.sh      # khôi phục thử (cả CSDL lẫn ảnh)
 ```
 
-Kết quả đúng của lệnh cuối: các dòng đếm số dòng của từng bảng và dòng `XONG: bản sao lưu khôi phục được...`.
+Kết quả đúng của lệnh cuối: các dòng đếm số dòng của từng bảng, dòng `Ảnh: N file trong bản sao lưu, CSDL nhắc tới N ảnh, thiếu 0` và dòng `XONG: đã khôi phục thử xong`. Con số **thiếu phải là 0** trên máy chủ thật (không có dữ liệu mẫu). Nếu khác 0, script in `CẢNH BÁO`: xem lại giờ chạy của hai bản sao lưu.
 
 Sáng hôm sau xem lịch đã chạy chưa:
 
 ```bash
-tail -n 5 ~/carrental-backups/backup.log
+tail -n 8 ~/carrental-backups/backup.log
 ls -lh ~/carrental-backups/
 ```
 
@@ -60,10 +66,13 @@ Bản sao lưu ở trên nằm **cùng ổ đĩa với chính cơ sở dữ li�
 ```powershell
 $dest = "D:\Backups"
 New-Item -ItemType Directory -Force $dest | Out-Null
-$name = "carrental-$(Get-Date -Format yyyyMMdd).dump"
-scp -i "$HOME\.ssh\carrental" ubuntu@192.168.205.129:~/carrental-backups/carrental-latest.dump "$dest\$name"
-# Giữ 14 bản gần nhất ở Windows
-Get-ChildItem "$dest\carrental-*.dump" | Sort-Object LastWriteTime -Descending | Select-Object -Skip 14 | Remove-Item
+$day = Get-Date -Format yyyyMMdd
+scp -i "$HOME\.ssh\carrental" ubuntu@192.168.205.129:~/carrental-backups/carrental-latest.dump "$dest\carrental-$day.dump"
+scp -i "$HOME\.ssh\carrental" ubuntu@192.168.205.129:~/carrental-backups/uploads-latest.tar "$dest\uploads-$day.tar"
+# Giữ 14 bản gần nhất của mỗi loại ở Windows
+foreach ($pattern in "carrental-*.dump", "uploads-*.tar") {
+  Get-ChildItem "$dest\$pattern" | Sort-Object LastWriteTime -Descending | Select-Object -Skip 14 | Remove-Item
+}
 ```
 
 Đặt lịch chạy hằng ngày lúc 04:00 (PowerShell quyền Administrator):
@@ -98,14 +107,23 @@ curl -sk https://localhost/api/me                                              #
 
 Muốn quay về một ngày cụ thể thì thay `carrental-latest.dump` bằng tên file ngày đó. Bản sao đã chứa bảng `_prisma_migrations` nên API không chạy lại migration.
 
-**Trường hợp 2: mất cả máy ảo.** Dựng máy ảo mới, cài Docker, đặt lại `~/carrental-config/.env.production`, chạy hệ thống bằng `init-selfsigned.sh` (như `deploy-vmware.md`). Chép file `.dump` lấy từ máy Windows vào máy ảo bằng `scp`, rồi làm đúng các bước ở trường hợp 1.
+**Khôi phục ảnh** (khi mất volume `uploads`, hoặc dựng máy mới). Chạy khi API đang chạy; `tar` giải nén trong container API nên file thuộc đúng người dùng `node`:
+
+```bash
+docker exec -i carrental-api-1 tar -C /data/uploads -xf - < ~/carrental-backups/uploads-latest.tar
+```
+
+Lệnh này chỉ thêm và ghi đè file có trong bản sao lưu, không xóa file khác. Dùng bản ảnh **cùng ngày** với bản CSDL đã khôi phục.
+
+**Trường hợp 2: mất cả máy ảo.** Dựng máy ảo mới, cài Docker, đặt lại `~/carrental-config/.env.production`, chạy hệ thống bằng `init-selfsigned.sh` (như `deploy-vmware.md`). Chép file `.dump` và `.tar` lấy từ máy Windows vào máy ảo bằng `scp`, rồi làm đúng các bước ở trường hợp 1, kèm bước khôi phục ảnh.
 
 ## Giới hạn hiện tại
 
 | Giới hạn | Hệ quả |
 | --- | --- |
-| Sao lưu mỗi ngày một lần | Khi sự cố có thể mất tối đa dữ liệu của gần 24 giờ |
-| Chỉ sao lưu PostgreSQL | **Ảnh xe tải lên (volume `carrental_uploads`) chưa được sao lưu.** Hiện chưa có tính năng tải ảnh (PLAN Ngày 8); cần bổ sung khi có |
+| Sao lưu mỗi ngày một lần | Khi sự cố có thể mất tối đa dữ liệu của gần 24 giờ, gồm cả ảnh mới tải lên trong ngày |
+| Ảnh được sao lưu nguyên bộ mỗi ngày | Mỗi bản `tar` chứa toàn bộ ảnh, giữ 7 bản nên tốn khoảng 7 lần dung lượng ảnh. Ảnh đã nén WebP (khoảng 20 đến 600 KB), vài trăm ảnh vẫn chỉ vài chục MB. Nếu sau này lên hàng chục GB thì chuyển sang sao lưu gia tăng (chỉ chép file mới) hoặc kho đối tượng |
+| Ảnh GPLX | Chưa có (PLAN Ngày 20). Khi làm, GPLX nằm ở kho riêng nên cần bổ sung sao lưu riêng, có mã hóa |
 | Chưa mã hóa bản sao lưu | Giữ trên máy bạn thì ổn; nếu đưa ra ngoài phải tự mã hóa (xem trên) |
 | Không khôi phục về thời điểm bất kỳ trong ngày | Cần bật lưu nhật ký giao dịch (WAL) nếu sau này cần |
 
@@ -114,8 +132,11 @@ Muốn quay về một ngày cụ thể thì thay `carrental-latest.dump` bằng
 | Triệu chứng | Nguyên nhân và cách xử lý |
 | --- | --- |
 | `LỖI: container carrental-db-1 không chạy` | Hệ thống đang dừng. Kiểm tra `docker ps`; tên container khác thì đặt biến `DB_CONTAINER` |
-| `LỖI: đang có một lần sao lưu khác chạy` | Lần trước chưa xong hoặc bị treo. Xem `ps aux | grep backup-db` |
+| `LỖI: container carrental-api-1 không chạy` | Như trên nhưng cho sao lưu ảnh (ảnh nằm ở volume gắn vào container API); đổi bằng biến `UPLOADS_CONTAINER` |
+| `LỖI: đang có một lần sao lưu khác chạy` | Lần trước chưa xong hoặc bị treo. Xem `ps aux \| grep backup-` |
 | Cron không chạy | `systemctl is-active cron`; nếu không, `sudo systemctl enable --now cron`. Xem `backup.log` |
 | `permission denied` khi chạy `docker` từ cron | Người dùng chưa thuộc nhóm `docker` (`groups`). Thêm bằng `sudo usermod -aG docker $USER` rồi đăng nhập lại |
+| `restore-test.sh` báo `CẢNH BÁO: N ảnh có trong CSDL nhưng không có trong bản sao lưu ảnh` | Trên máy phát triển là bình thường (dữ liệu mẫu trỏ tới file không có thật). Trên máy chủ thật phải là 0: kiểm tra `uploads-latest.tar` có cũ hơn `carrental-latest.dump` không, và `crontab -l` có đủ hai dòng 03:00 và 03:05 |
+| `restore-test.sh` báo `giải nén bản sao lưu ảnh bị lỗi` | Bản `tar` hỏng. Chạy `backup-uploads.sh` lại và điều tra nguyên nhân (ổ đĩa đầy?) |
 | `restore-test.sh` báo thiếu bảng hoặc ràng buộc | Bản sao lưu thiếu dữ liệu. Chạy `backup-db.sh` lại và điều tra nguyên nhân; nếu vừa thêm bảng mới vào schema, cập nhật danh sách `REQUIRED_TABLES` trong script |
-| Ổ đĩa đầy | Mỗi bản vài chục KB đến vài MB nên hiếm khi do sao lưu; kiểm tra `df -h` và `docker system df` |
+| Ổ đĩa đầy | Bản CSDL vài chục KB đến vài MB; bản ảnh lớn hơn (xem giới hạn trên). Kiểm tra `df -h`, `du -sh ~/carrental-backups` và `docker system df` |
