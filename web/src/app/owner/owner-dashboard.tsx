@@ -8,18 +8,6 @@ import { formatVnd } from "@/lib/cars";
 import { listOwnerVehicles, listVehicleImages, OwnerVehicle, STATUS_LABELS } from "@/lib/vehicles/api";
 import { OwnerRequests } from "./owner-requests";
 
-const WEEKDAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-// Lịch và đơn cần xử lý còn là dữ liệu mẫu theo thiết kế; thay bằng API lịch và đơn thuê khi có (PLAN Ngày 13 đến 17).
-const BOOKED_DAYS = new Set([12, 13, 14, 20, 21]);
-const BLOCKED_DAYS = new Set([26, 27]);
-const DAYS = Array.from({ length: 28 }, (_, i) => i + 1);
-
-function dayClass(day: number) {
-  if (BOOKED_DAYS.has(day)) return "bg-primary text-white";
-  if (BLOCKED_DAYS.has(day)) return "bg-[#c5d2e3] text-ink";
-  return "bg-surface text-ink";
-}
-
 type Fleet =
   | { status: "loading" }
   | { status: "error"; message: string }
@@ -119,7 +107,11 @@ export function OwnerDashboard() {
                 const cover = fleet.covers[car.id];
                 const { label, tone } = STATUS_LABELS[car.status];
                 return (
-                  <article key={car.id} className="flex items-center gap-4 rounded-2xl border border-line bg-white p-4">
+                  <Link
+                    key={car.id}
+                    href={`/owner/vehicles/${car.id}`}
+                    className="flex items-center gap-4 rounded-2xl border border-line bg-white p-4 hover:border-primary"
+                  >
                     <div className="flex h-20 w-[120px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-placeholder text-xs font-medium text-primary">
                       {cover ? (
                         // eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px)
@@ -138,39 +130,12 @@ export function OwnerDashboard() {
                       )}
                     </div>
                     <StatusPill tone={tone}>{label}</StatusPill>
-                  </article>
+                    <span className="text-sm font-semibold text-primary">Quản lý</span>
+                  </Link>
                 );
               })}
           </section>
 
-          <section className="flex w-[440px] shrink-0 flex-col gap-4">
-            <h2 className="text-2xl font-bold text-ink">Lịch xe tháng 10</h2>
-            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-5">
-              <div className="grid grid-cols-7 gap-2 text-center text-xs text-muted">
-                {WEEKDAYS.map((d) => (
-                  <span key={d}>{d}</span>
-                ))}
-              </div>
-              <div className="grid grid-cols-7 gap-2">
-                {DAYS.map((day) => (
-                  <span
-                    key={day}
-                    className={`flex h-10 items-center justify-center rounded-lg text-sm font-medium ${dayClass(day)}`}
-                  >
-                    {day}
-                  </span>
-                ))}
-              </div>
-              <div className="flex gap-4 text-[13px] text-muted">
-                <span className="flex items-center gap-1.5">
-                  <i className="size-3 rounded-sm bg-primary" /> Đã có đơn
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <i className="size-3 rounded-sm bg-[#c5d2e3]" /> Bạn chặn ngày
-                </span>
-              </div>
-            </div>
-          </section>
         </div>
       </div>
     </main>

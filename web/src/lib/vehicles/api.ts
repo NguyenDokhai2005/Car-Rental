@@ -11,12 +11,16 @@ export type OwnerVehicle = {
   year: number;
   plateNumber: string;
   seats: number;
+  transmission: CreateVehicleInput["transmission"];
+  fuel: CreateVehicleInput["fuel"];
+  description: string;
   city: string;
   district: string;
   pricePerDay: number;
   depositRate: number;
   status: VehicleStatus;
   rejectReason: string | null;
+  updatedAt: string;
 };
 
 export type VehicleImage = { id: string; url: string; position: number };
@@ -61,4 +65,42 @@ export function uploadVehicleImage(vehicleId: string, file: File): Promise<Vehic
   const form = new FormData();
   form.append("file", file);
   return apiFetch<VehicleImage>(`/owner/vehicles/${vehicleId}/images`, { method: "POST", body: form });
+}
+
+export type VehicleBlock = { id: string; startAt: string; endAt: string; reason: string | null };
+export type CalendarBusy = { startAt: string; endAt: string; kind: "booked" | "blocked" };
+
+export function getOwnerVehicle(id: string): Promise<OwnerVehicle> {
+  return apiFetch<OwnerVehicle>(`/owner/vehicles/${id}`);
+}
+
+export function updateVehicle(id: string, patch: Partial<CreateVehicleInput>): Promise<OwnerVehicle> {
+  return apiFetch<OwnerVehicle>(`/owner/vehicles/${id}`, { method: "PATCH", body: patch });
+}
+
+export function setVehicleHidden(id: string, hidden: boolean): Promise<OwnerVehicle> {
+  return apiFetch<OwnerVehicle>(`/owner/vehicles/${id}/hide`, { method: "POST", body: { hidden } });
+}
+
+export function deleteVehicleImage(vehicleId: string, imageId: string): Promise<void> {
+  return apiFetch<void>(`/owner/vehicles/${vehicleId}/images/${imageId}`, { method: "DELETE" });
+}
+
+export function listBlocks(vehicleId: string): Promise<VehicleBlock[]> {
+  return apiFetch<VehicleBlock[]>(`/owner/vehicles/${vehicleId}/blocks`);
+}
+
+export function createBlock(
+  vehicleId: string,
+  block: { startAt: string; endAt: string; reason?: string },
+): Promise<VehicleBlock> {
+  return apiFetch<VehicleBlock>(`/owner/vehicles/${vehicleId}/blocks`, { method: "POST", body: block });
+}
+
+export function deleteBlock(vehicleId: string, blockId: string): Promise<void> {
+  return apiFetch<void>(`/owner/vehicles/${vehicleId}/blocks/${blockId}`, { method: "DELETE" });
+}
+
+export function getOwnerCalendar(vehicleId: string, month: string): Promise<{ month: string; busy: CalendarBusy[] }> {
+  return apiFetch(`/owner/vehicles/${vehicleId}/calendar?month=${month}`);
 }
