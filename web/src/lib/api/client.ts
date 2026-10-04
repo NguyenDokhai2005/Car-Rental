@@ -60,14 +60,16 @@ function toApiError(status: number, body: unknown): ApiError {
 
 async function send(path: string, init: ApiInit): Promise<Response> {
   const headers = new Headers({ Accept: "application/json" });
-  if (init.body !== undefined) headers.set("Content-Type", "application/json");
+  // FormData (tải file): để trình duyệt tự đặt Content-Type kèm "boundary". Tự đặt thì máy chủ không tách được các phần.
+  const isForm = init.body instanceof FormData;
+  if (init.body !== undefined && !isForm) headers.set("Content-Type", "application/json");
   if (init.auth !== false && accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
 
   try {
     return await fetch(`${API_BASE}${path}`, {
       method: init.method ?? "GET",
       headers,
-      body: init.body === undefined ? undefined : JSON.stringify(init.body),
+      body: init.body === undefined ? undefined : isForm ? (init.body as FormData) : JSON.stringify(init.body),
       credentials: "same-origin",
     });
   } catch {
