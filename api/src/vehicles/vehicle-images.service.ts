@@ -62,7 +62,13 @@ export class VehicleImagesService {
         // rồi tải ảnh khác thì ô cũ được dùng lại. "Lớn nhất + 1" sẽ vượt 9 dù chưa đủ 10 ảnh.
         const position = Array.from({ length: MAX_IMAGES_PER_VEHICLE }, (_, i) => i).find((i) => !taken.has(i));
         if (position === undefined) throw imageLimit();
-        return tx.vehicleImage.create({ data: { vehicleId, storageKey: key, position } });
+        const created = await tx.vehicleImage.create({ data: { vehicleId, storageKey: key, position } });
+        // Xe bị từ chối mà chủ xe bổ sung ảnh thì coi là nộp lại để duyệt (SPEC §2), giống khi sửa thông tin xe.
+        await tx.vehicle.updateMany({
+          where: { id: vehicleId, status: "rejected" },
+          data: { status: "pending", rejectReason: null, reviewedById: null, reviewedAt: null },
+        });
+        return created;
       });
       return this.toView(image);
     } catch (error) {

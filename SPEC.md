@@ -22,7 +22,7 @@ Quy tắc chung: mọi endpoint kiểm tra quyền **sở hữu** (owner chỉ t
 
 ## 2. Luồng chính
 
-**Đăng xe:** owner tạo xe (trạng thái `pending`) → tải ảnh → admin duyệt (`approved`) hoặc từ chối kèm lý do (`rejected`) → xe `approved` mới hiện công khai. Owner sửa xe đã duyệt thì xe về `pending` nếu đổi thông tin quan trọng: biển số, hãng, mẫu, năm, số chỗ, hộp số, nhiên liệu, giá thuê, tỷ lệ cọc. Sửa mô tả, thành phố, quận thì xe giữ nguyên trạng thái. Xe `rejected` mà owner sửa lại thì về `pending` để admin duyệt lại, và lý do từ chối bị xóa.
+**Đăng xe:** owner tạo xe (trạng thái `pending`) → tải ảnh → admin duyệt (`approved`) hoặc từ chối kèm lý do (`rejected`) → xe `approved` mới hiện công khai. Owner sửa xe đã duyệt thì xe về `pending` nếu đổi thông tin quan trọng: biển số, hãng, mẫu, năm, số chỗ, hộp số, nhiên liệu, giá thuê, tỷ lệ cọc. Sửa mô tả, thành phố, quận thì xe giữ nguyên trạng thái. Xe `rejected` mà owner sửa lại (đổi thông tin hoặc tải thêm ảnh) thì về `pending` để admin duyệt lại, và lý do từ chối bị xóa. Xe chưa có ảnh nào thì không duyệt được.
 
 **Trạng thái xe:** `pending` (chờ duyệt) → `approved` (công khai) hoặc `rejected` (kèm lý do). Owner ẩn xe `approved` thì thành `hidden` (không hiện công khai, không nhận đơn mới, đơn đã có vẫn giữ nguyên) và hiện lại thì về `approved` mà không cần duyệt lại. Chỉ xe `approved` mới ẩn được; chỉ xe `hidden` mới hiện lại được.
 
@@ -137,7 +137,7 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 | GET | /owner/vehicles/:id | Chi tiết xe của tôi |
 | PATCH | /owner/vehicles/:id | Sửa (các trường như khi tạo, đều tùy chọn). Không sửa được `status`. Đổi trạng thái theo mục 2 |
 | GET | /owner/vehicles/:id/images | Ảnh của xe, theo `position` tăng dần (`position` từ 0 đến 9; ảnh `position` 0 là ảnh bìa). Trả `[{ id, url, position }]` |
-| POST | /owner/vehicles/:id/images | Tải ảnh (multipart, trường `file`, jpg/png/webp, ≤ 5 MB, ≤ 10 ảnh/xe). Loại file xác định bằng nội dung thật, không tin đuôi file hay `Content-Type`; không phải ảnh hợp lệ trả 400 `VALIDATION_ERROR`, quá 5 MB trả 413 `PAYLOAD_TOO_LARGE`, đã đủ 10 ảnh trả 409 `IMAGE_LIMIT`. Ảnh được giải mã rồi lưu lại dạng WebP, cạnh dài tối đa 1600 px, bỏ metadata (EXIF, vị trí GPS), tên file do hệ thống sinh. Ảnh mới nhận `position` trống nhỏ nhất (xóa ảnh thì ô đó được dùng lại). Trả 201 `{ id, url, position }` |
+| POST | /owner/vehicles/:id/images | Tải ảnh (multipart, trường `file`, jpg/png/webp, ≤ 5 MB, ≤ 10 ảnh/xe). Loại file xác định bằng nội dung thật, không tin đuôi file hay `Content-Type`; không phải ảnh hợp lệ trả 400 `VALIDATION_ERROR`, quá 5 MB trả 413 `PAYLOAD_TOO_LARGE`, đã đủ 10 ảnh trả 409 `IMAGE_LIMIT`. Ảnh được giải mã rồi lưu lại dạng WebP, cạnh dài tối đa 1600 px, bỏ metadata (EXIF, vị trí GPS), tên file do hệ thống sinh. Ảnh mới nhận `position` trống nhỏ nhất (xóa ảnh thì ô đó được dùng lại). Tải ảnh lên xe `rejected` thì xe về `pending` (nộp lại để duyệt). Trả 201 `{ id, url, position }` |
 | DELETE | /owner/vehicles/:id/images/:imageId | Xóa ảnh (204), xóa cả file trên đĩa. Ảnh không thuộc xe của mình trả 404 |
 | POST | /owner/vehicles/:id/hide | Ẩn/hiện xe. Body `{ hidden: boolean }`. Sai trạng thái trả 409 `INVALID_STATE`; gọi lặp lại vẫn thành công |
 | GET | /owner/vehicles/:id/blocks | Danh sách lịch chặn |
@@ -170,8 +170,9 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 ### Admin
 | Method | Path | Mô tả |
 | --- | --- | --- |
-| GET | /admin/vehicles?status=pending | Xe chờ duyệt |
-| POST | /admin/vehicles/:id/approve · /reject | Duyệt/từ chối xe |
+| GET | /admin/vehicles | Danh sách xe, chỉ admin. Query `status` (tùy chọn), `page`, `limit`. Mỗi xe kèm `owner` `{ id, fullName, email, phone }` và `images` `[{ id, url, position }]`. `status=pending` sắp theo cũ nhất trước (hàng đợi duyệt), các trạng thái khác mới nhất trước |
+| POST | /admin/vehicles/:id/approve | Duyệt xe: chỉ `pending` thành `approved`, ghi người duyệt và thời điểm duyệt, xóa lý do từ chối cũ. Xe chưa có ảnh nào, hoặc đang ở trạng thái khác, trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `approved` vẫn thành công. Trả xe theo dạng của danh sách |
+| POST | /admin/vehicles/:id/reject | Từ chối xe. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). Chỉ `pending` thành `rejected`; trạng thái khác trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `rejected` vẫn thành công và giữ lý do đầu tiên |
 | GET | /admin/users | Danh sách, lọc theo `licenseStatus` |
 | GET | /admin/users/:id/license | Xem file GPLX (có log) |
 | POST | /admin/users/:id/license/verify · /reject | Xác minh GPLX |
