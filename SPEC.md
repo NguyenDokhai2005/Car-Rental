@@ -123,8 +123,8 @@ Mật khẩu 8 đến 128 ký tự, băm argon2id. Đăng nhập, đăng ký và
 ### Xe (công khai)
 | Method | Path | Mô tả |
 | --- | --- | --- |
-| GET | /vehicles | Tìm: `city, minPrice, maxPrice, seats, startAt, endAt, sort, page, limit`; chỉ xe `approved` và còn trống trong khoảng ngày |
-| GET | /vehicles/:id | Chi tiết xe + ảnh |
+| GET | /vehicles | Tìm xe công khai, không cần đăng nhập. Query (đều tùy chọn): `city` (chứa chuỗi, không phân biệt hoa thường), `minPrice`, `maxPrice` (đồng mỗi ngày), `seats`, `fuel`, `transmission` (mỗi tham số nhận một hoặc nhiều giá trị cách nhau bằng dấu phẩy, ví dụ `seats=5,7`), `startAt`, `endAt` (ISO 8601 có múi giờ, phải đi cùng nhau, `endAt` sau `startAt` và sau thời điểm hiện tại, tối đa 366 ngày), `sort` (`newest` mặc định, `price_asc`, `price_desc`), `page`, `limit` (mặc định 12, tối đa 50). Chỉ trả xe `approved`; có `startAt`/`endAt` thì loại xe có đơn `pending/confirmed/in_use` hoặc lịch chặn giao với khoảng đó. Tham số lạ hoặc sai trả 400 `VALIDATION_ERROR`. Trả `{ items, total, page, limit }`, mỗi phần tử `{ id, title, brand, model, year, seats, transmission, fuel, city, district, pricePerDay, depositRate, coverUrl }` (`coverUrl` là ảnh `position` nhỏ nhất, hoặc `null`). Không có biển số, thông tin chủ xe hay trạng thái |
+| GET | /vehicles/:id | Chi tiết xe công khai: các trường trên cộng `description`, `images` `[{ id, url, position }]` và `owner` `{ fullName }`. Xe không `approved` hoặc id sai trả 404 |
 | GET | /vehicles/:id/availability | Các khoảng đã bị giữ lịch theo tháng. Query `month=YYYY-MM` (mặc định tháng hiện tại, tính theo giờ Việt Nam). Trả `{ vehicleId, month, busy: [{ startAt, endAt }] }` gồm đơn `pending/confirmed/in_use` và lịch chặn, không phân biệt loại và không lộ thông tin người thuê. Xe không `approved` trả 404 |
 
 ### Xe (owner)
