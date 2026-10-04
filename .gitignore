@@ -10,3 +10,6 @@ uploads/
 *.tsbuildinfo
 
 !.env.production.example
+
+# Ảnh thử tay do api/scripts/make-test-images.mjs tạo
+api/test/manual-images/

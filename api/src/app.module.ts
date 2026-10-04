@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from "./common/prisma/prisma.module";
 import { validateEnv } from "./config/env";
+import { StorageModule } from "./storage/storage.module";
 import { UsersModule } from "./users/users.module";
 import { VehiclesModule } from "./vehicles/vehicles.module";
 
@@ -17,6 +18,7 @@ import { VehiclesModule } from "./vehicles/vehicles.module";
       skipIf: () => process.env.THROTTLE_DISABLED === "1",
     }),
     PrismaModule,
+    StorageModule,
     AuthModule,
     UsersModule,
     VehiclesModule,

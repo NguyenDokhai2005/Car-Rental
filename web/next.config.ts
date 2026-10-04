@@ -12,7 +12,11 @@ const nextConfig: NextConfig = {
   // (SameSite=Lax, Path=/api/auth) hoạt động mà không cần CORS. Trên máy chủ thật, Nginx làm việc này trước khi tới Next.
   async rewrites() {
     const api = process.env.API_URL ?? "http://localhost:4000";
-    return [{ source: "/api/:path*", destination: `${api}/api/:path*` }];
+    return [
+      { source: "/api/:path*", destination: `${api}/api/:path*` },
+      // Ảnh đã tải lên: ở dev do API phục vụ, ở server thật Nginx phục vụ trước khi tới Next.
+      { source: "/uploads/:path*", destination: `${api}/uploads/:path*` },
+    ];
   },
 };
 

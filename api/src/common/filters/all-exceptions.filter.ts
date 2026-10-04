@@ -16,6 +16,7 @@ const STATUS_CODES: Record<number, string> = {
   [HttpStatus.FORBIDDEN]: "FORBIDDEN",
   [HttpStatus.NOT_FOUND]: "NOT_FOUND",
   [HttpStatus.CONFLICT]: "CONFLICT",
+  [HttpStatus.PAYLOAD_TOO_LARGE]: "PAYLOAD_TOO_LARGE",
   [HttpStatus.TOO_MANY_REQUESTS]: "TOO_MANY_REQUESTS",
 };
 
@@ -24,6 +25,7 @@ const DEFAULT_MESSAGES: Record<number, string> = {
   [HttpStatus.FORBIDDEN]: "Bạn không có quyền thực hiện thao tác này.",
   [HttpStatus.NOT_FOUND]: "Không tìm thấy nội dung yêu cầu.",
   [HttpStatus.TOO_MANY_REQUESTS]: "Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.",
+  [HttpStatus.PAYLOAD_TOO_LARGE]: "Tệp quá lớn. Mỗi ảnh tối đa 5 MB.",
 };
 
 function isErrorBody(value: unknown): value is ErrorBody {

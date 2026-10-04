@@ -105,7 +105,7 @@ Khách tải ảnh GPLX → `license_status = pending` → admin xem và duyệt
 
 ## 7. API
 
-Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` / `PLATE_TAKEN` / `BLOCK_OVERLAP` / `BLOCK_CONFLICTS_BOOKING` (409), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
+Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` / `PLATE_TAKEN` / `BLOCK_OVERLAP` / `BLOCK_CONFLICTS_BOOKING` / `IMAGE_LIMIT` (409), `PAYLOAD_TOO_LARGE` (413), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
 
 ### Auth
 | Method | Path | Quyền | Mô tả |
@@ -136,8 +136,9 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 | POST | /owner/vehicles | Tạo xe (`pending`). Body: `brand, model, year, plateNumber, seats, transmission, fuel, description?, city, district, pricePerDay, depositRate?` (mặc định 30). `title` do hệ thống tạo từ hãng, mẫu, năm. Biển số lưu ở dạng chuẩn (chỉ chữ và số, viết hoa, ví dụ `51K12345`); trùng trả 409 `PLATE_TAKEN` bất kể cách viết |
 | GET | /owner/vehicles/:id | Chi tiết xe của tôi |
 | PATCH | /owner/vehicles/:id | Sửa (các trường như khi tạo, đều tùy chọn). Không sửa được `status`. Đổi trạng thái theo mục 2 |
-| POST | /owner/vehicles/:id/images | Tải ảnh (multipart, jpg/png/webp, ≤ 5 MB, ≤ 10 ảnh) |
-| DELETE | /owner/vehicles/:id/images/:imageId | Xóa ảnh |
+| GET | /owner/vehicles/:id/images | Ảnh của xe, theo `position` tăng dần (`position` từ 0 đến 9; ảnh `position` 0 là ảnh bìa). Trả `[{ id, url, position }]` |
+| POST | /owner/vehicles/:id/images | Tải ảnh (multipart, trường `file`, jpg/png/webp, ≤ 5 MB, ≤ 10 ảnh/xe). Loại file xác định bằng nội dung thật, không tin đuôi file hay `Content-Type`; không phải ảnh hợp lệ trả 400 `VALIDATION_ERROR`, quá 5 MB trả 413 `PAYLOAD_TOO_LARGE`, đã đủ 10 ảnh trả 409 `IMAGE_LIMIT`. Ảnh được giải mã rồi lưu lại dạng WebP, cạnh dài tối đa 1600 px, bỏ metadata (EXIF, vị trí GPS), tên file do hệ thống sinh. Ảnh mới nhận `position` trống nhỏ nhất (xóa ảnh thì ô đó được dùng lại). Trả 201 `{ id, url, position }` |
+| DELETE | /owner/vehicles/:id/images/:imageId | Xóa ảnh (204), xóa cả file trên đĩa. Ảnh không thuộc xe của mình trả 404 |
 | POST | /owner/vehicles/:id/hide | Ẩn/hiện xe. Body `{ hidden: boolean }`. Sai trạng thái trả 409 `INVALID_STATE`; gọi lặp lại vẫn thành công |
 | GET | /owner/vehicles/:id/blocks | Danh sách lịch chặn |
 | POST | /owner/vehicles/:id/blocks | Chặn lịch. Body `{ startAt, endAt, reason? }` (ISO 8601 có múi giờ). Chồng lịch chặn khác trả 409 `BLOCK_OVERLAP`; chồng đơn đang giữ lịch trả 409 `BLOCK_CONFLICTS_BOOKING` |
@@ -187,7 +188,7 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 ## 9. Phi chức năng
 
 - Mật khẩu băm argon2 (hoặc bcrypt), rate limit đăng nhập, CORS giới hạn domain, helmet.
-- Ảnh xe lưu qua `StorageService` (ổ đĩa), đổi S3 sau này không sửa nghiệp vụ.
+- Ảnh xe lưu qua `StorageService` (ổ đĩa), đổi S3 sau này không sửa nghiệp vụ. CSDL chỉ lưu `storage_key` (ví dụ `vehicles/<vehicleId>/<uuid>.webp`), không lưu URL; URL công khai là `/uploads/<storage_key>` do Nginx phục vụ từ volume `uploads`.
 - Trang xe SSR có metadata, `sitemap.xml`, `robots.txt`.
 - Thanh toán chỉ sandbox; GPLX là dữ liệu nhạy cảm.
 

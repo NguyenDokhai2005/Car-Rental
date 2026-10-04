@@ -48,6 +48,25 @@ describe("apiFetch", () => {
     expect(headers.get("Authorization")).toBe("Bearer tok");
   });
 
+  it("gửi FormData nguyên dạng, không tự đặt Content-Type (để có boundary)", async () => {
+    fetchMock.mockResolvedValueOnce(json(201, { id: "i1" }));
+    const form = new FormData();
+    form.append("file", new Blob(["x"], { type: "image/jpeg" }), "a.jpg");
+
+    await apiFetch("/owner/vehicles/v1/images", { method: "POST", body: form });
+    const init = fetchMock.mock.calls[0][1];
+    expect(init?.body).toBe(form);
+    expect(new Headers(init?.headers).has("Content-Type")).toBe(false);
+  });
+
+  it("gửi object thường dạng JSON", async () => {
+    fetchMock.mockResolvedValueOnce(json(200, {}));
+    await apiFetch("/x", { method: "POST", body: { a: 1 } });
+    const init = fetchMock.mock.calls[0][1];
+    expect(init?.body).toBe('{"a":1}');
+    expect(new Headers(init?.headers).get("Content-Type")).toBe("application/json");
+  });
+
   it("chuyển lỗi { code, message } thành ApiError", async () => {
     fetchMock.mockResolvedValueOnce(json(409, { code: "EMAIL_TAKEN", message: "Email đã tồn tại" }));
 
