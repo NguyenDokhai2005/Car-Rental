@@ -76,6 +76,7 @@ jobs:
       - run: pnpm install --frozen-lockfile --filter web...
       - run: pnpm --filter web typecheck
       - run: pnpm --filter web lint
+      - run: pnpm --filter web test
       # Cần Internet: next/font tải font Be Vietnam Pro từ Google lúc build
       - run: pnpm --filter web build
 

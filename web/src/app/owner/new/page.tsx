@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeaderLoggedIn } from "@/components/header";
+import { Header } from "@/components/header";
 import { UploadIcon } from "@/components/icons";
 
 export const metadata = { title: "Đăng xe của bạn — Car-Rental" };
@@ -47,7 +47,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 export default function NewCarPage() {
   return (
     <>
-      <HeaderLoggedIn variant="owner" active="/owner/new" />
+      <Header active="/owner/new" />
       <main className="flex justify-center pt-10 pb-14">
         <div className="flex w-full max-w-page items-start gap-10">
           <ol className="flex w-[240px] shrink-0 flex-col gap-1">

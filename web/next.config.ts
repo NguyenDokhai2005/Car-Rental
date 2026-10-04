@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(process.cwd(), ".."),
   // Không báo công nghệ trong header phản hồi.
   poweredByHeader: false,
+  // Trình duyệt chỉ nói chuyện với một origin: /api/* được chuyển tiếp tới API. Nhờ vậy cookie làm mới
+  // (SameSite=Lax, Path=/api/auth) hoạt động mà không cần CORS. Trên máy chủ thật, Nginx làm việc này trước khi tới Next.
+  async rewrites() {
+    const api = process.env.API_URL ?? "http://localhost:4000";
+    return [{ source: "/api/:path*", destination: `${api}/api/:path*` }];
+  },
 };
 
 export default nextConfig;

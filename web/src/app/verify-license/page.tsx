@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeaderLoggedIn } from "@/components/header";
+import { Header } from "@/components/header";
 import { LockIcon } from "@/components/icons";
 import { LicenseUploads } from "./license-uploads";
 
@@ -14,7 +14,7 @@ const FIELDS = [
 export default function VerifyLicensePage() {
   return (
     <>
-      <HeaderLoggedIn variant="minimal" />
+      <Header minimal />
       <main className="flex justify-center pt-12 pb-16">
         <form action="/cars" className="flex w-full max-w-[760px] flex-col gap-6">
           <div className="flex flex-col gap-2">
