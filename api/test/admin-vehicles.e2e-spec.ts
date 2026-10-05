@@ -270,14 +270,26 @@ describe("Admin vehicle review API", () => {
       expect((await http().post(`/api/admin/vehicles/${vehicle.id}/approve`).set(admin.auth)).status).toBe(200);
     });
 
-    it("tải ảnh lên xe đã duyệt không làm xe mất trạng thái duyệt", async () => {
-      const { owner, vehicle } = await setup("approved");
+    it("xe đã duyệt, chủ xe đổi ảnh thì phải duyệt lại; admin duyệt lần nữa thì xe hiển thị lại", async () => {
+      const { admin, owner, vehicle } = await setup();
+      await http().post(`/api/admin/vehicles/${vehicle.id}/approve`).set(admin.auth);
+      expect((await http().get(`/api/vehicles/${vehicle.id}`)).status).toBe(200);
+
       const photo = await sharp({ create: { width: 200, height: 120, channels: 3, background: "#963" } }).jpeg().toBuffer();
       await http()
         .post(`/api/owner/vehicles/${vehicle.id}/images`)
         .set(owner.auth)
         .attach("file", photo, { filename: "xe.jpg", contentType: "image/jpeg" });
-      expect((await ctx.prisma.vehicle.findUniqueOrThrow({ where: { id: vehicle.id } })).status).toBe("approved");
+
+      const row = await ctx.prisma.vehicle.findUniqueOrThrow({ where: { id: vehicle.id } });
+      expect(row).toMatchObject({ status: "pending", reviewedById: null, reviewedAt: null });
+      expect((await http().get(`/api/vehicles/${vehicle.id}`)).status).toBe(404);
+
+      // Xe quay lại hàng đợi của admin, và duyệt lại thì công khai trở lại.
+      const queue = await http().get("/api/admin/vehicles?status=pending").set(admin.auth);
+      expect(queue.body.items.map((v: { id: string }) => v.id)).toContain(vehicle.id);
+      expect((await http().post(`/api/admin/vehicles/${vehicle.id}/approve`).set(admin.auth)).status).toBe(200);
+      expect((await http().get(`/api/vehicles/${vehicle.id}`)).status).toBe(200);
     });
   });
 });
