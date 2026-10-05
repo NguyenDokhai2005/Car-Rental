@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
 import { ApiError } from "../common/api-error";
-import { ACTIVE_BOOKING_STATUSES } from "../common/constants";
+import { holdingBookingWhere } from "../common/booking-holds";
 import { PrismaService } from "../common/prisma/prisma.service";
 import { StorageService } from "../storage/storage.service";
 import type { SearchVehiclesQuery, VehicleSort } from "./dto/search-vehicles.query";
@@ -95,7 +95,7 @@ export class VehicleSearchService {
       // Xe còn trống = không có đơn đang giữ lịch và không có lịch chặn giao với khoảng [start, end).
       // Cùng điều kiện giao nhau với availability.service và ràng buộc EXCLUDE của CSDL.
       const overlap = { startAt: { lt: range.end }, endAt: { gt: range.start } };
-      where.bookings = { none: { status: { in: ACTIVE_BOOKING_STATUSES }, ...overlap } };
+      where.bookings = { none: { ...holdingBookingWhere(new Date()), ...overlap } };
       where.blocks = { none: overlap };
     }
 

@@ -30,8 +30,8 @@ Quy tắc chung: mọi endpoint kiểm tra quyền **sở hữu** (owner chỉ t
 1. Khách tìm xe theo thành phố, giá, số chỗ, khoảng ngày.
 2. Mở trang xe, chọn `start_at`/`end_at`, hệ thống tính giá và cọc.
 3. Khách có GPLX đã xác minh mới được đặt (xem mục 6).
-4. Tạo đơn → `pending`, giữ chỗ 15 phút **(đề xuất)** bằng `expires_at`.
-5. Owner duyệt → `expires_at` được đặt lại thành 15 phút kể từ lúc duyệt; khách thanh toán cọc trong khoảng đó. Quá hạn → đơn `expired`, nhả lịch.
+4. Tạo đơn → `pending`. Chủ xe có **6 giờ** để duyệt hoặc từ chối; trong thời gian đó đơn giữ lịch của xe (`expires_at` = lúc tạo + 6 giờ, nhưng không muộn hơn giờ nhận xe: đơn chưa được duyệt thì không thể còn chờ khi chuyến đi đã bắt đầu).
+5. Owner duyệt → `expires_at` được đặt lại thành 15 phút kể từ lúc duyệt; khách thanh toán cọc trong khoảng đó. Quá một trong hai hạn (6 giờ chờ duyệt, hoặc 15 phút chờ thanh toán) → đơn `expired`, nhả lịch.
 6. Thanh toán thành công (qua IPN) → `confirmed`.
 7. Nhận xe → `in_use`; trả xe → `completed`. Owner bấm xác nhận nhận/trả (MVP không có check-in tự động).
 
@@ -68,7 +68,9 @@ Mọi chuyển khác trả 409 `INVALID_STATE`. Chỉ các trạng thái `pendin
 ## 4. Quy tắc nghiệp vụ
 
 - **Tiền:** số nguyên VND. `total = ngày_thuê × giá_ngày` (làm tròn lên theo 24 giờ **(đề xuất)**); `deposit = 30% × total` **(đề xuất)**, làm tròn VND.
-- **Thời gian:** UTC (`timestamptz`), hiển thị theo `Asia/Ho_Chi_Minh`. Thuê tối thiểu 1 ngày, tối đa 30 ngày **(đề xuất)**; `start_at` phải ở tương lai.
+- **Thời gian:** UTC (`timestamptz`), hiển thị theo `Asia/Ho_Chi_Minh`. Thuê tối thiểu 1 ngày, tối đa 30 ngày **(đề xuất)**; `start_at` phải ở tương lai và không quá 365 ngày kể từ lúc đặt **(đề xuất)**, để không ai giữ một xe cho một ngày quá xa. Số ngày thuê làm tròn lên theo 24 giờ: đúng 24 giờ là 1 ngày, 24 giờ 1 mili giây là 2 ngày.
+- **Hết hạn giữ chỗ:** đơn `pending` có `expires_at` đã qua thì không còn giữ lịch, kể cả khi job chưa kịp đổi nó thành `expired`. Mọi chỗ đọc lịch (tìm xe theo ngày, lịch trống) bỏ qua các đơn đó; mọi chỗ ghi lịch (tạo đơn, chủ xe chặn ngày) đổi chúng thành `expired` trước khi kiểm tra. Trạng thái trả cho client cũng vậy: đơn `pending` quá hạn được trả là `expired`, và bộ lọc `status` của danh sách đơn tính theo trạng thái đó. Job chỉ là việc dọn dẹp, lịch và trạng thái đúng không phụ thuộc vào việc job có chạy kịp hay không.
+- **Giới hạn đơn chờ:** mỗi khách có tối đa 3 đơn `pending` cùng lúc **(đề xuất)**, để một tài khoản không giữ chỗ hàng loạt nhiều xe. Đủ 3 đơn thì tạo thêm trả 409 `PENDING_LIMIT`.
 - **Chống trùng lịch:** ràng buộc `EXCLUDE USING gist` trong DB (xem README). Vi phạm → 409 `BOOKING_OVERLAP`. Lịch chặn của owner cũng là một dòng giữ lịch (bảng `vehicle_blocks`). `EXCLUDE` không chạy chéo hai bảng, nên tạo lịch chặn và tạo đơn đều lấy khóa tư vấn theo xe (`pg_advisory_xact_lock`) rồi kiểm tra bảng còn lại trong cùng transaction.
 - **Chính sách hủy và hoàn cọc (đề xuất):**
 
@@ -105,7 +107,7 @@ Khách tải ảnh GPLX → `license_status = pending` → admin xem và duyệt
 
 ## 7. API
 
-Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` / `PLATE_TAKEN` / `BLOCK_OVERLAP` / `BLOCK_CONFLICTS_BOOKING` / `IMAGE_LIMIT` (409), `PAYLOAD_TOO_LARGE` (413), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
+Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` / `PLATE_TAKEN` / `BLOCK_OVERLAP` / `BLOCK_CONFLICTS_BOOKING` / `IMAGE_LIMIT` / `PENDING_LIMIT` (409), `LICENSE_NOT_VERIFIED` (403), `PAYLOAD_TOO_LARGE` (413), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
 
 ### Auth
 | Method | Path | Quyền | Mô tả |
@@ -148,9 +150,9 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 ### Đơn
 | Method | Path | Quyền | Mô tả |
 | --- | --- | --- | --- |
-| POST | /bookings | renter | Tạo đơn `{ vehicleId, startAt, endAt }` |
-| GET | /bookings | renter | Đơn của tôi |
-| GET | /bookings/:id | renter/owner/admin | Chi tiết (đúng chủ) |
+| POST | /bookings | renter | Tạo đơn `{ vehicleId, startAt, endAt }` (ISO 8601 có múi giờ). Đơn `pending`, giữ lịch trong lúc chờ chủ xe duyệt: `expires_at` = lúc tạo + 6 giờ, không muộn hơn `startAt`; `rentalDays`, `pricePerDay` (chụp giá lúc đặt), `totalAmount`, `depositAmount` do hệ thống tính (`deposit = round(total × depositRate / 100)`). Lỗi: 400 `VALIDATION_ERROR` (thời gian sai, ngoài 1 đến 30 ngày, `start_at` đã qua hoặc quá 365 ngày), 403 `LICENSE_NOT_VERIFIED` (GPLX chưa được xác minh), 404 (xe không tồn tại hoặc chưa `approved`), 409 `BOOKING_OVERLAP` (trùng đơn đang giữ lịch hoặc lịch chặn của chủ xe), 409 `PENDING_LIMIT`. Trùng đơn khác do ràng buộc `bookings_no_overlap` quyết định, không do kiểm tra bằng code. Gửi lại đúng yêu cầu cũ (cùng khách, cùng xe, cùng `startAt` và `endAt`, đơn còn hạn) thì trả lại đơn đã tạo chứ không tạo đơn mới và không báo trùng lịch, để bấm hai lần hoặc gửi lại sau khi rớt mạng không gây lỗi giả. Có giới hạn tốc độ riêng. Trả 201 |
+| GET | /bookings | renter | Đơn của tôi, mới nhất trước. Query `status`, `page`, `limit`. Mỗi đơn kèm `vehicle` `{ id, title, city, district, coverUrl }` |
+| GET | /bookings/:id | renter/owner/admin | Chi tiết, kèm `vehicle`. Khách chỉ xem đơn của mình, chủ xe chỉ xem đơn trên xe của mình, admin xem mọi đơn; người khác trả 404, không trả 403. Chủ xe và admin thấy thêm `renter` `{ fullName, phone }` |
 | POST | /bookings/:id/cancel | renter | Hủy, trả về số tiền hoàn |
 | GET | /owner/bookings | owner | Đơn trên xe của tôi |
 | POST | /owner/bookings/:id/approve | owner | Duyệt |
@@ -196,7 +198,7 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 
 ## 10. Câu hỏi còn mở
 
-1. Chấp nhận các mặc định (cọc 30%, giữ chỗ 15 phút, chính sách hoàn cọc) hay đổi?
+1. Chấp nhận các mặc định (cọc 30%, chính sách hoàn cọc) hay đổi? Thời hạn đã chốt: chủ xe có 6 giờ để duyệt đơn, khách có 15 phút để thanh toán sau khi được duyệt.
 2. ~~Một tài khoản một vai trò~~ — đã chốt: một tài khoản một vai trò; sau đăng nhập chủ xe vào `/owner`, quản trị vào `/admin`, khách quay lại trang đang đứng trước khi đăng nhập.
 3. Chọn VNPay hay MoMo làm cổng đầu tiên?
 4. Có nhận xe có tài xế/giao xe tận nơi không (hiện tại: không)?

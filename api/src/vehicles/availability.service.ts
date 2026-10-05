@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ACTIVE_BOOKING_STATUSES } from "../common/constants";
+import { holdingBookingWhere } from "../common/booking-holds";
 import { ApiError } from "../common/api-error";
 import { PrismaService } from "../common/prisma/prisma.service";
 import type { BusyPeriod, OwnerBusyPeriod } from "./vehicle.view";
@@ -50,7 +50,7 @@ export class AvailabilityService {
 
     const [bookings, blocks] = await Promise.all([
       this.prisma.booking.findMany({
-        where: { vehicleId, status: { in: ACTIVE_BOOKING_STATUSES }, ...overlapsMonth },
+        where: { vehicleId, ...holdingBookingWhere(new Date()), ...overlapsMonth },
         select: { startAt: true, endAt: true },
       }),
       this.prisma.vehicleBlock.findMany({

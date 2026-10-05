@@ -120,6 +120,15 @@ describe("Public vehicle search API", () => {
         expect(await get("maxPrice=650000")).toEqual([s.vios.id]);
       });
 
+      it("khoảng giá lớn hơn giá trần của xe vẫn hợp lệ (khách gõ \"đến 100 triệu\" nghĩa là không giới hạn)", async () => {
+        const s = await seed();
+        expect(await get("maxPrice=100000000")).toHaveLength(5);
+        expect(await get("maxPrice=999999999")).toHaveLength(5);
+        expect(await get("minPrice=999999999")).toEqual([]);
+        expect(await get("minPrice=1600000&maxPrice=999999999")).toEqual([s.everest.id]);
+        expect((await http().get("/api/vehicles?maxPrice=2147483648")).status).toBe(400); // vượt số nguyên 32 bit
+      });
+
       it("seats, fuel, transmission: một hoặc nhiều giá trị", async () => {
         const s = await seed();
         expect(await get("seats=7")).toEqual([s.xpander.id, s.everest.id]);

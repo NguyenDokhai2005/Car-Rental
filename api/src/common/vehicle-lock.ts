@@ -7,3 +7,10 @@ import type { Prisma } from "@prisma/client";
 export async function lockVehicle(tx: Prisma.TransactionClient, vehicleId: string): Promise<void> {
   await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock(hashtextextended(${vehicleId}, 0))) AS l`;
 }
+
+// Khóa tư vấn theo khách thuê, dùng khi tạo đơn để "mỗi khách tối đa N đơn chờ" không bị vượt bằng cách gửi nhiều yêu cầu
+// song song (cùng đọc "đang có 2 đơn" rồi cùng tạo thêm). Luôn lấy khóa khách TRƯỚC khóa xe: mọi nơi lấy hai khóa theo cùng
+// một thứ tự thì không bao giờ tạo vòng chờ nhau (deadlock). Tiền tố "renter:" để khóa không trùng với khóa của xe.
+export async function lockRenter(tx: Prisma.TransactionClient, renterId: string): Promise<void> {
+  await tx.$queryRaw`SELECT 1 AS locked FROM (SELECT pg_advisory_xact_lock(hashtextextended(${`renter:${renterId}`}, 0))) AS l`;
+}
