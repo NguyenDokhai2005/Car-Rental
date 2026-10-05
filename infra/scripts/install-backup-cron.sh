@@ -21,7 +21,7 @@ BACKUP_DIR="${BACKUP_DIR:-$HOME/carrental-backups}"
 MARK="# carrental-backup"
 BACKUP_LINE="0 3 * * * $BIN_DIR/backup-db.sh >> $BACKUP_DIR/backup.log 2>&1 $MARK"
 UPLOADS_LINE="5 3 * * * $BIN_DIR/backup-uploads.sh >> $BACKUP_DIR/backup.log 2>&1 $MARK"
-RESTORE_LINE="30 3 * * 0$BIN_DIR/restore-test.sh >> $BACKUP_DIR/backup.log 2>&1 $MARK"
+RESTORE_LINE="30 3 * * 0 $BIN_DIR/restore-test.sh >> $BACKUP_DIR/backup.log 2>&1 $MARK"
 
 mode="install"
 case "${1:-}" in
@@ -42,6 +42,16 @@ if [ "$mode" = "remove" ]; then
 fi
 
 new="$(printf '%s\n%s\n%s\n%s\n' "$others" "$BACKUP_LINE" "$UPLOADS_LINE" "$RESTORE_LINE" | sed '/^$/d')"
+
+# Mỗi dòng của chúng ta phải là: 5 trường thời gian, một dấu cách, rồi đường dẫn lệnh. Thiếu một dấu cách (đã từng xảy ra:
+# "0/home/..." thay vì "0 /home/...") khiến cron từ chối cả crontab với thông báo khó hiểu "bad day-of-week". Kiểm tra ở đây
+# để cả --dry-run cũng báo lỗi, không đợi tới lúc cài thật.
+bad="$(printf '%s\n' "$new" | grep -F "$MARK" | grep -vE '^[0-9*/,-]+( [0-9*/,-]+){4} /' || true)"
+if [ -n "$bad" ]; then
+  echo "LỖI: dòng cron sai định dạng (thiếu dấu cách giữa lịch chạy và lệnh?):"
+  printf '%s\n' "$bad"
+  exit 1
+fi
 
 if [ "$mode" = "dry" ]; then
   echo "Sẽ chép backup-db.sh, backup-uploads.sh và restore-test.sh vào $BIN_DIR"
