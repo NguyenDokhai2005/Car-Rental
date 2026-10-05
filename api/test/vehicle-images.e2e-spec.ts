@@ -156,6 +156,75 @@ describe("Vehicle images API", () => {
     });
   });
 
+  // SPEC §2: mọi thay đổi của chủ xe, kể cả thêm hoặc xóa ảnh, đều phải được admin duyệt lại.
+  describe("thay đổi ảnh đưa xe về chờ duyệt", () => {
+    async function withStatus(status: "approved" | "hidden" | "rejected" | "pending") {
+      const owner = await makeUser(ctx, "owner");
+      const admin = await makeUser(ctx, "admin");
+      const vehicle = await makeVehicle(ctx, owner.user.id, {
+        status,
+        ...(status === "pending" ? {} : { reviewedById: admin.user.id, reviewedAt: new Date() }),
+        ...(status === "rejected" ? { rejectReason: "Ảnh mờ" } : {}),
+      });
+      const existing = await ctx.prisma.vehicleImage.create({
+        data: { vehicleId: vehicle.id, storageKey: `vehicles/${vehicle.id}/cu.webp`, position: 0 },
+      });
+      const upload = (file: Buffer) =>
+        http().post(`/api/owner/vehicles/${vehicle.id}/images`).set(owner.auth).attach("file", file, { filename: "a.jpg", contentType: "image/jpeg" });
+      const row = () => ctx.prisma.vehicle.findUniqueOrThrow({ where: { id: vehicle.id } });
+      return { owner, vehicle, existing, upload, row };
+    }
+    const RESET = { status: "pending", rejectReason: null, reviewedById: null, reviewedAt: null };
+
+    it.each(["approved", "hidden", "rejected"] as const)("tải thêm ảnh lên xe %s: về pending và xóa kết quả duyệt cũ", async (status) => {
+      const { upload, row } = await withStatus(status);
+      expect((await upload(await jpeg())).status).toBe(201);
+      expect(await row()).toMatchObject(RESET);
+    });
+
+    it.each(["approved", "hidden", "rejected"] as const)("xóa ảnh của xe %s: về pending và xóa kết quả duyệt cũ", async (status) => {
+      const { owner, vehicle, existing, row } = await withStatus(status);
+      const res = await http().delete(`/api/owner/vehicles/${vehicle.id}/images/${existing.id}`).set(owner.auth);
+      expect(res.status).toBe(204);
+      expect(await row()).toMatchObject(RESET);
+    });
+
+    it("xe đang chờ duyệt: thêm hay xóa ảnh vẫn chờ duyệt", async () => {
+      const { owner, vehicle, existing, upload, row } = await withStatus("pending");
+      await upload(await jpeg());
+      await http().delete(`/api/owner/vehicles/${vehicle.id}/images/${existing.id}`).set(owner.auth);
+      expect((await row()).status).toBe("pending");
+    });
+
+    it("tải lên thất bại (không phải ảnh) thì xe KHÔNG bị đưa về chờ duyệt", async () => {
+      const { upload, row } = await withStatus("approved");
+      expect((await upload(Buffer.from("khong phai anh"))).status).toBe(400);
+      expect((await row()).status).toBe("approved");
+    });
+
+    it("xóa ảnh không tồn tại thì xe KHÔNG bị đưa về chờ duyệt", async () => {
+      const { owner, vehicle, row } = await withStatus("approved");
+      const res = await http().delete(`/api/owner/vehicles/${vehicle.id}/images/00000000-0000-4000-8000-000000000000`).set(owner.auth);
+      expect(res.status).toBe(404);
+      expect((await row()).status).toBe("approved");
+    });
+
+    it("chủ xe khác thao tác thất bại thì xe không đổi trạng thái", async () => {
+      const { vehicle, existing, row } = await withStatus("approved");
+      const other = await makeUser(ctx, "owner");
+      await http().delete(`/api/owner/vehicles/${vehicle.id}/images/${existing.id}`).set(other.auth);
+      await http().post(`/api/owner/vehicles/${vehicle.id}/images`).set(other.auth).attach("file", await jpeg(), { filename: "a.jpg", contentType: "image/jpeg" });
+      expect((await row()).status).toBe("approved");
+    });
+
+    it("xe đã duyệt bị đổi ảnh thì không còn hiện công khai cho tới khi được duyệt lại", async () => {
+      const { vehicle, upload } = await withStatus("approved");
+      expect((await http().get(`/api/vehicles/${vehicle.id}`)).status).toBe(200);
+      await upload(await jpeg());
+      expect((await http().get(`/api/vehicles/${vehicle.id}`)).status).toBe(404);
+    });
+  });
+
   describe("GET /api/owner/vehicles/:id/images", () => {
     it("trả ảnh theo position tăng dần, chỉ gồm id, url, position", async () => {
       const { owner, vehicle, upload } = await setup();

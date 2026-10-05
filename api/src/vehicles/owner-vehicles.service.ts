@@ -10,7 +10,7 @@ import type { CreateBlockDto } from "./dto/create-block.dto";
 import type { CreateVehicleDto } from "./dto/create-vehicle.dto";
 import type { ListVehiclesQuery } from "./dto/list-vehicles.query";
 import type { UpdateVehicleDto } from "./dto/update-vehicle.dto";
-import { buildTitle, diffEditable, EDITABLE_FIELDS, nextStatusAfterEdit, EditableField } from "./vehicle-rules";
+import { BACK_TO_REVIEW, buildTitle, diffEditable, EDITABLE_FIELDS, needsReviewReset } from "./vehicle-rules";
 import { OWNER_VEHICLE_SELECT, OwnerVehicle, Page } from "./vehicle.view";
 
 const MAX_BLOCK_DAYS = 366;
@@ -80,11 +80,10 @@ export class OwnerVehiclesService {
 
     const current = await this.findOwnedOrThrow(ownerId, vehicleId);
     const changes = diffEditable(current, dto);
-    const changedFields = Object.keys(changes) as EditableField[];
-    if (changedFields.length === 0) return current;
+    if (Object.keys(changes).length === 0) return current;
 
-    const status = nextStatusAfterEdit(current.status, changedFields);
-    const backToReview = status === "pending" && current.status !== "pending";
+    // Mọi thay đổi thật đều phải được admin duyệt lại (SPEC §2), không phân biệt trường nào.
+    const backToReview = needsReviewReset(current.status);
 
     try {
       // Điều kiện status trong WHERE: nếu admin vừa duyệt hoặc từ chối giữa lúc đọc và ghi thì không ghi đè lên.
@@ -92,14 +91,10 @@ export class OwnerVehiclesService {
         where: { id: vehicleId, ownerId, status: current.status },
         data: {
           ...changes,
-          status,
           ...(changes.brand || changes.model || changes.year
             ? { title: buildTitle({ ...current, ...changes }) }
             : {}),
-          // Nộp lại để duyệt thì xóa kết quả duyệt cũ
-          ...(backToReview || current.status === "rejected"
-            ? { rejectReason: null, reviewedById: null, reviewedAt: null }
-            : {}),
+          ...(backToReview ? BACK_TO_REVIEW : {}),
         },
       });
       if (result.count === 0) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { OwnerVehicle } from "./api";
-import { changedFields, dayRangeToBlock, describeBlock, reviewTriggers } from "./owner-rules";
+import { changedFields, dayRangeToBlock, describeBlock, photoChangeNeedsReview, reviewTriggers } from "./owner-rules";
 
 const CURRENT: Pick<
   OwnerVehicle,
@@ -39,19 +39,28 @@ describe("changedFields", () => {
   });
 });
 
-describe("reviewTriggers", () => {
-  it("xe đã duyệt hoặc đang ẩn: chỉ trường quan trọng mới cần duyệt lại", () => {
-    expect(reviewTriggers("approved", ["description", "city", "district"])).toEqual([]);
-    expect(reviewTriggers("approved", ["description", "pricePerDay"])).toEqual(["pricePerDay"]);
-    expect(reviewTriggers("hidden", ["plateNumber", "city"])).toEqual(["plateNumber"]);
-  });
-
-  it("xe bị từ chối: mọi thay đổi đều là nộp lại", () => {
-    expect(reviewTriggers("rejected", ["description"])).toEqual(["description"]);
+describe("reviewTriggers (mọi thay đổi đều phải duyệt lại)", () => {
+  it.each(["approved", "hidden", "rejected"] as const)("xe %s: mọi trường đã đổi đều khiến xe phải duyệt lại", (status) => {
+    expect(reviewTriggers(status, ["description"])).toEqual(["description"]);
+    expect(reviewTriggers(status, ["city", "district"])).toEqual(["city", "district"]);
+    expect(reviewTriggers(status, ["pricePerDay", "description"])).toEqual(["pricePerDay", "description"]);
   });
 
   it("xe đang chờ duyệt: sửa gì cũng vẫn chờ duyệt, không có gì thay đổi thêm", () => {
-    expect(reviewTriggers("pending", ["pricePerDay", "brand"])).toEqual([]);
+    expect(reviewTriggers("pending", ["pricePerDay", "brand", "description"])).toEqual([]);
+  });
+
+  it("không đổi gì thì không có gì để duyệt lại", () => {
+    expect(reviewTriggers("approved", [])).toEqual([]);
+  });
+});
+
+describe("photoChangeNeedsReview", () => {
+  it.each(["approved", "hidden", "rejected"] as const)("xe %s: đổi ảnh phải duyệt lại", (status) => {
+    expect(photoChangeNeedsReview(status)).toBe(true);
+  });
+  it("xe đang chờ duyệt: không", () => {
+    expect(photoChangeNeedsReview("pending")).toBe(false);
   });
 });
 

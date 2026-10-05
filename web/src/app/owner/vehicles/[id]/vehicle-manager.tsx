@@ -14,9 +14,9 @@ type Load = { status: "loading" } | { status: "missing" } | { status: "error"; m
 
 const STATUS_HINT: Record<OwnerVehicle["status"], string> = {
   pending: "Xe đang chờ quản trị viên duyệt. Sau khi được duyệt, xe sẽ hiện cho người thuê.",
-  approved: "Xe đang hiển thị cho người thuê.",
+  approved: "Xe đang hiển thị cho người thuê. Mọi thay đổi thông tin, giá hoặc ảnh đều cần quản trị viên duyệt lại trước khi hiển thị tiếp.",
   rejected: "Xe chưa được duyệt. Hãy sửa theo lý do bên dưới rồi lưu hoặc thêm ảnh để gửi duyệt lại.",
-  hidden: "Xe đang ẩn: không hiện cho người thuê và không nhận đơn mới. Đơn đã có vẫn giữ nguyên.",
+  hidden: "Xe đang ẩn: không hiện cho người thuê và không nhận đơn mới. Đơn đã có vẫn giữ nguyên. Sửa thông tin hoặc ảnh thì xe cần được duyệt lại.",
 };
 
 export function VehicleManager({ id }: { id: string }) {
@@ -134,7 +134,7 @@ export function VehicleManager({ id }: { id: string }) {
             setFormVersion((n) => n + 1);
           }}
         />
-        <PhotoManager vehicleId={id} onChanged={reload} />
+        <PhotoManager vehicleId={id} status={vehicle.status} onChanged={reload} />
         <BlockManager vehicleId={id} />
       </div>
     </main>

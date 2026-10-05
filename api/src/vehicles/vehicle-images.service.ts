@@ -1,10 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { Injectable, Logger } from "@nestjs/common";
+import type { Prisma } from "@prisma/client";
 import { ApiError } from "../common/api-error";
 import { PrismaService } from "../common/prisma/prisma.service";
 import { lockVehicle } from "../common/vehicle-lock";
 import { StorageService } from "../storage/storage.service";
 import { MAX_IMAGES_PER_VEHICLE, processVehicleImage } from "./image-processor";
+import { BACK_TO_REVIEW, REVIEW_RESET_STATUSES } from "./vehicle-rules";
 
 export type VehicleImageView = { id: string; url: string; position: number };
 
@@ -35,6 +37,15 @@ export class VehicleImagesService {
     return { id: image.id, url: this.storage.publicUrl(image.storageKey), position: image.position };
   }
 
+  // Thay đổi ảnh (thêm hoặc xóa) cũng là thay đổi nội dung khách nhìn thấy, nên xe phải được admin duyệt lại (SPEC §2).
+  // Xe đang pending thì giữ nguyên.
+  private async sendBackToReview(tx: Prisma.TransactionClient, vehicleId: string): Promise<void> {
+    await tx.vehicle.updateMany({
+      where: { id: vehicleId, status: { in: [...REVIEW_RESET_STATUSES] } },
+      data: BACK_TO_REVIEW,
+    });
+  }
+
   async list(ownerId: string, vehicleId: string): Promise<VehicleImageView[]> {
     await this.assertOwned(ownerId, vehicleId);
     const images = await this.prisma.vehicleImage.findMany({ where: { vehicleId }, orderBy: { position: "asc" } });
@@ -63,11 +74,7 @@ export class VehicleImagesService {
         const position = Array.from({ length: MAX_IMAGES_PER_VEHICLE }, (_, i) => i).find((i) => !taken.has(i));
         if (position === undefined) throw imageLimit();
         const created = await tx.vehicleImage.create({ data: { vehicleId, storageKey: key, position } });
-        // Xe bị từ chối mà chủ xe bổ sung ảnh thì coi là nộp lại để duyệt (SPEC §2), giống khi sửa thông tin xe.
-        await tx.vehicle.updateMany({
-          where: { id: vehicleId, status: "rejected" },
-          data: { status: "pending", rejectReason: null, reviewedById: null, reviewedAt: null },
-        });
+        await this.sendBackToReview(tx, vehicleId);
         return created;
       });
       return this.toView(image);
@@ -83,8 +90,14 @@ export class VehicleImagesService {
     const image = await this.prisma.vehicleImage.findFirst({ where: { id: imageId, vehicleId } });
     if (!image) throw notFound("Không tìm thấy ảnh.");
 
-    const result = await this.prisma.vehicleImage.deleteMany({ where: { id: imageId, vehicleId } });
-    if (result.count === 0) throw notFound("Không tìm thấy ảnh.");
+    // Xóa ảnh và đưa xe về duyệt lại trong cùng một giao dịch: không có lúc nào ảnh đã mất mà xe vẫn "đã duyệt".
+    const deleted = await this.prisma.$transaction(async (tx) => {
+      const result = await tx.vehicleImage.deleteMany({ where: { id: imageId, vehicleId } });
+      if (result.count === 0) return false;
+      await this.sendBackToReview(tx, vehicleId);
+      return true;
+    });
+    if (!deleted) throw notFound("Không tìm thấy ảnh.");
 
     // Xóa bản ghi trước, file sau: nếu xóa file lỗi thì chỉ còn một file thừa, không còn bản ghi trỏ vào file đã mất.
     await this.storage

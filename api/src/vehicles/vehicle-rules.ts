@@ -20,20 +20,6 @@ export const EDITABLE_FIELDS = [
 export type EditableField = (typeof EDITABLE_FIELDS)[number];
 export type EditableValues = Pick<OwnerVehicle, EditableField>;
 
-// Đổi một trong các trường này thì xe phải được admin duyệt lại (SPEC §2).
-// Mô tả, thành phố, quận thì không.
-export const IMPORTANT_FIELDS: ReadonlySet<EditableField> = new Set<EditableField>([
-  "plateNumber",
-  "brand",
-  "model",
-  "year",
-  "seats",
-  "transmission",
-  "fuel",
-  "pricePerDay",
-  "depositRate",
-]);
-
 export function buildTitle(vehicle: Pick<OwnerVehicle, "brand" | "model" | "year">): string {
   return `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
 }
@@ -48,11 +34,18 @@ export function diffEditable(current: EditableValues, input: Partial<EditableVal
   return changes as Partial<EditableValues>;
 }
 
-// Trạng thái xe sau khi chủ xe sửa (chỉ gọi khi có ít nhất một thay đổi thật).
-export function nextStatusAfterEdit(current: VehicleStatus, changed: EditableField[]): VehicleStatus {
-  // Sửa lại xe bị từ chối nghĩa là nộp lại để duyệt.
-  if (current === "rejected") return "pending";
-  const needsReview = changed.some((field) => IMPORTANT_FIELDS.has(field));
-  if ((current === "approved" || current === "hidden") && needsReview) return "pending";
-  return current;
+// Mọi thay đổi của chủ xe đều phải được admin duyệt lại (SPEC §2): sửa bất kỳ thông tin nào, tải thêm ảnh hay xóa ảnh.
+// Không còn phân biệt trường "quan trọng" và "không quan trọng": mô tả hay ảnh cũng là thứ khách nhìn thấy, nên nếu sửa
+// được mà không qua duyệt thì bước duyệt ban đầu mất tác dụng.
+//
+// Các trạng thái đã có kết quả duyệt. Xe ở một trong các trạng thái này mà bị thay đổi thì về pending và kết quả duyệt cũ
+// (lý do từ chối, người duyệt, thời điểm duyệt) bị xóa. Xe đang pending thì không có gì để xóa.
+export const REVIEW_RESET_STATUSES: readonly VehicleStatus[] = ["approved", "hidden", "rejected"];
+
+// Dữ liệu ghi vào xe khi nó phải được duyệt lại. Dùng chung cho sửa thông tin và thay đổi ảnh để hai nơi không lệch nhau.
+export const BACK_TO_REVIEW = { status: "pending", rejectReason: null, reviewedById: null, reviewedAt: null } as const;
+
+// Xe ở trạng thái này mà bị chủ xe thay đổi thì có phải đưa về pending và xóa kết quả duyệt cũ không.
+export function needsReviewReset(current: VehicleStatus): boolean {
+  return REVIEW_RESET_STATUSES.includes(current);
 }

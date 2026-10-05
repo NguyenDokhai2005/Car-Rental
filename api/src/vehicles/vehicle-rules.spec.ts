@@ -1,4 +1,4 @@
-import { buildTitle, diffEditable, EditableValues, nextStatusAfterEdit } from "./vehicle-rules";
+import { BACK_TO_REVIEW, buildTitle, diffEditable, EditableValues, needsReviewReset } from "./vehicle-rules";
 
 const CURRENT: EditableValues = {
   brand: "Toyota",
@@ -33,35 +33,16 @@ describe("diffEditable", () => {
   });
 });
 
-describe("nextStatusAfterEdit", () => {
-  it.each(["plateNumber", "brand", "model", "year", "seats", "transmission", "fuel", "pricePerDay", "depositRate"] as const)(
-    "đổi %s trên xe đã duyệt đưa xe về pending",
-    (field) => {
-      expect(nextStatusAfterEdit("approved", [field])).toBe("pending");
-    },
-  );
-
-  it.each(["description", "city", "district"] as const)("đổi %s trên xe đã duyệt giữ nguyên approved", (field) => {
-    expect(nextStatusAfterEdit("approved", [field])).toBe("approved");
+describe("needsReviewReset (mọi thay đổi của chủ xe đều phải duyệt lại, SPEC §2)", () => {
+  it.each(["approved", "hidden", "rejected"] as const)("xe %s bị thay đổi thì phải duyệt lại", (status) => {
+    expect(needsReviewReset(status)).toBe(true);
   });
 
-  it("đổi thông tin quan trọng trên xe đang ẩn đưa về pending", () => {
-    expect(nextStatusAfterEdit("hidden", ["pricePerDay"])).toBe("pending");
+  it("xe đang chờ duyệt thì không có kết quả duyệt nào để xóa", () => {
+    expect(needsReviewReset("pending")).toBe(false);
   });
 
-  it("đổi thông tin không quan trọng trên xe đang ẩn giữ nguyên hidden", () => {
-    expect(nextStatusAfterEdit("hidden", ["description"])).toBe("hidden");
-  });
-
-  it("sửa xe bị từ chối là nộp lại, kể cả chỉ đổi mô tả", () => {
-    expect(nextStatusAfterEdit("rejected", ["description"])).toBe("pending");
-  });
-
-  it("xe đang chờ duyệt vẫn chờ duyệt", () => {
-    expect(nextStatusAfterEdit("pending", ["pricePerDay", "description"])).toBe("pending");
-  });
-
-  it("một thay đổi quan trọng lẫn thay đổi không quan trọng vẫn đưa về pending", () => {
-    expect(nextStatusAfterEdit("approved", ["description", "seats"])).toBe("pending");
+  it("dữ liệu đưa xe về duyệt lại: pending và xóa sạch kết quả duyệt cũ", () => {
+    expect(BACK_TO_REVIEW).toEqual({ status: "pending", rejectReason: null, reviewedById: null, reviewedAt: null });
   });
 });

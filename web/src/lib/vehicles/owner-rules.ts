@@ -18,20 +18,6 @@ export const EDITABLE_FIELDS = [
 
 export type EditableField = (typeof EDITABLE_FIELDS)[number];
 
-// Đổi một trong các trường này thì xe phải được admin duyệt lại (SPEC §2). Mô tả, thành phố, quận thì không.
-// API là nơi quyết định thật sự; bản sao này chỉ để cảnh báo trước khi người dùng bấm lưu.
-const NEEDS_REVIEW: ReadonlySet<EditableField> = new Set<EditableField>([
-  "plateNumber",
-  "brand",
-  "model",
-  "year",
-  "seats",
-  "transmission",
-  "fuel",
-  "pricePerDay",
-  "depositRate",
-]);
-
 export const FIELD_LABELS: Record<EditableField, string> = {
   brand: "hãng xe",
   model: "mẫu xe",
@@ -67,11 +53,16 @@ export function changedFields(
   return changes as Partial<CreateVehicleInput>;
 }
 
-// Các trường đã đổi mà sẽ đưa xe về trạng thái chờ duyệt, theo trạng thái hiện tại của xe.
+// Mọi thay đổi của chủ xe đều phải được admin duyệt lại (SPEC §2), không phân biệt trường nào. Hàm này trả về các trường
+// đã đổi sẽ khiến xe rời trạng thái hiện tại để về "Chờ duyệt": tất cả, trừ khi xe vốn đang chờ duyệt.
+// API là nơi quyết định thật sự; bản sao này chỉ để cảnh báo trước khi người dùng bấm lưu.
 export function reviewTriggers(status: OwnerVehicle["status"], changed: EditableField[]): EditableField[] {
-  if (status === "rejected") return changed; // sửa xe bị từ chối nghĩa là nộp lại
-  if (status === "approved" || status === "hidden") return changed.filter((field) => NEEDS_REVIEW.has(field));
-  return [];
+  return status === "pending" ? [] : changed;
+}
+
+// Thêm hoặc xóa ảnh trên xe ở trạng thái này có đưa xe về "Chờ duyệt" không. Dùng để hỏi xác nhận trước khi đổi ảnh.
+export function photoChangeNeedsReview(status: OwnerVehicle["status"]): boolean {
+  return status !== "pending";
 }
 
 const VN = "+07:00";

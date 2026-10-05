@@ -3,13 +3,25 @@
 import { useCallback, useEffect, useState } from "react";
 import { UploadIcon } from "@/components/icons";
 import { apiErrorMessage } from "@/lib/api/error-message";
-import { deleteVehicleImage, listVehicleImages, uploadVehicleImage, VehicleImage } from "@/lib/vehicles/api";
+import { deleteVehicleImage, listVehicleImages, OwnerVehicle, uploadVehicleImage, VehicleImage } from "@/lib/vehicles/api";
 import { ACCEPTED_TYPES, MAX_IMAGES, validateImageFile } from "@/lib/vehicles/image-rules";
+import { photoChangeNeedsReview } from "@/lib/vehicles/owner-rules";
 import { Card } from "../../vehicle-fields";
 
-// `onChanged` được gọi sau mỗi lần thêm hoặc xóa ảnh: tải ảnh lên xe bị từ chối sẽ đưa xe về "Chờ duyệt",
-// nên trang phải đọc lại trạng thái xe.
-export function PhotoManager({ vehicleId, onChanged }: { vehicleId: string; onChanged: () => void | Promise<void> }) {
+// `onChanged` được gọi sau mỗi lần thêm hoặc xóa ảnh: đổi ảnh đưa xe về "Chờ duyệt" (SPEC §2), nên trang phải đọc lại
+// trạng thái xe. `status` để hỏi xác nhận trước khi đổi ảnh của xe đang hiển thị: xe sẽ tạm biến mất khỏi trang tìm kiếm.
+const REVIEW_WARNING =
+  "Xe sẽ chuyển về Chờ duyệt và tạm thời không hiện cho người thuê cho đến khi quản trị viên duyệt lại.";
+
+export function PhotoManager({
+  vehicleId,
+  status,
+  onChanged,
+}: {
+  vehicleId: string;
+  status: OwnerVehicle["status"];
+  onChanged: () => void | Promise<void>;
+}) {
   const [images, setImages] = useState<VehicleImage[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [notices, setNotices] = useState<string[]>([]);
@@ -42,6 +54,13 @@ export function PhotoManager({ vehicleId, onChanged }: { vehicleId: string; onCh
       else accepted.push(file);
     }
 
+    // Xe đang hiển thị: thêm ảnh sẽ đưa xe về chờ duyệt, nên hỏi lại để chủ xe không mất trạng thái ngoài ý muốn.
+    const visible = status === "approved";
+    if (accepted.length > 0 && visible && !window.confirm(`Thêm ảnh cho xe đang hiển thị? ${REVIEW_WARNING}`)) {
+      setNotices(problems);
+      return;
+    }
+
     // Tải lần lượt: thứ tự tải quyết định ô trống nào được dùng, và máy chủ nhỏ xử lý từng ảnh một.
     for (const [index, file] of accepted.entries()) {
       setBusy(`Đang tải ảnh ${index + 1}/${accepted.length}...`);
@@ -58,7 +77,8 @@ export function PhotoManager({ vehicleId, onChanged }: { vehicleId: string; onCh
   }
 
   async function remove(image: VehicleImage) {
-    if (!window.confirm("Xóa ảnh này? Thao tác không hoàn tác được.")) return;
+    const warning = status === "approved" ? ` ${REVIEW_WARNING}` : "";
+    if (!window.confirm(`Xóa ảnh này? Thao tác không hoàn tác được.${warning}`)) return;
     setBusy("Đang xóa ảnh...");
     setNotices([]);
     try {
@@ -117,6 +137,7 @@ export function PhotoManager({ vehicleId, onChanged }: { vehicleId: string; onCh
           </div>
           <p className="text-[13px] text-muted">
             {images.length}/{MAX_IMAGES} ảnh. Ảnh đầu tiên là ảnh bìa. JPG, PNG hoặc WebP, tối đa 5 MB mỗi ảnh.
+            {photoChangeNeedsReview(status) && " Thêm hoặc xóa ảnh thì xe cần được quản trị viên duyệt lại."}
           </p>
         </>
       )}

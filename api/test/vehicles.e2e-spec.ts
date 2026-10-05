@@ -213,15 +213,30 @@ describe("Vehicles API", () => {
       expect(res.body).toMatchObject({ status: "pending", pricePerDay: 700000 });
     });
 
-    it("xe approved: đổi mô tả, thành phố, quận thì giữ approved", async () => {
+    it.each([
+      ["description", { description: "Mô tả mới" }],
+      ["city", { city: "Hà Nội" }],
+      ["district", { district: "Cầu Giấy" }],
+    ])("xe approved: đổi %s cũng phải duyệt lại (mọi thay đổi đều cần admin duyệt)", async (_field, body) => {
+      const owner = await makeUser(ctx, "owner");
+      const admin = await makeUser(ctx, "admin");
+      const v = await makeVehicle(ctx, owner.user.id, { status: "approved", reviewedById: admin.user.id, reviewedAt: new Date() });
+      const res = await http().patch(`/api/owner/vehicles/${v.id}`).set(owner.auth).send(body);
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({ status: "pending", ...body });
+
+      const row = await ctx.prisma.vehicle.findUniqueOrThrow({ where: { id: v.id } });
+      expect(row).toMatchObject({ status: "pending", reviewedById: null, reviewedAt: null, rejectReason: null });
+    });
+
+    it("xe approved bị sửa thì biến mất khỏi trang công khai cho tới khi được duyệt lại", async () => {
       const owner = await makeUser(ctx, "owner");
       const v = await makeVehicle(ctx, owner.user.id, { status: "approved" });
-      const res = await http()
-        .patch(`/api/owner/vehicles/${v.id}`)
-        .set(owner.auth)
-        .send({ description: "Mô tả mới", city: "Hà Nội", district: "Cầu Giấy" });
-      expect(res.status).toBe(200);
-      expect(res.body).toMatchObject({ status: "approved", description: "Mô tả mới", city: "Hà Nội", district: "Cầu Giấy" });
+      expect((await http().get(`/api/vehicles/${v.id}`)).status).toBe(200);
+
+      await http().patch(`/api/owner/vehicles/${v.id}`).set(owner.auth).send({ description: "Sửa một chữ" });
+      expect((await http().get(`/api/vehicles/${v.id}`)).status).toBe(404);
+      expect((await http().get("/api/vehicles")).body.total).toBe(0);
     });
 
     it.each([
@@ -268,15 +283,22 @@ describe("Vehicles API", () => {
       expect(res.body).toMatchObject({ status: "pending", rejectReason: null });
     });
 
-    it("xe đang ẩn: đổi thông tin quan trọng về pending, đổi mô tả vẫn ẩn", async () => {
+    it("xe đang ẩn: mọi thay đổi (giá hay chỉ mô tả) đều đưa về pending", async () => {
       const owner = await makeUser(ctx, "owner");
       const hiddenA = await makeVehicle(ctx, owner.user.id, { status: "hidden" });
       const hiddenB = await makeVehicle(ctx, owner.user.id, { status: "hidden" });
 
-      const important = await http().patch(`/api/owner/vehicles/${hiddenA.id}`).set(owner.auth).send({ pricePerDay: 900000 });
-      const minor = await http().patch(`/api/owner/vehicles/${hiddenB.id}`).set(owner.auth).send({ description: "Mới" });
-      expect(important.body.status).toBe("pending");
-      expect(minor.body.status).toBe("hidden");
+      const price = await http().patch(`/api/owner/vehicles/${hiddenA.id}`).set(owner.auth).send({ pricePerDay: 900000 });
+      const text = await http().patch(`/api/owner/vehicles/${hiddenB.id}`).set(owner.auth).send({ description: "Mới" });
+      expect(price.body.status).toBe("pending");
+      expect(text.body.status).toBe("pending");
+    });
+
+    it("xe đang chờ duyệt bị sửa tiếp thì vẫn chờ duyệt", async () => {
+      const owner = await makeUser(ctx, "owner");
+      const v = await makeVehicle(ctx, owner.user.id, { status: "pending" });
+      const res = await http().patch(`/api/owner/vehicles/${v.id}`).set(owner.auth).send({ description: "Bổ sung" });
+      expect(res.body.status).toBe("pending");
     });
 
     it("gửi lại đúng giá trị cũ không làm xe mất trạng thái đã duyệt", async () => {
