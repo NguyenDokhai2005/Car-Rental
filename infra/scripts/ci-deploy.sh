@@ -76,7 +76,8 @@ check_code "https://localhost/api/me" 401
 # Cron gọi bản chép này, không gọi trong thư mục checkout vì thư mục đó bị dọn mỗi lần deploy.
 BIN_DIR="$HOME/carrental-config/bin"
 if [ -d "$BIN_DIR" ]; then
-  install -m 755 infra/scripts/backup-db.sh infra/scripts/backup-uploads.sh infra/scripts/restore-test.sh "$BIN_DIR/"
+  install -m 755 infra/scripts/backup-db.sh infra/scripts/backup-uploads.sh infra/scripts/restore-test.sh \
+    infra/scripts/backup-catchup.sh "$BIN_DIR/"
   echo "==> Đã cập nhật script sao lưu trong $BIN_DIR"
 fi
 

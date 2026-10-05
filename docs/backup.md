@@ -15,11 +15,13 @@ Nguyên tắc cần nhớ: **một bản sao lưu chưa từng được thử kh
 | `backup-db.sh` | `pg_dump` định dạng nén `-Fc`, kiểm tra bản sao đọc lại được, xoay vòng giữ 7 bản | 03:00 hằng ngày |
 | `backup-uploads.sh` | Đóng gói thư mục ảnh xe thành file `tar` (không nén vì ảnh đã là WebP), kiểm tra đọc lại được, xoay vòng giữ 7 bản | 03:05 hằng ngày, **sau** bản CSDL |
 | `restore-test.sh` | Khôi phục bản CSDL mới nhất vào một database **tạm**, kiểm tra đủ bảng và đủ ràng buộc chống đặt trùng. Nếu có bản ảnh thì giải nén thử và đối chiếu: mọi ảnh mà CSDL nhắc tới có file thật không. Rồi xóa database và thư mục tạm. Không đụng dữ liệu thật | 03:30 Chủ nhật hằng tuần |
-| `install-backup-cron.sh` | Cài hoặc gỡ ba dòng cron ở trên | Chạy tay một lần |
+| `backup-catchup.sh` | Sao lưu **bù**: nếu hôm nay chưa có bản sao lưu nào thì chạy `backup-db.sh`, `backup-uploads.sh` rồi `restore-test.sh`; có rồi thì thoát ngay | Phút 17 mỗi giờ, từ 04 đến 23 giờ |
+| `install-backup-cron.sh` | Cài hoặc gỡ bốn dòng cron ở trên | Chạy tay một lần |
 
 Chi tiết quan trọng:
 
 - **Bản dở dang không bao giờ bị nhầm với bản hợp lệ.** Script ghi vào file `.partial` rồi mới đổi tên sau khi kiểm tra (CSDL: file không rỗng và `pg_restore --list` đọc được mục lục; ảnh: `tar -t` đọc được). Mất điện hay hết ổ đĩa giữa chừng thì file dở bị xóa.
+- **Máy tắt hoặc tạm dừng lúc 03:00 vẫn có bản sao lưu.** Cron không chạy bù: bỏ lỡ 03:00 là hôm đó không có gì, và máy chỉ bật ban ngày thì không bao giờ có. Vì vậy `backup-catchup.sh` chạy mỗi giờ và sao lưu ngay khi thấy hôm nay chưa có bản nào (chờ tối đa 10 phút cho các container sẵn sàng sau khi bật máy). Máy bật liên tục thì dòng này không làm gì, vì 03:00 đã sao lưu. Gọi theo giờ chứ không dùng `@reboot` để cả trường hợp tạm dừng (suspend) rồi chạy tiếp cũng được bù.
 - **Không chạy chồng nhau:** dùng `flock`, lần chạy thứ hai báo lỗi thay vì ghi đè. Sao lưu CSDL và sao lưu ảnh dùng hai khóa riêng nên không cản nhau.
 - **Vì sao ảnh sao lưu sau CSDL:** hai bản không chụp cùng một khoảnh khắc. Nếu có người tải ảnh giữa hai lần chạy, bản ảnh (chạy sau) có thêm một ảnh mà bản CSDL chưa biết: chỉ là file thừa, vô hại. Làm ngược lại thì CSDL nhắc tới một ảnh không có trong bản sao lưu, và xe sẽ hiện ảnh hỏng sau khi khôi phục.
 - **Quyền riêng tư:** thư mục và file sao lưu chỉ chủ sở hữu đọc được (`700` và `600`), vì bản CSDL chứa email, số điện thoại, mật khẩu đã băm của người dùng.
@@ -37,7 +39,7 @@ bash infra/scripts/install-backup-cron.sh --dry-run     # xem trước việc s�
 bash infra/scripts/install-backup-cron.sh               # cài thật
 ```
 
-Đã cài từ trước (chỉ có hai dòng cron cũ) thì chạy lại lệnh cài thật ở trên: script an toàn khi chạy lại và sẽ thêm dòng sao lưu ảnh.
+Đã cài từ trước thì chạy lại lệnh cài thật ở trên: script an toàn khi chạy lại và sẽ thêm các dòng còn thiếu (sao lưu ảnh, sao lưu bù). `--dry-run` phải in ra **bốn** dòng có `# carrental-backup`.
 
 Kiểm tra cron đang chạy và chạy thử ngay các script:
 
@@ -121,7 +123,7 @@ Lệnh này chỉ thêm và ghi đè file có trong bản sao lưu, không xóa 
 
 | Giới hạn | Hệ quả |
 | --- | --- |
-| Sao lưu mỗi ngày một lần | Khi sự cố có thể mất tối đa dữ liệu của gần 24 giờ, gồm cả ảnh mới tải lên trong ngày |
+| Sao lưu mỗi ngày một lần | Khi sự cố có thể mất tối đa dữ liệu của gần 24 giờ, gồm cả ảnh mới tải lên trong ngày. Nếu máy tắt cả ngày thì hôm đó không có bản sao lưu (cũng không có dữ liệu mới) |
 | Ảnh được sao lưu nguyên bộ mỗi ngày | Mỗi bản `tar` chứa toàn bộ ảnh, giữ 7 bản nên tốn khoảng 7 lần dung lượng ảnh. Ảnh đã nén WebP (khoảng 20 đến 600 KB), vài trăm ảnh vẫn chỉ vài chục MB. Nếu sau này lên hàng chục GB thì chuyển sang sao lưu gia tăng (chỉ chép file mới) hoặc kho đối tượng |
 | Ảnh GPLX | Chưa có (PLAN Ngày 20). Khi làm, GPLX nằm ở kho riêng nên cần bổ sung sao lưu riêng, có mã hóa |
 | Chưa mã hóa bản sao lưu | Giữ trên máy bạn thì ổn; nếu đưa ra ngoài phải tự mã hóa (xem trên) |
@@ -135,6 +137,7 @@ Lệnh này chỉ thêm và ghi đè file có trong bản sao lưu, không xóa 
 | `LỖI: container carrental-api-1 không chạy` | Như trên nhưng cho sao lưu ảnh (ảnh nằm ở volume gắn vào container API); đổi bằng biến `UPLOADS_CONTAINER` |
 | `LỖI: đang có một lần sao lưu khác chạy` | Lần trước chưa xong hoặc bị treo. Xem `ps aux \| grep backup-` |
 | Cron không chạy | `systemctl is-active cron`; nếu không, `sudo systemctl enable --now cron`. Xem `backup.log` |
+| `LỖI: sao lưu bù không chạy được vì ... chưa sẵn sàng` | Sau khi bật máy, các container chưa lên kịp trong 10 phút. Lần gọi giờ sau sẽ tự thử lại; nếu lặp lại mãi thì xem `docker ps` |
 | `permission denied` khi chạy `docker` từ cron | Người dùng chưa thuộc nhóm `docker` (`groups`). Thêm bằng `sudo usermod -aG docker $USER` rồi đăng nhập lại |
 | `restore-test.sh` báo `CẢNH BÁO: N ảnh có trong CSDL nhưng không có trong bản sao lưu ảnh` | Trên máy phát triển là bình thường (dữ liệu mẫu trỏ tới file không có thật). Trên máy chủ thật phải là 0: kiểm tra `uploads-latest.tar` có cũ hơn `carrental-latest.dump` không, và `crontab -l` có đủ hai dòng 03:00 và 03:05 |
 | `restore-test.sh` báo `giải nén bản sao lưu ảnh bị lỗi` | Bản `tar` hỏng. Chạy `backup-uploads.sh` lại và điều tra nguyên nhân (ổ đĩa đầy?) |
