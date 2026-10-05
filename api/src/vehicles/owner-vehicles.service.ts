@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { Prisma, VehicleBlock } from "@prisma/client";
 import { ApiError } from "../common/api-error";
+import { releaseExpiredHolds } from "../common/booking-holds";
 import { ACTIVE_BOOKING_STATUSES } from "../common/constants";
 import { isExclusionViolation, isUniqueViolation } from "../common/db-errors";
 import { PrismaService } from "../common/prisma/prisma.service";
@@ -163,6 +164,8 @@ export class OwnerVehiclesService {
     try {
       return await this.prisma.$transaction(async (tx) => {
         await lockVehicle(tx, vehicleId);
+        // Đơn pending đã quá hạn giữ chỗ không còn quyền giữ lịch: nhả trước khi kiểm tra, nếu không chủ xe bị chặn oan.
+        await releaseExpiredHolds(tx, vehicleId, new Date());
 
         const conflict = await tx.booking.findFirst({
           where: {

@@ -2,7 +2,7 @@ import { FuelType, Transmission } from "@prisma/client";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, IsArray, IsEnum, IsIn, IsInt, IsOptional, IsString, Length, Matches, Max, Min } from "class-validator";
 import { splitIntList, splitList, trim } from "../../common/transforms";
-import { ISO_DATETIME_MESSAGE, ISO_DATETIME_PATTERN, MAX_PRICE_PER_DAY } from "./vehicle-fields";
+import { ISO_DATETIME_MESSAGE, ISO_DATETIME_PATTERN, MAX_PRICE_FILTER } from "./vehicle-fields";
 
 export const VEHICLE_SORTS = ["newest", "price_asc", "price_desc"] as const;
 export type VehicleSort = (typeof VEHICLE_SORTS)[number];
@@ -20,14 +20,14 @@ export class SearchVehiclesQuery {
   @Type(() => Number)
   @IsInt({ message: "minPrice phải là số nguyên đồng." })
   @Min(0, { message: "minPrice không được âm." })
-  @Max(MAX_PRICE_PER_DAY, { message: `minPrice tối đa ${MAX_PRICE_PER_DAY}.` })
+  @Max(MAX_PRICE_FILTER, { message: `minPrice tối đa ${MAX_PRICE_FILTER}.` })
   minPrice?: number;
 
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: "maxPrice phải là số nguyên đồng." })
   @Min(0, { message: "maxPrice không được âm." })
-  @Max(MAX_PRICE_PER_DAY, { message: `maxPrice tối đa ${MAX_PRICE_PER_DAY}.` })
+  @Max(MAX_PRICE_FILTER, { message: `maxPrice tối đa ${MAX_PRICE_FILTER}.` })
   maxPrice?: number;
 
   @IsOptional()

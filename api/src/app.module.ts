@@ -4,6 +4,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { AdminModule } from "./admin/admin.module";
 import { AuthModule } from "./auth/auth.module";
+import { BookingsModule } from "./bookings/bookings.module";
 import { PrismaModule } from "./common/prisma/prisma.module";
 import { validateEnv } from "./config/env";
 import { StorageModule } from "./storage/storage.module";
@@ -24,6 +25,7 @@ import { VehiclesModule } from "./vehicles/vehicles.module";
     UsersModule,
     VehiclesModule,
     AdminModule,
+    BookingsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
