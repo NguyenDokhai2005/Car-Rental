@@ -185,6 +185,7 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 | --- | --- | --- |
 | Hết hạn giữ chỗ | mỗi phút | `pending` có `expires_at < now()` → `expired` |
 | Sao lưu DB | hằng ngày | `pg_dump`, giữ 7 bản |
+| Sao lưu bù | mỗi giờ (04 đến 23 giờ) | Nếu hôm nay chưa có bản sao lưu (máy tắt hoặc tạm dừng lúc 03:00) thì sao lưu DB, ảnh và thử khôi phục ngay |
 | Sao lưu ảnh xe | hằng ngày, sau bản DB | `tar` volume `uploads`, giữ 7 bản; thử khôi phục hằng tuần và đối chiếu với DB |
 
 ## 9. Phi chức năng

@@ -9,8 +9,16 @@ upstream api_upstream {
     server api:4000;
 }
 
-# Giới hạn số request theo IP cho khu vực đăng nhập (lớp phòng thủ thứ hai sau rate limit của API)
+# Giới hạn số request theo IP cho khu vực xác thực (lớp phòng thủ thứ hai sau rate limit của API). Request vượt ngưỡng bị
+# Nginx từ chối ngay (429), gần như không tốn tài nguyên và không tới được API: đây là thứ bảo vệ một máy chủ yếu.
+#
+# Hai hạn mức riêng vì hai loại request có mục đích khác nhau:
+#   auth_zone:    đăng nhập, đăng ký, đăng xuất. Giữ chặt để việc dò mật khẩu không khả thi.
+#   refresh_zone: làm mới phiên. Trình duyệt của người đã đăng nhập gọi một lần mỗi khi tải lại trang (khách vãng lai thì
+#                 không gọi, xem web/src/lib/auth/guest-hint.ts), nên cần rộng hơn. Dùng chung hạn mức chặt ở trên thì
+#                 người dùng thật tải vài chục trang một phút sẽ bị từ chối.
 limit_req_zone $binary_remote_addr zone=auth_zone:10m rate=20r/m;
+limit_req_zone $binary_remote_addr zone=refresh_zone:10m rate=60r/m;
 
 server {
     listen 80;
@@ -60,6 +68,17 @@ server {
     location /api/ {
         client_max_body_size 6m;   # ảnh xe tối đa 5 MB (SPEC §7)
         # Header bảo mật đã do Nginx đặt ở trên; bỏ bản của API (helmet) để không bị lặp
+        proxy_hide_header Strict-Transport-Security;
+        proxy_hide_header X-Content-Type-Options;
+        proxy_hide_header X-Frame-Options;
+        proxy_hide_header Referrer-Policy;
+        proxy_pass http://api_upstream;
+    }
+
+    # Khớp chính xác nên được ưu tiên hơn "location /api/auth/" bên dưới.
+    location = /api/auth/refresh {
+        limit_req zone=refresh_zone burst=20 nodelay;
+        limit_req_status 429;
         proxy_hide_header Strict-Transport-Security;
         proxy_hide_header X-Content-Type-Options;
         proxy_hide_header X-Frame-Options;
