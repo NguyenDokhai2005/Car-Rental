@@ -56,10 +56,11 @@ export function OwnerDashboard() {
   const vehicles = fleet.status === "ready" ? fleet.vehicles : [];
   const count = (status: OwnerVehicle["status"]) => vehicles.filter((v) => v.status === status).length;
   const stat = (value: number) => (fleet.status === "ready" ? value : "–");
+  // Số đơn đang chờ chủ xe làm gì đó (duyệt, giao xe, nhận lại xe), do bảng đơn bên dưới báo lên sau khi tải xong.
+  const [needsAction, setNeedsAction] = useState<number | null>(null);
 
   const stats = [
-    // Đơn thuê chưa có API: giữ số mẫu theo thiết kế.
-    { label: "Đơn chờ bạn duyệt", value: 2, accent: true },
+    { label: "Đơn cần bạn xử lý", value: needsAction ?? "–", accent: true },
     { label: "Xe đang hiển thị", value: stat(count("approved")), accent: false },
     { label: "Xe chờ quản trị viên duyệt", value: stat(count("pending")), accent: false },
   ];
@@ -86,7 +87,7 @@ export function OwnerDashboard() {
           ))}
         </div>
 
-        <OwnerRequests />
+        <OwnerRequests onNeedsAction={setNeedsAction} />
 
         <div className="flex items-start gap-6">
           <section className="flex min-w-0 flex-1 flex-col gap-4">

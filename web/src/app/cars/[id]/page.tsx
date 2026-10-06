@@ -8,13 +8,12 @@ import { siteUrl } from "@/lib/server/api";
 import { BusyPeriod, currentMonth, isMonth } from "@/lib/vehicles/availability";
 import { FUEL_LABELS, TRANSMISSION_LABELS } from "@/lib/vehicles/labels";
 import { getBusyPeriods, getVehicle } from "@/lib/vehicles/public";
-import { parseFilters, rentalDays } from "@/lib/vehicles/search-params";
+import { parseFilters } from "@/lib/vehicles/search-params";
 import { AvailabilityCalendar } from "./availability-calendar";
+import { BookingPanel } from "./booking-panel";
 
 type Params = { id: string };
 type SearchParams = { startDate?: string; endDate?: string; month?: string };
-
-const MAX_RENTAL_DAYS = 30;
 
 function summarize(text: string, max = 160): string {
   const flat = text.replace(/\s+/g, " ").trim();
@@ -51,10 +50,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 const CANCEL_POLICY = [
-  { when: "Trước giờ nhận xe từ 48 giờ", refund: "Hoàn 100% tiền cọc" },
-  { when: "Từ 24 đến dưới 48 giờ", refund: "Hoàn 50% tiền cọc" },
-  { when: "Dưới 24 giờ", refund: "Không hoàn cọc" },
-  { when: "Chủ xe từ chối hoặc hủy", refund: "Hoàn 100% tiền cọc" },
+  { when: "Chủ xe chưa duyệt, từ chối hoặc không trả lời trong 6 giờ", refund: "Hoàn toàn bộ" },
+  { when: "Hủy trước giờ nhận xe từ 48 giờ", refund: "Hoàn 100% tiền thuê và tiền cọc" },
+  { when: "Hủy từ 24 đến dưới 48 giờ", refund: "Hoàn 50% tiền thuê và tiền cọc" },
+  { when: "Hủy dưới 24 giờ", refund: "Chỉ hoàn tiền cọc" },
 ];
 
 export default async function CarDetailPage({
@@ -78,11 +77,8 @@ export default async function CarDetailPage({
     busy = null;
   }
 
-  // Ngày khách đã chọn ở trang tìm kiếm được mang sang đây để tính giá tạm tính. Giá trị sai bị bỏ qua.
+  // Ngày khách đã chọn ở trang tìm kiếm được mang sang đây để điền sẵn vào khung đặt xe. Giá trị sai bị bỏ qua.
   const { filters } = parseFilters({ startDate: sp.startDate, endDate: sp.endDate });
-  const days = filters.startDate ? rentalDays(filters.startDate, filters.endDate) : null;
-  const subtotal = days ? car.pricePerDay * days : null;
-  const deposit = subtotal ? Math.round((subtotal * car.depositRate) / 100) : null;
 
   const dateQuery = filters.startDate ? `startDate=${filters.startDate}&endDate=${filters.endDate}&` : "";
   const monthHref = (m: string) => `/cars/${id}?${dateQuery}month=${m}`;
@@ -191,7 +187,7 @@ export default async function CarDetailPage({
                 <AvailabilityCalendar month={month} busy={busy} href={monthHref} />
               </Section>
 
-              <Section title="Chính sách hủy và hoàn cọc">
+              <Section title="Chính sách hủy và hoàn tiền">
                 <div className="overflow-hidden rounded-2xl border border-line bg-white">
                   {CANCEL_POLICY.map((row) => (
                     <div key={row.when} className="flex justify-between gap-4 border-t border-line px-5 py-3 text-[15px] first:border-t-0">
@@ -203,59 +199,14 @@ export default async function CarDetailPage({
               </Section>
             </div>
 
-            <aside className="flex w-[380px] shrink-0 flex-col gap-4 rounded-2xl border border-line bg-white p-6">
-              <p className="flex items-end gap-1">
-                <strong className="text-[28px] font-bold text-primary">{formatVnd(car.pricePerDay)}</strong>
-                <span className="text-[15px] text-muted">/ngày</span>
-              </p>
-
-              {days && subtotal !== null && deposit !== null ? (
-                <dl className="flex flex-col gap-2.5 text-[15px]">
-                  <div className="flex justify-between">
-                    <dt className="text-muted">
-                      {filters.startDate.split("-").reverse().join("/")} đến {filters.endDate.split("-").reverse().join("/")}
-                    </dt>
-                    <dd className="font-semibold text-ink">{days} ngày</dd>
-                  </div>
-                  <div className="flex justify-between">
-                    <dt className="text-muted">
-                      {formatVnd(car.pricePerDay)} x {days} ngày
-                    </dt>
-                    <dd className="font-semibold text-ink">{formatVnd(subtotal)}</dd>
-                  </div>
-                  <div className="flex justify-between font-bold text-ink">
-                    <dt>Tạm tính</dt>
-                    <dd>{formatVnd(subtotal)}</dd>
-                  </div>
-                  <div className="flex justify-between">
-                    <dt className="text-muted">Tiền cọc ({car.depositRate}%, hoàn lại)</dt>
-                    <dd className="font-semibold text-ink">{formatVnd(deposit)}</dd>
-                  </div>
-                  {days > MAX_RENTAL_DAYS && (
-                    <p className="rounded-[10px] bg-[#fff6e5] px-3 py-2 text-[13px] text-[#8a5a00]">
-                      Mỗi đơn thuê tối đa {MAX_RENTAL_DAYS} ngày.
-                    </p>
-                  )}
-                </dl>
-              ) : (
-                <p className="rounded-[10px] bg-surface px-3.5 py-3 text-[15px] text-muted">
-                  Tiền cọc {car.depositRate}% tổng tiền thuê. Chọn ngày ở trang{" "}
-                  <Link href="/cars" className="font-semibold text-primary">
-                    Tìm xe
-                  </Link>{" "}
-                  để xem giá tạm tính.
-                </p>
-              )}
-
-              <button
-                type="button"
-                disabled
-                className="flex h-[52px] items-center justify-center rounded-xl bg-primary text-base font-semibold text-white opacity-50"
-              >
-                Đặt xe
-              </button>
-              <p className="text-center text-[13px] text-muted">Tính năng đặt xe và thanh toán sắp ra mắt.</p>
-            </aside>
+            <BookingPanel
+              vehicleId={car.id}
+              pricePerDay={car.pricePerDay}
+              depositRate={car.depositRate}
+              initialStartDate={filters.startDate}
+              initialEndDate={filters.endDate}
+              returnTo={`/cars/${id}${dateQuery ? `?${dateQuery.slice(0, -1)}` : ""}`}
+            />
           </div>
         </div>
       </main>
