@@ -30,58 +30,62 @@ Quy tắc chung: mọi endpoint kiểm tra quyền **sở hữu** (owner chỉ t
 1. Khách tìm xe theo thành phố, giá, số chỗ, khoảng ngày.
 2. Mở trang xe, chọn `start_at`/`end_at`, hệ thống tính giá và cọc.
 3. Khách có GPLX đã xác minh mới được đặt (xem mục 6).
-4. Tạo đơn → `pending`. Chủ xe có **6 giờ** để duyệt hoặc từ chối; trong thời gian đó đơn giữ lịch của xe (`expires_at` = lúc tạo + 6 giờ, nhưng không muộn hơn giờ nhận xe: đơn chưa được duyệt thì không thể còn chờ khi chuyến đi đã bắt đầu).
-5. Owner duyệt → `expires_at` được đặt lại thành 15 phút kể từ lúc duyệt; khách thanh toán cọc trong khoảng đó. Quá một trong hai hạn (6 giờ chờ duyệt, hoặc 15 phút chờ thanh toán) → đơn `expired`, nhả lịch.
-6. Thanh toán thành công (qua IPN) → `confirmed`.
-7. Nhận xe → `in_use`; trả xe → `completed`. Owner bấm xác nhận nhận/trả (MVP không có check-in tự động).
+4. Tạo đơn → `pending`, chưa thanh toán. Khách có **15 phút** để thanh toán; trong thời gian đó đơn giữ lịch của xe (`expires_at`). Khách trả một lần **tiền thuê + tiền cọc**.
+5. Thanh toán thành công → đơn vẫn `pending` nhưng đã có `paid_at`; chủ xe có **6 giờ** để duyệt hoặc từ chối (`expires_at` = lúc thanh toán + 6 giờ). Cả hai hạn đều không muộn hơn giờ nhận xe.
+6. Chủ xe duyệt → `confirmed`. Chủ xe từ chối, hoặc quá 6 giờ không trả lời → hoàn 100% số tiền khách đã trả.
+7. **Giao xe cần hai phía xác nhận:** chủ xe bấm "Giao xe", khách bấm "Đã nhận xe" (thứ tự nào cũng được). Đủ cả hai → `in_use`, và chủ xe được ghi nhận **50% tiền thuê**.
+8. **Trả xe cũng cần hai phía xác nhận:** khách bấm "Đã trả xe", chủ xe bấm "Đã nhận lại xe". Đủ cả hai → `completed`: chủ xe được ghi nhận 50% tiền thuê còn lại, khách được hoàn toàn bộ tiền cọc. Để tiền không bị treo khi một bên không bấm, đơn `in_use` tự hoàn tất sau 24 giờ kể từ `end_at`.
 
-Quyết định thứ tự duyệt/thanh toán: owner duyệt **trước**, khách trả cọc **sau**, để không phải hoàn tiền khi owner từ chối.
+Quyết định thứ tự thanh toán/duyệt: khách thanh toán **trước**, chủ xe duyệt **sau**. Khách chỉ cần có mặt trên ứng dụng một lần (lúc đặt), không phải quay lại đúng lúc chủ xe duyệt; đổi lại, hệ thống phải hoàn tiền khi chủ xe từ chối hoặc không trả lời. Ứng dụng giữ tiền của khách cho tới khi giao xe và trả xe; trong MVP đây chỉ là số liệu ghi nhận (cổng thanh toán sandbox), không có tiền thật di chuyển.
 
 ## 3. Trạng thái đơn (booking)
 
 | Trạng thái | Giữ lịch? | Ý nghĩa |
 | --- | :-: | --- |
-| `pending` | ✓ | Vừa tạo, chờ owner duyệt rồi chờ thanh toán cọc, có `expires_at` |
-| `confirmed` | ✓ | Đã duyệt và đã trả cọc |
-| `in_use` | ✓ | Đang thuê |
-| `completed` | | Đã trả xe |
-| `rejected` | | Owner từ chối |
+| `pending` | ✓ | Vừa tạo. Chưa có `paid_at`: chờ khách thanh toán (15 phút). Đã có `paid_at`: chờ chủ xe duyệt (6 giờ). Có `expires_at` |
+| `confirmed` | ✓ | Đã thanh toán và chủ xe đã duyệt, chờ giao xe |
+| `in_use` | ✓ | Hai bên đã xác nhận giao xe, đang thuê |
+| `completed` | | Đã trả xe (hai bên xác nhận, hoặc tự hoàn tất sau 24 giờ kể từ `end_at`) |
+| `rejected` | | Chủ xe từ chối, khách được hoàn 100% |
 | `cancelled` | | Khách (hoặc admin) hủy |
-| `expired` | | Hết hạn giữ chỗ chưa thanh toán |
+| `expired` | | Hết hạn: khách không thanh toán trong 15 phút, hoặc chủ xe không trả lời trong 6 giờ (khi đó hoàn 100%) |
 
 Chuyển trạng thái hợp lệ:
 
 ```text
-pending   -> confirmed   (owner đã duyệt + IPN thanh toán thành công)
-pending   -> rejected    (owner từ chối)
-pending   -> cancelled   (khách hủy)
-pending   -> expired     (job quá expires_at)
-confirmed -> in_use      (owner xác nhận giao xe)
-confirmed -> cancelled   (khách/admin hủy, áp dụng hoàn cọc)
-in_use    -> completed   (owner xác nhận nhận lại xe)
+pending (chưa thanh toán) -> pending (đã thanh toán)   (khách thanh toán tiền thuê + tiền cọc)
+pending (đã thanh toán)   -> confirmed                 (chủ xe duyệt)
+pending (đã thanh toán)   -> rejected                  (chủ xe từ chối, hoàn 100%)
+pending                   -> cancelled                 (khách hủy, hoàn 100% nếu đã thanh toán)
+pending                   -> expired                   (quá expires_at, hoàn 100% nếu đã thanh toán)
+confirmed                 -> in_use                    (chủ xe xác nhận giao xe VÀ khách xác nhận nhận xe)
+confirmed                 -> cancelled                 (khách/admin hủy, áp dụng chính sách hoàn tiền)
+in_use                    -> completed                 (khách xác nhận trả xe VÀ chủ xe xác nhận nhận lại, hoặc quá 24 giờ sau end_at)
 ```
 
-Mọi chuyển khác trả 409 `INVALID_STATE`. Chỉ các trạng thái `pending`, `confirmed`, `in_use` nằm trong ràng buộc chống trùng lịch.
+Mọi chuyển khác trả 409 `INVALID_STATE`. Mỗi lần chuyển trạng thái kiểm tra điều kiện ngay trong câu `UPDATE` (trạng thái hiện tại, hạn giữ chỗ, quyền sở hữu), không đọc trước rồi ghi sau: hai thao tác đồng thời trên cùng một đơn (chủ xe duyệt đúng lúc khách hủy) thì đúng một bên thành công, bên kia nhận 409. Các endpoint của owner chỉ thao tác trên đơn thuộc xe của mình; đơn của xe người khác trả 404. Chỉ các trạng thái `pending`, `confirmed`, `in_use` nằm trong ràng buộc chống trùng lịch.
 
-Để biết đơn `pending` đã được owner duyệt hay chưa, dùng cột `owner_approved_at` (null = chưa duyệt). Thanh toán chỉ được tạo khi `owner_approved_at` khác null.
+Để biết đơn `pending` đang chờ khách thanh toán hay chờ chủ xe duyệt, dùng cột `paid_at` (null = chưa thanh toán). Chủ xe chỉ thấy và chỉ duyệt được đơn đã thanh toán. Các lần xác nhận của từng bên nằm ở bốn cột riêng (`owner_handed_over_at`, `renter_received_at`, `renter_returned_at`, `owner_received_back_at`); đơn chỉ đổi trạng thái khi đủ cả hai cột của một cặp.
 
 ## 4. Quy tắc nghiệp vụ
 
-- **Tiền:** số nguyên VND. `total = ngày_thuê × giá_ngày` (làm tròn lên theo 24 giờ **(đề xuất)**); `deposit = 30% × total` **(đề xuất)**, làm tròn VND.
+- **Tiền:** số nguyên VND. `total_amount` = tiền thuê = `ngày_thuê × giá_ngày` (ngày thuê làm tròn lên theo 24 giờ). `deposit_amount` = tiền cọc bảo đảm = `tỷ_lệ_cọc_của_xe × total_amount`, làm tròn VND; đây là khoản thu THÊM ngoài tiền thuê, ứng dụng giữ và hoàn lại khi trả xe (tỷ lệ cọc 0% là hợp lệ). Khách trả một lần `total_amount + deposit_amount` (`paid_amount`). Ứng dụng không thu phí trong MVP: chủ xe nhận đủ 100% tiền thuê.
+- **Sổ tiền của mỗi đơn** gồm ba số: `paid_amount` (khách đã trả), `refund_amount` (đã hoàn cho khách), `owner_payout_amount` (đã ghi nhận cho chủ xe). CSDL bảo đảm `refund_amount + owner_payout_amount <= paid_amount`: không bao giờ chi ra nhiều hơn số đã thu. Đơn hoàn tất thì tổng hai khoản đúng bằng `paid_amount`. Các lần ghi nhận: giao xe xong → chủ xe +50% tiền thuê (làm tròn xuống); trả xe xong → chủ xe + phần tiền thuê còn lại, khách + toàn bộ tiền cọc.
 - **Thời gian:** UTC (`timestamptz`), hiển thị theo `Asia/Ho_Chi_Minh`. Thuê tối thiểu 1 ngày, tối đa 30 ngày **(đề xuất)**; `start_at` phải ở tương lai và không quá 365 ngày kể từ lúc đặt **(đề xuất)**, để không ai giữ một xe cho một ngày quá xa. Số ngày thuê làm tròn lên theo 24 giờ: đúng 24 giờ là 1 ngày, 24 giờ 1 mili giây là 2 ngày.
 - **Hết hạn giữ chỗ:** đơn `pending` có `expires_at` đã qua thì không còn giữ lịch, kể cả khi job chưa kịp đổi nó thành `expired`. Mọi chỗ đọc lịch (tìm xe theo ngày, lịch trống) bỏ qua các đơn đó; mọi chỗ ghi lịch (tạo đơn, chủ xe chặn ngày) đổi chúng thành `expired` trước khi kiểm tra. Trạng thái trả cho client cũng vậy: đơn `pending` quá hạn được trả là `expired`, và bộ lọc `status` của danh sách đơn tính theo trạng thái đó. Job chỉ là việc dọn dẹp, lịch và trạng thái đúng không phụ thuộc vào việc job có chạy kịp hay không.
 - **Giới hạn đơn chờ:** mỗi khách có tối đa 3 đơn `pending` cùng lúc **(đề xuất)**, để một tài khoản không giữ chỗ hàng loạt nhiều xe. Đủ 3 đơn thì tạo thêm trả 409 `PENDING_LIMIT`.
 - **Chống trùng lịch:** ràng buộc `EXCLUDE USING gist` trong DB (xem README). Vi phạm → 409 `BOOKING_OVERLAP`. Lịch chặn của owner cũng là một dòng giữ lịch (bảng `vehicle_blocks`). `EXCLUDE` không chạy chéo hai bảng, nên tạo lịch chặn và tạo đơn đều lấy khóa tư vấn theo xe (`pg_advisory_xact_lock`) rồi kiểm tra bảng còn lại trong cùng transaction.
-- **Chính sách hủy và hoàn cọc (đề xuất):**
+- **Chính sách hoàn tiền khi khách hủy:** tiền cọc luôn được hoàn 100% (xe chưa được giao). Tiền thuê hoàn theo thời điểm hủy:
 
-| Thời điểm hủy | Hoàn cọc |
-| --- | --- |
-| Trước giờ nhận ≥ 48 giờ | 100% |
-| Từ 24 đến dưới 48 giờ | 50% |
-| Dưới 24 giờ | 0% |
-| Owner từ chối hoặc hủy | 100% |
+| Thời điểm hủy | Hoàn tiền thuê | Chủ xe nhận |
+| --- | --- | --- |
+| Chủ xe chưa duyệt (đơn còn `pending`) | 100% | 0 |
+| Đã `confirmed`, trước giờ nhận ≥ 48 giờ | 100% | 0 |
+| Đã `confirmed`, từ 24 đến dưới 48 giờ | 50% | 50% còn lại |
+| Đã `confirmed`, dưới 24 giờ | 0% | 100% |
+| Chủ xe từ chối, hoặc hết hạn 6 giờ | 100% | 0 |
 
-  Hoàn cọc ở sandbox chỉ ghi nhận trạng thái `refunded` trong `payments` (không gọi API hoàn tiền thật).
+  Hoàn tiền và ghi nhận cho chủ xe ở sandbox chỉ là số liệu trên đơn (và trạng thái `refunded` trong `payments` khi có cổng thanh toán), không gọi API chuyển tiền thật.
 - **Idempotency:** IPN thanh toán xử lý lặp lại nhiều lần vẫn cho kết quả như một lần (khóa theo mã giao dịch).
 
 ## 5. Mô hình dữ liệu (tóm tắt)
@@ -93,13 +97,13 @@ Mọi chuyển khác trả 409 `INVALID_STATE`. Chỉ các trạng thái `pendin
 | `vehicles` | id, owner_id, title, brand, model, year, plate_number (unique), seats, transmission, fuel, description, city, district, price_per_day, deposit_rate (% cọc, mặc định 30), status (`pending/approved/rejected/hidden`), reject_reason, reviewed_by, reviewed_at |
 | `vehicle_images` | id, vehicle_id, storage_key, position |
 | `vehicle_blocks` | id, vehicle_id, start_at, end_at, reason |
-| `bookings` | id, renter_id, vehicle_id, start_at, end_at, status, rental_days, price_per_day (chụp giá lúc đặt), total_amount, deposit_amount, expires_at, owner_approved_at, reject_reason, started_at, completed_at, cancelled_at, cancelled_by, refund_amount |
+| `bookings` | id, renter_id, vehicle_id, start_at, end_at, status, rental_days, price_per_day (chụp giá lúc đặt), total_amount (tiền thuê), deposit_amount (tiền cọc bảo đảm), expires_at, paid_at, paid_amount, owner_approved_at, reject_reason, owner_handed_over_at, renter_received_at, started_at, renter_returned_at, owner_received_back_at, completed_at, cancelled_at, cancelled_by, refund_amount, owner_payout_amount |
 | `payments` | id, booking_id, provider (`vnpay/momo`), txn_ref (unique, mã do hệ thống sinh), provider_txn_id (nullable), amount, status (`created/paid/failed/refunded`), raw_payload, paid_at, refunded_amount, refunded_at |
 | `license_access_logs` | id, actor_id, target_user_id, file_key, ip_address, accessed_at |
 
 Thiết kế chi tiết từng bảng (kiểu, ràng buộc, index) nằm trong `api/prisma/schema.prisma` và migration. Ngoài `bookings_no_overlap`, migration còn có: `vehicle_blocks_no_overlap` (EXCLUDE), mỗi đơn chỉ một `payments` trạng thái `paid`, và các CHECK về tiền và thời gian. `reviews` để sau MVP.
 
-Quyết định đã chốt khi thiết kế CSDL: `deposit_rate` là phần trăm theo xe (form đăng xe nhập tỷ lệ, không nhập số tiền); `bookings.expires_at` đặt lại 15 phút khi chủ xe duyệt để khách có thời gian thanh toán; một tài khoản một vai trò; chưa có bảng đánh giá.
+Quyết định đã chốt khi thiết kế CSDL: `deposit_rate` là phần trăm theo xe (form đăng xe nhập tỷ lệ, không nhập số tiền); `bookings.expires_at` là hạn của bước đang chờ (15 phút chờ khách thanh toán, rồi 6 giờ chờ chủ xe duyệt); một tài khoản một vai trò; chưa có bảng đánh giá.
 
 ## 6. Xác minh GPLX
 
@@ -150,20 +154,26 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 ### Đơn
 | Method | Path | Quyền | Mô tả |
 | --- | --- | --- | --- |
-| POST | /bookings | renter | Tạo đơn `{ vehicleId, startAt, endAt }` (ISO 8601 có múi giờ). Đơn `pending`, giữ lịch trong lúc chờ chủ xe duyệt: `expires_at` = lúc tạo + 6 giờ, không muộn hơn `startAt`; `rentalDays`, `pricePerDay` (chụp giá lúc đặt), `totalAmount`, `depositAmount` do hệ thống tính (`deposit = round(total × depositRate / 100)`). Lỗi: 400 `VALIDATION_ERROR` (thời gian sai, ngoài 1 đến 30 ngày, `start_at` đã qua hoặc quá 365 ngày), 403 `LICENSE_NOT_VERIFIED` (GPLX chưa được xác minh), 404 (xe không tồn tại hoặc chưa `approved`), 409 `BOOKING_OVERLAP` (trùng đơn đang giữ lịch hoặc lịch chặn của chủ xe), 409 `PENDING_LIMIT`. Trùng đơn khác do ràng buộc `bookings_no_overlap` quyết định, không do kiểm tra bằng code. Gửi lại đúng yêu cầu cũ (cùng khách, cùng xe, cùng `startAt` và `endAt`, đơn còn hạn) thì trả lại đơn đã tạo chứ không tạo đơn mới và không báo trùng lịch, để bấm hai lần hoặc gửi lại sau khi rớt mạng không gây lỗi giả. Có giới hạn tốc độ riêng. Trả 201 |
+| POST | /bookings | renter | Tạo đơn `{ vehicleId, startAt, endAt }` (ISO 8601 có múi giờ). Đơn `pending` chưa thanh toán, giữ lịch 15 phút chờ khách trả tiền (`expires_at`, không muộn hơn `startAt`). `rentalDays`, `pricePerDay` (chụp giá lúc đặt), `totalAmount`, `depositAmount` do hệ thống tính; `payableAmount` = `totalAmount + depositAmount` là số khách phải trả. Lỗi: 400 `VALIDATION_ERROR` (thời gian sai, ngoài 1 đến 30 ngày, `start_at` đã qua hoặc quá 365 ngày), 403 `LICENSE_NOT_VERIFIED`, 404 (xe không tồn tại hoặc chưa `approved`), 409 `BOOKING_OVERLAP` (trùng đơn đang giữ lịch hoặc lịch chặn), 409 `PENDING_LIMIT`. Trùng đơn khác do ràng buộc `bookings_no_overlap` quyết định, không do kiểm tra bằng code. Gửi lại đúng yêu cầu cũ (cùng khách, xe, `startAt`, `endAt`, đơn còn hạn) thì trả lại đơn đã tạo. Có giới hạn tốc độ riêng. Trả 201 |
 | GET | /bookings | renter | Đơn của tôi, mới nhất trước. Query `status`, `page`, `limit`. Mỗi đơn kèm `vehicle` `{ id, title, city, district, coverUrl }` |
-| GET | /bookings/:id | renter/owner/admin | Chi tiết, kèm `vehicle`. Khách chỉ xem đơn của mình, chủ xe chỉ xem đơn trên xe của mình, admin xem mọi đơn; người khác trả 404, không trả 403. Chủ xe và admin thấy thêm `renter` `{ fullName, phone }` |
-| POST | /bookings/:id/cancel | renter | Hủy, trả về số tiền hoàn |
-| GET | /owner/bookings | owner | Đơn trên xe của tôi |
-| POST | /owner/bookings/:id/approve | owner | Duyệt |
-| POST | /owner/bookings/:id/reject | owner | Từ chối `{ reason }` |
-| POST | /owner/bookings/:id/start | owner | Giao xe → `in_use` |
-| POST | /owner/bookings/:id/complete | owner | Nhận lại xe → `completed` |
+| GET | /bookings/:id | renter/owner/admin | Chi tiết, kèm `vehicle`. Khách chỉ xem đơn của mình, chủ xe chỉ xem đơn trên xe của mình, admin xem mọi đơn; người khác trả 404, không trả 403. Chủ xe và admin thấy thêm `renter` `{ fullName, phone }` và `ownerPayoutAmount` |
+| POST | /bookings/:id/pay | renter | Thanh toán `payableAmount` cho đơn `pending` chưa thanh toán và còn hạn. Thành công: ghi `paid_at`, `paid_amount`, đặt `expires_at` = lúc thanh toán + 6 giờ (không muộn hơn `startAt`) cho chủ xe duyệt. Gọi lặp lại trên đơn đã thanh toán vẫn thành công và không thu lần hai. Trạng thái khác hoặc đơn quá hạn trả 409 `INVALID_STATE` |
+| POST | /bookings/:id/cancel | renter | Hủy đơn `pending` còn hạn hoặc `confirmed`. Tiền hoàn theo chính sách ở mục 4, ghi vào `refundAmount`; phần tiền thuê không hoàn ghi cho chủ xe. Ghi `cancelled_at`, `cancelled_by`. Gọi lặp lại trên đơn đã hủy vẫn thành công và không tính lại tiền. Trạng thái khác trả 409 `INVALID_STATE` |
+| POST | /bookings/:id/pickup | renter | Khách xác nhận **đã nhận xe**. Đơn phải `confirmed` và trong khung giờ giao xe (từ 1 giờ trước `startAt` đến trước `endAt`). Ghi `renter_received_at`. Khi chủ xe cũng đã xác nhận giao xe thì đơn thành `in_use` và chủ xe được ghi nhận 50% tiền thuê. Gọi lặp lại vẫn thành công |
+| POST | /bookings/:id/return | renter | Khách xác nhận **đã trả xe**. Đơn phải `in_use`. Ghi `renter_returned_at`. Khi chủ xe cũng đã xác nhận nhận lại xe thì đơn thành `completed`: chủ xe được ghi nhận phần tiền thuê còn lại, khách được hoàn tiền cọc. Gọi lặp lại vẫn thành công |
+| GET | /owner/bookings | owner | Đơn trên các xe của tôi, mới nhất trước. Chỉ gồm đơn khách đã thanh toán (đơn chưa thanh toán chưa phải là yêu cầu thật). Query `status`, `page`, `limit`. Mỗi đơn kèm `vehicle`, `renter` `{ fullName, phone }` và `ownerPayoutAmount` |
+| POST | /owner/bookings/:id/approve | owner | Duyệt đơn `pending` đã thanh toán và còn hạn → `confirmed`, ghi `owner_approved_at`. Đơn chưa thanh toán, quá hạn hoặc ở trạng thái khác trả 409 `INVALID_STATE`. Gọi lặp lại trên đơn đã `confirmed` vẫn thành công |
+| POST | /owner/bookings/:id/reject | owner | Từ chối đơn `pending` đã thanh toán và còn hạn. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). → `rejected`, hoàn 100% cho khách. Gọi lặp lại trên đơn đã từ chối vẫn thành công và giữ lý do đầu tiên. Trạng thái khác trả 409 `INVALID_STATE` |
+| POST | /owner/bookings/:id/handover | owner | Chủ xe xác nhận **đã giao xe**. Điều kiện và kết quả như `/bookings/:id/pickup`, ghi `owner_handed_over_at` |
+| POST | /owner/bookings/:id/receive | owner | Chủ xe xác nhận **đã nhận lại xe**. Điều kiện và kết quả như `/bookings/:id/return`, ghi `owner_received_back_at` |
+
+Quy tắc chung của các endpoint đổi trạng thái: sai trạng thái trả 409 `INVALID_STATE`; đơn không phải của mình (hoặc không thuộc xe của mình) trả 404; mỗi bên chỉ ghi được xác nhận của chính mình, không xác nhận thay bên kia.
 
 ### Thanh toán
+Cho tới khi tích hợp cổng VNPay/MoMo sandbox (PLAN Ngày 15 và 16), `POST /bookings/:id/pay` ở chế độ **thanh toán tức thì**: ghi nhận đã thanh toán ngay, không qua cổng. Khi có cổng, endpoint này sẽ tạo giao dịch và trả `paymentUrl`, còn việc ghi nhận đã thanh toán chuyển sang IPN; phần còn lại của luồng không đổi.
+
 | Method | Path | Quyền | Mô tả |
 | --- | --- | --- | --- |
-| POST | /bookings/:id/pay | renter | Tạo giao dịch, trả `paymentUrl` |
 | GET | /payments/vnpay/return | công khai | Người dùng quay về, chỉ để hiển thị |
 | GET | /payments/vnpay/ipn | cổng thanh toán | Nguồn sự thật: xác thực chữ ký, idempotent, cập nhật payment và booking |
 
@@ -185,7 +195,8 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 
 | Job | Chu kỳ | Việc |
 | --- | --- | --- |
-| Hết hạn giữ chỗ | mỗi phút | `pending` có `expires_at < now()` → `expired` |
+| Hết hạn giữ chỗ | mỗi phút | `pending` có `expires_at < now()` → `expired`; đơn đã thanh toán thì hoàn 100% (`refund_amount = paid_amount`) |
+| Tự hoàn tất đơn | mỗi phút | `in_use` đã quá `end_at` 24 giờ mà chưa đủ hai xác nhận trả xe → `completed`, ghi nhận tiền như khi trả xe |
 | Sao lưu DB | hằng ngày | `pg_dump`, giữ 7 bản |
 | Sao lưu bù | mỗi giờ (04 đến 23 giờ) | Nếu hôm nay chưa có bản sao lưu (máy tắt hoặc tạm dừng lúc 03:00) thì sao lưu DB, ảnh và thử khôi phục ngay |
 | Sao lưu ảnh xe | hằng ngày, sau bản DB | `tar` volume `uploads`, giữ 7 bản; thử khôi phục hằng tuần và đối chiếu với DB |
@@ -199,7 +210,7 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 
 ## 10. Câu hỏi còn mở
 
-1. Chấp nhận các mặc định (cọc 30%, chính sách hoàn cọc) hay đổi? Thời hạn đã chốt: chủ xe có 6 giờ để duyệt đơn, khách có 15 phút để thanh toán sau khi được duyệt.
+1. Chấp nhận các mặc định (cọc 30%, chính sách hoàn cọc) hay đổi? Đã chốt: khách trả tiền thuê + tiền cọc trong 15 phút sau khi đặt; chủ xe có 6 giờ để duyệt đơn đã thanh toán; giao xe và trả xe cần hai phía xác nhận; chủ xe nhận 50% tiền thuê khi giao xe và 50% khi trả xe; tiền cọc do ứng dụng giữ và hoàn khi trả xe. Xử lý tranh chấp về tình trạng xe và trường hợp một bên không đến để sau MVP.
 2. ~~Một tài khoản một vai trò~~ — đã chốt: một tài khoản một vai trò; sau đăng nhập chủ xe vào `/owner`, quản trị vào `/admin`, khách quay lại trang đang đứng trước khi đăng nhập.
 3. Chọn VNPay hay MoMo làm cổng đầu tiên?
 4. Có nhận xe có tài xế/giao xe tận nơi không (hiện tại: không)?

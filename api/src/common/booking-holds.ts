@@ -33,9 +33,12 @@ export function bookingStatusWhere(status: BookingStatus, now: Date): Prisma.Boo
 // Dùng ở chỗ GHI lịch (tạo đơn, chủ xe chặn ngày), sau khi đã lấy khóa theo xe: đổi hẳn các đơn pending quá hạn của xe này
 // thành expired. Phải đổi thật chứ không chỉ bỏ qua khi đọc, vì ràng buộc chống trùng của CSDL (bookings_no_overlap) vẫn
 // tính mọi đơn pending, và để không tồn tại một đơn pending nằm chồng lên lịch chặn hay đơn mới.
+// Đơn quá hạn mà khách đã thanh toán (chủ xe không trả lời trong 6 giờ) được hoàn 100%: refund_amount = paid_amount. Với đơn
+// chưa thanh toán paid_amount là 0 nên cùng một câu lệnh đúng cho cả hai trường hợp. Viết SQL thô vì Prisma không gán được
+// một cột bằng giá trị của cột khác.
 export async function releaseExpiredHolds(tx: Prisma.TransactionClient, vehicleId: string, now: Date): Promise<void> {
-  await tx.booking.updateMany({
-    where: { vehicleId, status: "pending", expiresAt: { lt: now } },
-    data: { status: "expired" },
-  });
+  await tx.$executeRaw`
+    UPDATE bookings
+    SET status = 'expired', refund_amount = paid_amount, updated_at = now()
+    WHERE vehicle_id = ${vehicleId}::uuid AND status = 'pending' AND expires_at < ${now}`;
 }

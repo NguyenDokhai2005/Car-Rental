@@ -161,9 +161,12 @@ async function main() {
     paid: boolean;
   };
   const bookings: BookingSeed[] = [
+    // Chưa thanh toán: còn 15 phút để trả, chủ xe chưa thấy đơn
     { car: "vios", start: "2026-10-12", end: "2026-10-14", days: 2, status: "pending", approved: false, paid: false },
+    // Đã thanh toán và chủ xe đã duyệt
     { car: "vf6", start: "2026-10-25", end: "2026-10-27", days: 2, status: "confirmed", approved: true, paid: true },
-    { car: "cx5", start: "2026-11-02", end: "2026-11-05", days: 3, status: "pending", approved: true, paid: false },
+    // Đã thanh toán, đang chờ chủ xe duyệt trong 6 giờ
+    { car: "cx5", start: "2026-11-02", end: "2026-11-05", days: 3, status: "pending", approved: false, paid: true },
   ];
 
   for (const [index, b] of bookings.entries()) {
@@ -182,8 +185,11 @@ async function main() {
         pricePerDay: price,
         totalAmount: total,
         depositAmount: deposit,
-        // Đơn chờ thanh toán còn 15 phút kể từ lúc chủ xe duyệt (SPEC §2)
-        expiresAt: b.status === "pending" ? new Date(now.getTime() + 15 * 60 * 1000) : null,
+        // Đơn pending: 15 phút để thanh toán, hoặc 6 giờ để chủ xe duyệt nếu đã thanh toán (SPEC §2)
+        expiresAt: b.status === "pending" ? new Date(now.getTime() + (b.paid ? 6 * 60 : 15) * 60 * 1000) : null,
+        // Khách trả tiền thuê + tiền cọc một lần khi đặt
+        paidAt: b.paid ? now : null,
+        paidAmount: b.paid ? total + deposit : 0,
         ownerApprovedAt: b.approved ? now : null,
       },
     });
@@ -194,7 +200,7 @@ async function main() {
           provider: "vnpay",
           txnRef: `SEED-${index + 1}`,
           providerTxnId: `VNP-SEED-${index + 1}`,
-          amount: deposit,
+          amount: total + deposit,
           status: "paid",
           paidAt: now,
           rawPayload: { note: "dữ liệu mẫu" },

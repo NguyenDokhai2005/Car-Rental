@@ -12,8 +12,17 @@ const BOOKING_FIELDS = {
   totalAmount: true,
   depositAmount: true,
   expiresAt: true,
+  paidAt: true,
+  paidAmount: true,
   ownerApprovedAt: true,
   rejectReason: true,
+  ownerHandedOverAt: true,
+  renterReceivedAt: true,
+  startedAt: true,
+  renterReturnedAt: true,
+  ownerReceivedBackAt: true,
+  completedAt: true,
+  cancelledAt: true,
   refundAmount: true,
   createdAt: true,
 } satisfies Prisma.BookingSelect;
@@ -37,6 +46,7 @@ export const BOOKING_SELECT = {
 export const BOOKING_DETAIL_SELECT = {
   ...BOOKING_FIELDS,
   renterId: true,
+  ownerPayoutAmount: true,
   vehicle: { select: { ...VEHICLE_SUMMARY, ownerId: true } },
   renter: { select: { fullName: true, phone: true } },
 } satisfies Prisma.BookingSelect;
@@ -46,5 +56,7 @@ export type BookingDetailRow = Prisma.BookingGetPayload<{ select: typeof BOOKING
 
 export type BookingVehicle = { id: string; title: string; city: string; district: string; coverUrl: string | null };
 
-export type BookingView = Omit<BookingRow, "vehicle"> & { vehicle: BookingVehicle };
-export type BookingDetailView = BookingView & { renter?: { fullName: string; phone: string } };
+// payableAmount = tiền thuê + tiền cọc: số khách phải trả một lần khi đặt.
+export type BookingView = Omit<BookingRow, "vehicle"> & { payableAmount: number; vehicle: BookingVehicle };
+// renter và ownerPayoutAmount chỉ có khi người xem là chủ xe hoặc admin.
+export type BookingDetailView = BookingView & { renter?: { fullName: string; phone: string }; ownerPayoutAmount?: number };

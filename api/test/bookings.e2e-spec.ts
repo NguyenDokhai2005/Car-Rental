@@ -45,7 +45,7 @@ describe("Bookings API", () => {
   }
 
   describe("POST /api/bookings", () => {
-    it("tạo đơn: pending, chủ xe có 6 giờ để duyệt, tiền do hệ thống tính (2 ngày x 650.000đ, cọc 30%)", async () => {
+    it("tạo đơn: pending chưa thanh toán, khách có 15 phút để trả; tiền do hệ thống tính (2 ngày x 650.000đ, cọc 30% thu thêm)", async () => {
       const { vehicle, who, book } = await setup({ pricePerDay: 650000, depositRate: 30 });
       const before = Date.now();
       const res = await book({ vehicleId: vehicle.id, ...range(1, 3) });
@@ -58,23 +58,26 @@ describe("Bookings API", () => {
         pricePerDay: 650000,
         totalAmount: 1_300_000,
         depositAmount: 390_000,
+        payableAmount: 1_690_000,
+        paidAt: null,
+        paidAmount: 0,
         ownerApprovedAt: null,
         rejectReason: null,
         refundAmount: 0,
       });
       const holdMs = Date.parse(res.body.expiresAt) - before;
-      expect(holdMs).toBeGreaterThan(6 * HOUR_MS - 5_000);
-      expect(holdMs).toBeLessThan(6 * HOUR_MS + 10_000);
+      expect(holdMs).toBeGreaterThan(15 * 60_000 - 5_000);
+      expect(holdMs).toBeLessThan(15 * 60_000 + 10_000);
       expect(res.body.vehicle).toMatchObject({ id: vehicle.id, title: vehicle.title, city: vehicle.city, district: vehicle.district, coverUrl: null });
 
       const row = await ctx.prisma.booking.findUniqueOrThrow({ where: { id: res.body.id } });
       expect(row.renterId).toBe(who.user.id);
     });
 
-    it("nhận xe sớm hơn 6 giờ nữa: hạn duyệt là giờ nhận xe, không vượt quá lúc chuyến đi bắt đầu", async () => {
+    it("nhận xe sớm hơn 15 phút nữa: hạn thanh toán là giờ nhận xe, không vượt quá lúc chuyến đi bắt đầu", async () => {
       const { vehicle, book } = await setup();
-      const startAt = iso(Date.now() + 2 * HOUR_MS);
-      const res = await book({ vehicleId: vehicle.id, startAt, endAt: iso(Date.now() + 2 * HOUR_MS + DAY_MS) });
+      const startAt = iso(Date.now() + 5 * 60_000);
+      const res = await book({ vehicleId: vehicle.id, startAt, endAt: iso(Date.now() + 5 * 60_000 + DAY_MS) });
       expect(res.status).toBe(201);
       expect(res.body.expiresAt).toBe(startAt);
     });
@@ -86,13 +89,13 @@ describe("Bookings API", () => {
       expect(text).not.toContain(who.user.id);
       expect(text).not.toContain(owner.user.id);
       expect(text).not.toContain(vehicle.plateNumber);
-      expect(text).not.toMatch(/renterId|ownerId|cancelledBy|plateNumber|email|phone/);
+      expect(text).not.toMatch(/renterId|ownerId|cancelledBy|plateNumber|email|phone|ownerPayoutAmount/);
     });
 
     it("tỷ lệ cọc lấy theo từng xe và làm tròn VND", async () => {
       const { vehicle, book } = await setup({ pricePerDay: 50_005, depositRate: 30 });
       const res = await book({ vehicleId: vehicle.id, ...range(1, 2) });
-      expect(res.body).toMatchObject({ totalAmount: 50_005, depositAmount: 15_002 }); // 15.001,5 làm tròn lên
+      expect(res.body).toMatchObject({ totalAmount: 50_005, depositAmount: 15_002, payableAmount: 65_007 }); // 15.001,5 làm tròn lên
     });
 
     it("làm tròn LÊN theo 24 giờ: 25 giờ là 2 ngày, đúng 24 giờ là 1 ngày", async () => {
@@ -112,11 +115,15 @@ describe("Bookings API", () => {
       expect(row).toMatchObject({ pricePerDay: 600_000, totalAmount: 600_000 });
     });
 
-    it("xe giá trần thuê 30 ngày vẫn tạo được (tổng tiền vừa số nguyên 32 bit)", async () => {
-      const { vehicle, book } = await setup({ pricePerDay: 70_000_000, depositRate: 100 });
+    it("xe giá trần, thuê 30 ngày, cọc 100%: tạo được VÀ thanh toán được (số khách trả vừa số nguyên 32 bit)", async () => {
+      const { vehicle, who, book } = await setup({ pricePerDay: 35_000_000, depositRate: 100 });
       const res = await book({ vehicleId: vehicle.id, startAt: iso(BASE), endAt: iso(BASE + 30 * DAY_MS) });
       expect(res.status).toBe(201);
-      expect(res.body).toMatchObject({ rentalDays: 30, totalAmount: 2_100_000_000, depositAmount: 2_100_000_000 });
+      expect(res.body).toMatchObject({ rentalDays: 30, totalAmount: 1_050_000_000, depositAmount: 1_050_000_000, payableAmount: 2_100_000_000 });
+
+      const paid = await http().post(`/api/bookings/${res.body.id}/pay`).set(who.auth);
+      expect(paid.status).toBe(200);
+      expect(paid.body.paidAmount).toBe(2_100_000_000);
     });
 
     describe("kiểm tra dữ liệu", () => {
@@ -313,7 +320,10 @@ describe("Bookings API", () => {
         await ctx.prisma.booking.update({ where: { id: first.body.id }, data: { status: "cancelled", cancelledAt: new Date() } });
         expect((await book({ vehicleId: vehicle.id, ...range(10, 11) }, who)).status).toBe(201);
 
-        await ctx.prisma.booking.updateMany({ where: { renterId: who.user.id, status: "pending" }, data: { status: "confirmed" } });
+        // CSDL chỉ cho đơn confirmed khi đã thanh toán, nên ghi luôn khoản thanh toán.
+        await ctx.prisma.$executeRaw`
+          UPDATE bookings SET status = 'confirmed', paid_at = now(), paid_amount = total_amount + deposit_amount
+          WHERE renter_id = ${who.user.id}::uuid AND status = 'pending'`;
         expect((await book({ vehicleId: vehicle.id, ...range(13, 14) }, who)).status).toBe(201);
       });
 
@@ -470,19 +480,23 @@ describe("Bookings API", () => {
         data: {
           vehicleId: s.vehicle.id, renterId: s.who.user.id, startAt: new Date(BASE + DAY_MS), endAt: new Date(BASE + 3 * DAY_MS),
           status: "pending", rentalDays: 2, pricePerDay: 650000, totalAmount: 1_300_000, depositAmount: 390_000,
+          // Khách đã thanh toán nhưng chủ xe không trả lời trong 6 giờ.
+          paidAt: new Date(Date.now() - 7 * HOUR_MS), paidAmount: 1_690_000,
           expiresAt: new Date(Date.now() - 60_000),
         },
       });
-      expect((await ctx.prisma.booking.findUniqueOrThrow({ where: { id: stale.id } })).status).toBe("pending"); // CSDL vẫn ghi pending
+      const saved = await ctx.prisma.booking.findUniqueOrThrow({ where: { id: stale.id } });
+      expect(saved).toMatchObject({ status: "pending", refundAmount: 0 }); // CSDL vẫn ghi pending và chưa ghi tiền hoàn
       return { ...s, staleId: stale.id, liveId: live.body.id as string };
     }
     const idsOf = (body: { items: { id: string }[] }) => body.items.map((b) => b.id).sort();
 
-    it("chi tiết đơn: trả expired cho khách, chủ xe và admin", async () => {
+    it("chi tiết đơn: trả expired và số tiền hoàn đầy đủ cho khách, chủ xe và admin, dù job chưa ghi", async () => {
       const { who, owner, staleId } = await withStale();
       const admin = await makeUser(ctx, "admin");
       for (const viewer of [who, owner, admin]) {
-        expect((await http().get(`/api/bookings/${staleId}`).set(viewer.auth)).body.status).toBe("expired");
+        const res = await http().get(`/api/bookings/${staleId}`).set(viewer.auth);
+        expect(res.body).toMatchObject({ status: "expired", refundAmount: 1_690_000 });
       }
     });
 
@@ -556,11 +570,21 @@ describe("Bookings API", () => {
   });
 
   describe("GET /api/bookings/:id", () => {
-    async function withBooking() {
+    async function withBooking({ pay = true } = {}) {
       const ctxData = await setup();
       const res = await ctxData.book({ vehicleId: ctxData.vehicle.id, ...range(1, 3) });
-      return { ...ctxData, id: res.body.id as string };
+      const id = res.body.id as string;
+      if (pay) expect((await http().post(`/api/bookings/${id}/pay`).set(ctxData.who.auth)).status).toBe(200);
+      return { ...ctxData, id };
     }
+
+    it("đơn khách chưa thanh toán: chủ xe chưa thấy (404), khách và admin vẫn xem được", async () => {
+      const { owner, who, id } = await withBooking({ pay: false });
+      const admin = await makeUser(ctx, "admin");
+      expect((await http().get(`/api/bookings/${id}`).set(owner.auth)).status).toBe(404);
+      expect((await http().get(`/api/bookings/${id}`).set(who.auth)).status).toBe(200);
+      expect((await http().get(`/api/bookings/${id}`).set(admin.auth)).status).toBe(200);
+    });
 
     it("khách xem đơn của mình: không có thông tin liên hệ khách", async () => {
       const { who, id } = await withBooking();
@@ -568,6 +592,7 @@ describe("Bookings API", () => {
       expect(res.status).toBe(200);
       expect(res.body.id).toBe(id);
       expect(res.body.renter).toBeUndefined();
+      expect(res.body.ownerPayoutAmount).toBeUndefined();
     });
 
     it("chủ xe của chiếc xe đó và admin xem được, kèm tên và số điện thoại khách", async () => {
@@ -577,6 +602,7 @@ describe("Bookings API", () => {
         const res = await http().get(`/api/bookings/${id}`).set(viewer.auth);
         expect(res.status).toBe(200);
         expect(res.body.renter).toEqual({ fullName: who.user.fullName, phone: who.user.phone });
+        expect(res.body.ownerPayoutAmount).toBe(0);
       }
     });
 

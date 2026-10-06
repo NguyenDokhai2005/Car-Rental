@@ -2,21 +2,14 @@ import { Injectable } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
 import { ApiError } from "../common/api-error";
 import type { AuthUser } from "../common/decorators/current-user.decorator";
-import { bookingStatusWhere, effectiveBookingStatus, releaseExpiredHolds } from "../common/booking-holds";
+import { bookingStatusWhere, releaseExpiredHolds } from "../common/booking-holds";
 import { isExclusionViolation } from "../common/db-errors";
 import { PrismaService } from "../common/prisma/prisma.service";
 import { lockRenter, lockVehicle } from "../common/vehicle-lock";
-import { StorageService } from "../storage/storage.service";
 import type { Page } from "../vehicles/vehicle.view";
-import { MAX_PENDING_PER_RENTER, ownerResponseDeadline, quote, rangeProblem, rentalDays } from "./booking-rules";
-import {
-  BOOKING_DETAIL_SELECT,
-  BOOKING_SELECT,
-  BookingDetailRow,
-  BookingDetailView,
-  BookingRow,
-  BookingView,
-} from "./booking.view";
+import { BookingPresenter } from "./booking-presenter";
+import { MAX_PENDING_PER_RENTER, paymentDeadline, quote, rangeProblem, rentalDays } from "./booking-rules";
+import { BOOKING_DETAIL_SELECT, BOOKING_SELECT, BookingDetailRow, BookingDetailView, BookingView } from "./booking.view";
 import type { CreateBookingDto } from "./dto/create-booking.dto";
 import type { ListBookingsQuery } from "./dto/list-bookings.query";
 
@@ -28,18 +21,8 @@ function overlap(): ApiError {
 export class BookingsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly storage: StorageService,
+    private readonly presenter: BookingPresenter,
   ) {}
-
-  // `status` trả ra là trạng thái người dùng phải thấy: đơn pending quá hạn là expired dù job chưa đổi trong CSDL.
-  private toView({ vehicle, ...fields }: BookingRow, now: Date = new Date()): BookingView {
-    const { images, ...summary } = vehicle;
-    return {
-      ...fields,
-      status: effectiveBookingStatus(fields.status, fields.expiresAt, now),
-      vehicle: { ...summary, coverUrl: images[0] ? this.storage.publicUrl(images[0].storageKey) : null },
-    };
-  }
 
   // Tạo đơn. Hai lớp bảo vệ chống đặt trùng, đúng như SPEC §4:
   //  1. Đơn với đơn: do ràng buộc EXCLUDE bookings_no_overlap của CSDL quyết định. Code KHÔNG tự kiểm tra rồi mới ghi (hai
@@ -112,12 +95,12 @@ export class BookingsService {
             pricePerDay: vehicle.pricePerDay, // chụp giá lúc đặt: chủ xe đổi giá sau đó không làm đổi đơn đã tạo
             totalAmount,
             depositAmount,
-            expiresAt: ownerResponseDeadline(now, startAt), // hạn chủ xe duyệt: 6 giờ, không muộn hơn giờ nhận xe
+            expiresAt: paymentDeadline(now, startAt), // hạn khách thanh toán: 15 phút, không muộn hơn giờ nhận xe
           },
           select: BOOKING_SELECT,
         });
       });
-      return this.toView(row);
+      return this.presenter.toView(row);
     } catch (error) {
       if (isExclusionViolation(error, "bookings_no_overlap")) throw overlap();
       throw error;
@@ -137,7 +120,7 @@ export class BookingsService {
       }),
       this.prisma.booking.count({ where }),
     ]);
-    return { items: rows.map((row) => this.toView(row, now)), total, page: query.page, limit: query.limit };
+    return { items: rows.map((row) => this.presenter.toView(row, now)), total, page: query.page, limit: query.limit };
   }
 
   // Khách xem đơn của mình, chủ xe xem đơn trên xe của mình, admin xem mọi đơn. Người khác nhận 404 như đơn không tồn tại,
@@ -149,12 +132,33 @@ export class BookingsService {
     });
 
     const isRenter = row?.renterId === user.id;
-    const isOwner = row?.vehicle.ownerId === user.id;
+    // Chủ xe chỉ thấy đơn khách đã thanh toán: đơn chưa thanh toán chưa phải là một yêu cầu thật gửi tới họ.
+    const isOwner = row?.vehicle.ownerId === user.id && row.paidAt !== null;
     const isAdmin = user.role === "admin";
     if (!row || !(isRenter || isOwner || isAdmin)) throw new ApiError(404, "NOT_FOUND", "Không tìm thấy đơn.");
 
-    const { renterId: _renterId, renter, vehicle: { ownerId: _ownerId, ...vehicle }, ...fields } = row;
-    const view = this.toView({ ...fields, vehicle });
-    return isOwner || isAdmin ? { ...view, renter } : view;
+    return this.presenter.toDetail(row, isOwner || isAdmin);
+  }
+
+  // Đơn trên các xe của một chủ xe. Điều kiện ownerId nằm trong WHERE (qua quan hệ với xe) nên không bao giờ lẫn đơn trên xe của
+  // người khác. Chủ xe cần liên hệ khách để giao xe nên được thấy tên và số điện thoại của khách.
+  async listForOwner(ownerId: string, query: ListBookingsQuery): Promise<Page<BookingDetailView>> {
+    const now = new Date();
+    const where: Prisma.BookingWhereInput = {
+      vehicle: { ownerId },
+      paidAt: { not: null }, // chỉ đơn khách đã thanh toán (xem getOne)
+      ...(query.status ? bookingStatusWhere(query.status, now) : {}),
+    };
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.booking.findMany({
+        where,
+        select: BOOKING_DETAIL_SELECT,
+        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+        skip: (query.page - 1) * query.limit,
+        take: query.limit,
+      }),
+      this.prisma.booking.count({ where }),
+    ]);
+    return { items: rows.map((row) => this.presenter.toDetail(row, true, now)), total, page: query.page, limit: query.limit };
   }
 }
