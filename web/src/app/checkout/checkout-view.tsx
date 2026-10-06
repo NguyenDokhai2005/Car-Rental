@@ -2,17 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
-import { formatVnd, type Car } from "@/lib/cars";
+import { apiErrorMessage } from "@/lib/api/error-message";
+import { useAuth } from "@/lib/auth/auth-context";
+import { getBooking, renterAction } from "@/lib/bookings/api";
+import { Booking, effectiveStatus, formatClock, formatVnDateTime } from "@/lib/bookings/rules";
+import { formatVnd } from "@/lib/cars";
 
-const RENTAL_DAYS = 2;
-
-const METHODS = [
-  { id: "vnpay", name: "VNPay", note: "Thẻ ATM nội địa, QR" },
-  { id: "momo", name: "MoMo", note: "Ví điện tử" },
-];
+type Load = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; booking: Booking };
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -20,18 +20,6 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
       <h2 className="text-xl font-bold text-ink">{title}</h2>
       {children}
     </section>
-  );
-}
-
-function Input({ label, placeholder }: { label: string; placeholder: string }) {
-  return (
-    <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-      <span className="text-sm font-semibold text-ink">{label}</span>
-      <input
-        placeholder={placeholder}
-        className="h-12 w-full rounded-[10px] border border-[#c5d2e3] bg-white px-3.5 text-[15px] text-ink placeholder:text-[#8a99ae]"
-      />
-    </label>
   );
 }
 
@@ -45,9 +33,7 @@ function Step({ index, label, state }: { index: number; label: string; state: "d
       >
         {state === "done" ? <Image src="/icons/check-white-16.svg" alt="" width={16} height={16} /> : index}
       </span>
-      <span className={`text-[15px] ${state === "todo" ? "font-medium text-muted" : "font-semibold text-ink"}`}>
-        {label}
-      </span>
+      <span className={`text-[15px] ${state === "todo" ? "font-medium text-muted" : "font-semibold text-ink"}`}>{label}</span>
     </div>
   );
 }
@@ -56,27 +42,113 @@ function Line() {
   return <span className="h-0.5 w-16 bg-[#c5d2e3]" />;
 }
 
-export function CheckoutView({ car }: { car: Car }) {
-  const [method, setMethod] = useState("vnpay");
-  const [agreed, setAgreed] = useState(false);
-  const subtotal = car.pricePerDay * RENTAL_DAYS;
-
-  const rows = [
-    { label: "Nhận xe", value: "12/10/2026, 09:00" },
-    { label: "Trả xe", value: "14/10/2026, 09:00" },
-  ];
-
+function Row({ label, value }: { label: string; value: string }) {
   return (
-    <>
-      <Header />
-      <main className="flex justify-center pt-8 pb-16">
-        <div className="flex w-full max-w-page flex-col gap-7">
+    <div className="flex justify-between gap-4 text-[15px]">
+      <span className="text-muted">{label}</span>
+      <span className="text-right font-semibold text-ink">{value}</span>
+    </div>
+  );
+}
+
+// Thông báo thay cho form khi đơn không còn ở bước "chờ thanh toán" (đã trả, đã hủy, hết hạn...).
+function Notice({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mx-auto flex w-full max-w-[560px] flex-col items-center gap-4 rounded-2xl border border-line bg-white p-8 text-center">
+      <h1 className="text-2xl font-bold text-ink">{title}</h1>
+      <p className="text-[15px] leading-6 text-muted">{children}</p>
+      <div className="flex gap-3">
+        <Link href="/bookings" className="flex h-12 items-center rounded-xl bg-primary px-6 text-[15px] font-semibold text-white">
+          Đơn của tôi
+        </Link>
+        <Link href="/cars" className="flex h-12 items-center rounded-xl border border-[#c5d2e3] px-6 text-[15px] font-semibold text-ink">
+          Tìm xe khác
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export function CheckoutView({ bookingId }: { bookingId: string }) {
+  const { user } = useAuth();
+  const router = useRouter();
+  const [load, setLoad] = useState<Load>({ status: "loading" });
+  const [now, setNow] = useState(() => new Date());
+  const [agreed, setAgreed] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!bookingId) {
+      setLoad({ status: "error", message: "Không có đơn nào để thanh toán." });
+      return;
+    }
+    getBooking(bookingId)
+      .then((booking) => !cancelled && setLoad({ status: "ready", booking }))
+      .catch((e) => !cancelled && setLoad({ status: "error", message: apiErrorMessage(e) }));
+    return () => {
+      cancelled = true;
+    };
+  }, [bookingId]);
+
+  // Đồng hồ đếm ngược: mỗi giây cập nhật "bây giờ". Hạn thật do API giữ; đồng hồ này chỉ để người dùng thấy.
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  async function pay(booking: Booking) {
+    setPaying(true);
+    setError(null);
+    try {
+      await renterAction(booking.id, "pay");
+      router.push("/bookings");
+    } catch (e) {
+      setError(apiErrorMessage(e));
+      setPaying(false);
+      // Đơn có thể vừa hết hạn hoặc đã được trả ở tab khác: tải lại để hiện đúng tình trạng.
+      getBooking(booking.id)
+        .then((latest) => setLoad({ status: "ready", booking: latest }))
+        .catch(() => undefined);
+    }
+  }
+
+  let body: React.ReactNode;
+  if (load.status === "loading") {
+    body = <p className="text-center text-muted">Đang tải đơn...</p>;
+  } else if (load.status === "error") {
+    body = <Notice title="Không mở được đơn">{load.message}</Notice>;
+  } else {
+    const booking = load.booking;
+    const status = effectiveStatus(booking, now);
+    if (status === "expired") {
+      body = (
+        <Notice title="Đơn đã hết hạn">
+          {booking.paidAt
+            ? `Chủ xe không trả lời kịp. Bạn được hoàn ${formatVnd(booking.paidAmount)}.`
+            : "Đã quá 15 phút giữ chỗ nên xe được mở lại cho người khác. Bạn có thể đặt lại."}
+        </Notice>
+      );
+    } else if (status !== "pending") {
+      body = <Notice title="Đơn này không còn chờ thanh toán">Xem tình trạng mới nhất của đơn trong mục Đơn của tôi.</Notice>;
+    } else if (booking.paidAt) {
+      body = (
+        <Notice title="Đã thanh toán">
+          Bạn đã thanh toán {formatVnd(booking.paidAmount)}. Chủ xe có tối đa 6 giờ để duyệt; nếu họ từ chối hoặc không trả lời, bạn
+          được hoàn toàn bộ.
+        </Notice>
+      );
+    } else {
+      const left = booking.expiresAt ? Date.parse(booking.expiresAt) - now.getTime() : 0;
+      body = (
+        <>
           <div className="flex items-center justify-center gap-3">
             <Step index={1} label="Chọn xe" state="done" />
             <Line />
             <Step index={2} label="Thanh toán" state="active" />
             <Line />
-            <Step index={3} label="Xác nhận" state="todo" />
+            <Step index={3} label="Chủ xe duyệt" state="todo" />
           </div>
 
           <div className="flex items-start gap-8">
@@ -84,49 +156,30 @@ export function CheckoutView({ car }: { car: Car }) {
               <div className="flex items-center gap-3 rounded-xl border border-[#f5c877] bg-[#fff6e5] px-[18px] py-3.5">
                 <Image src="/icons/clock-22.svg" alt="" width={22} height={22} />
                 <p className="flex-1 text-sm leading-[22px] font-medium text-[#5c3b00]">
-                  Xe được giữ cho bạn trong 14:32. Hết thời gian, đơn sẽ tự hủy và xe mở lại cho người khác.
+                  Xe được giữ cho bạn trong <strong className="tabular-nums">{formatClock(left)}</strong>. Hết thời gian, đơn sẽ tự hủy
+                  và xe mở lại cho người khác.
                 </p>
               </div>
 
               <Card title="Thông tin người thuê">
-                <div className="flex gap-4">
-                  <Input label="Họ và tên" placeholder="[Họ và tên]" />
-                  <Input label="Số điện thoại" placeholder="[Số điện thoại]" />
-                </div>
+                <Row label="Họ và tên" value={user?.fullName ?? ""} />
+                <Row label="Số điện thoại" value={user?.phone ?? ""} />
                 <div className="flex w-fit items-center gap-2 rounded-[10px] bg-[#e8f6ee] px-3.5 py-2.5">
                   <Image src="/icons/shield-check-18.svg" alt="" width={18} height={18} />
-                  <span className="text-sm font-semibold text-[#137a43]">
-                    Giấy phép lái xe đã được xác minh
-                  </span>
+                  <span className="text-sm font-semibold text-[#137a43]">Giấy phép lái xe đã được xác minh</span>
                 </div>
               </Card>
 
-              <Card title="Phương thức thanh toán">
-                {METHODS.map((m) => {
-                  const selected = method === m.id;
-                  return (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => setMethod(m.id)}
-                      aria-pressed={selected}
-                      className={`flex w-full items-center gap-3.5 rounded-xl p-4 text-left ${
-                        selected ? "border-2 border-primary bg-primary-50" : "border border-[#c5d2e3] bg-white"
-                      }`}
-                    >
-                      <span
-                        className={`size-5 rounded-full bg-white ${
-                          selected ? "border-[6px] border-primary" : "border-2 border-[#c5d2e3]"
-                        }`}
-                      />
-                      <span className="flex flex-col gap-0.5">
-                        <span className="text-base font-semibold text-ink">{m.name}</span>
-                        <span className="text-[13px] text-muted">{m.note}</span>
-                      </span>
-                    </button>
-                  );
-                })}
-                <p className="text-[13px] text-muted">Đây là môi trường thanh toán thử nghiệm, không trừ tiền thật.</p>
+              <Card title="Tiền của bạn đi đâu">
+                <ul className="flex list-disc flex-col gap-2 pl-5 text-[15px] leading-6 text-ink">
+                  <li>Ứng dụng giữ toàn bộ số tiền cho tới khi chủ xe duyệt đơn (tối đa 6 giờ).</li>
+                  <li>Chủ xe từ chối hoặc không trả lời: bạn được hoàn toàn bộ.</li>
+                  <li>Khi cả hai bên xác nhận giao xe, chủ xe nhận 50% tiền thuê; phần còn lại khi trả xe.</li>
+                  <li>Tiền cọc {formatVnd(booking.depositAmount)} được hoàn cho bạn khi cả hai bên xác nhận trả xe.</li>
+                </ul>
+                <p className="text-[13px] text-muted">
+                  Đây là thanh toán thử nghiệm: bấm &quot;Thanh toán&quot; là ghi nhận ngay, không trừ tiền thật.
+                </p>
               </Card>
 
               <label className="flex items-start gap-3 text-sm leading-[22px] text-ink">
@@ -136,62 +189,63 @@ export function CheckoutView({ car }: { car: Car }) {
                   onChange={(e) => setAgreed(e.target.checked)}
                   className="mt-px size-5 shrink-0 accent-primary"
                 />
-                Tôi đã đọc và đồng ý với điều khoản thuê xe và chính sách hủy, hoàn cọc.
+                Tôi đã đọc và đồng ý với điều khoản thuê xe và chính sách hủy, hoàn tiền.
               </label>
             </div>
 
             <aside className="flex w-[400px] shrink-0 flex-col gap-4 rounded-2xl border border-line bg-white p-6">
               <div className="flex items-center gap-3.5">
-                <div className="flex h-[68px] w-24 items-center justify-center rounded-[10px] bg-placeholder text-[11px] font-medium text-primary">
-                  [Ảnh xe]
+                <div className="flex h-[68px] w-24 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-placeholder text-[11px] font-medium text-primary">
+                  {booking.vehicle.coverUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px)
+                    <img src={booking.vehicle.coverUrl} alt={booking.vehicle.title} className="size-full object-cover" />
+                  ) : (
+                    "Chưa có ảnh"
+                  )}
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <p className="text-[17px] font-semibold text-ink">{car.name}</p>
+                  <p className="text-[17px] font-semibold text-ink">{booking.vehicle.title}</p>
                   <p className="text-[13px] text-muted">
-                    {car.district}, {car.city}
+                    {booking.vehicle.district}, {booking.vehicle.city}
                   </p>
                 </div>
               </div>
               <hr className="border-line" />
-              {rows.map((row) => (
-                <div key={row.label} className="flex justify-between text-[15px]">
-                  <span className="text-muted">{row.label}</span>
-                  <span className="font-semibold text-ink">{row.value}</span>
-                </div>
-              ))}
+              <Row label="Nhận xe" value={formatVnDateTime(booking.startAt)} />
+              <Row label="Trả xe" value={formatVnDateTime(booking.endAt)} />
               <hr className="border-line" />
-              <div className="flex justify-between text-[15px]">
-                <span className="text-muted">
-                  {formatVnd(car.pricePerDay)} x {RENTAL_DAYS} ngày
-                </span>
-                <span className="font-semibold text-ink">{formatVnd(subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-[15px]">
-                <span className="text-muted">Phí dịch vụ</span>
-                <span className="font-semibold text-ink">[Phí]</span>
-              </div>
-              <div className="flex justify-between text-[15px]">
-                <span className="text-muted">Tiền cọc (hoàn lại sau khi trả xe)</span>
-                <span className="font-semibold text-ink">[Tiền cọc]</span>
-              </div>
+              <Row label={`${formatVnd(booking.pricePerDay)} x ${booking.rentalDays} ngày`} value={formatVnd(booking.totalAmount)} />
+              <Row label="Tiền cọc (hoàn khi trả xe)" value={formatVnd(booking.depositAmount)} />
               <hr className="border-line" />
               <div className="flex justify-between text-lg font-bold">
                 <span className="text-ink">Cần thanh toán</span>
-                <span className="text-primary">[Tổng]</span>
+                <span className="text-primary">{formatVnd(booking.payableAmount)}</span>
               </div>
-              <Link
-                href="/bookings"
-                aria-disabled={!agreed}
-                tabIndex={agreed ? undefined : -1}
-                className={`flex h-[52px] items-center justify-center rounded-xl bg-primary text-base font-semibold text-white ${
-                  agreed ? "" : "pointer-events-none opacity-50"
-                }`}
+              {error && (
+                <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+                  {error}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={() => pay(booking)}
+                disabled={!agreed || paying}
+                className="flex h-[52px] items-center justify-center rounded-xl bg-primary text-base font-semibold text-white disabled:opacity-50"
               >
-                Thanh toán
-              </Link>
+                {paying ? "Đang thanh toán..." : "Thanh toán"}
+              </button>
             </aside>
           </div>
-        </div>
+        </>
+      );
+    }
+  }
+
+  return (
+    <>
+      <Header />
+      <main className="flex justify-center pt-8 pb-16">
+        <div className="flex w-full max-w-page flex-col gap-7">{body}</div>
       </main>
       <Footer />
     </>
