@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { UploadIcon } from "@/components/icons";
+import { Icon } from "@/components/icon";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { deleteVehicleImage, listVehicleImages, OwnerVehicle, uploadVehicleImage, VehicleImage } from "@/lib/vehicles/api";
 import { ACCEPTED_TYPES, MAX_IMAGES, validateImageFile } from "@/lib/vehicles/image-rules";
@@ -94,21 +94,21 @@ export function PhotoManager({
   return (
     <Card title="Ảnh xe">
       {loadError && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">
           {loadError}
         </p>
       )}
-      {images === null && !loadError && <p className="text-muted">Đang tải ảnh...</p>}
+      {images === null && !loadError && <p className="text-on-surface-variant">Đang tải ảnh...</p>}
 
       {images && (
         <>
           <div className="flex flex-wrap gap-3">
             {images.map((image, index) => (
-              <div key={image.id} className="relative h-32 w-[170px] overflow-hidden rounded-xl bg-placeholder">
+              <div key={image.id} className="relative h-32 w-[170px] overflow-hidden rounded-xl bg-surface-container">
                 {/* eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px) */}
                 <img src={image.url} alt={`Ảnh ${index + 1}`} className="size-full object-cover" />
                 {index === 0 && (
-                  <span className="absolute top-2 left-2 rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-white">
+                  <span className="absolute top-2 left-2 rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-on-primary">
                     Ảnh bìa
                   </span>
                 )}
@@ -117,7 +117,7 @@ export function PhotoManager({
                   disabled={busy !== null}
                   onClick={() => void remove(image)}
                   aria-label={`Xóa ảnh ${index + 1}`}
-                  className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-white/90 text-base font-bold text-[#c0281c] disabled:opacity-50"
+                  className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-white/90 text-base font-bold text-error disabled:opacity-50"
                 >
                   ×
                 </button>
@@ -125,17 +125,17 @@ export function PhotoManager({
             ))}
             {images.length < MAX_IMAGES && (
               <label
-                className={`flex h-32 w-[170px] cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-[#9db6dd] bg-surface text-primary ${
+                className={`flex h-32 w-[170px] cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-low text-primary ${
                   busy ? "pointer-events-none opacity-60" : ""
                 }`}
               >
-                <UploadIcon />
+                <Icon name="cloud_upload" className="!text-[28px]" />
                 <span className="text-[14px] font-semibold">Thêm ảnh</span>
                 <input type="file" accept={ACCEPTED_TYPES.join(",")} multiple onChange={onPick} disabled={busy !== null} className="sr-only" />
               </label>
             )}
           </div>
-          <p className="text-[13px] text-muted">
+          <p className="text-[13px] text-on-surface-variant">
             {images.length}/{MAX_IMAGES} ảnh. Ảnh đầu tiên là ảnh bìa. JPG, PNG hoặc WebP, tối đa 5 MB mỗi ảnh.
             {photoChangeNeedsReview(status) && " Thêm hoặc xóa ảnh thì xe cần được quản trị viên duyệt lại."}
           </p>
@@ -148,7 +148,7 @@ export function PhotoManager({
         </p>
       )}
       {notices.length > 0 && (
-        <ul role="alert" className="flex list-disc flex-col gap-1 rounded-[10px] bg-red-50 py-3 pr-3.5 pl-8 text-sm text-red-700">
+        <ul role="alert" className="flex list-disc flex-col gap-1 rounded-xl bg-error-container py-3 pr-3.5 pl-8 text-sm text-on-error-container">
           {notices.map((notice) => (
             <li key={notice}>{notice}</li>
           ))}

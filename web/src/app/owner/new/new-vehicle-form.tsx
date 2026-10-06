@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ApiError } from "@/lib/api/client";
-import { UploadIcon } from "@/components/icons";
+import { Icon } from "@/components/icon";
 import { createVehicle, uploadVehicleImage } from "@/lib/vehicles/api";
 import { Card, InfoFields, LocationFields, PriceFields, readVehicleForm } from "../vehicle-fields";
 import { ACCEPTED_TYPES, MAX_IMAGES, validateImageFile } from "@/lib/vehicles/image-rules";
@@ -114,23 +114,18 @@ export function NewVehicleForm() {
   const doneCount = photos.filter((p) => p.status === "done").length;
 
   return (
-    <form onSubmit={onSubmit} className="flex min-w-0 flex-1 flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-[34px] font-bold text-ink">Đăng xe của bạn</h1>
-        <p className="text-base text-muted">Xe sẽ được quản trị viên duyệt trước khi hiển thị cho người thuê.</p>
-      </div>
-
-      <Card title="1. Thông tin xe">
+    <form onSubmit={onSubmit} className="flex min-w-0 flex-col gap-gutter">
+      <Card title="1. Thông tin xe" icon="directions_car" note="Hãng, dòng xe, biển số và thông số của xe">
         <InfoFields disabled={locked} />
       </Card>
 
-      <Card title="2. Ảnh xe">
+      <Card title="2. Ảnh xe" icon="photo_library" note="Xe cần ít nhất 1 ảnh mới được duyệt">
         <div className="flex flex-wrap gap-3">
           {photos.length < MAX_IMAGES && (
-            <label className="flex h-40 w-[200px] shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-[#9db6dd] bg-surface text-primary">
-              <UploadIcon />
-              <span className="text-[15px] font-semibold">Chọn ảnh từ máy</span>
-              <span className="text-[13px] text-muted">JPG, PNG, WebP, tối đa 5 MB</span>
+            <label className="flex h-40 w-[200px] shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl bg-surface-container-low text-primary transition-colors hover:bg-primary-fixed/60">
+              <Icon name="cloud_upload" className="!text-[28px]" />
+              <span className="text-label-lg">Chọn ảnh từ máy</span>
+              <span className="text-label-md text-on-surface-variant">JPG, PNG, WebP, tối đa 5 MB</span>
               <input
                 type="file"
                 accept={ACCEPTED_TYPES.join(",")}
@@ -142,11 +137,11 @@ export function NewVehicleForm() {
             </label>
           )}
           {photos.map((photo, index) => (
-            <div key={photo.id} className="relative h-40 w-[200px] shrink-0 overflow-hidden rounded-xl bg-placeholder">
+            <div key={photo.id} className="relative h-40 w-[200px] shrink-0 overflow-hidden rounded-xl bg-surface-container">
               {/* eslint-disable-next-line @next/next/no-img-element -- ảnh xem trước cục bộ (blob:), không qua tối ưu của Next */}
               <img src={photo.previewUrl} alt={`Ảnh ${index + 1}`} className="size-full object-cover" />
               {index === 0 && (
-                <span className="absolute top-2 left-2 rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-white">
+                <span className="absolute top-2 left-2 rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-on-primary">
                   Ảnh bìa
                 </span>
               )}
@@ -154,10 +149,10 @@ export function NewVehicleForm() {
                 <span
                   className={`absolute right-2 bottom-2 left-2 rounded-md px-2 py-1 text-xs font-semibold ${
                     photo.status === "done"
-                      ? "bg-[#e8f6ee] text-[#137a43]"
+                      ? "bg-tertiary-fixed/40 text-on-tertiary-fixed-variant"
                       : photo.status === "error"
-                        ? "bg-red-50 text-red-700"
-                        : "bg-white text-primary"
+                        ? "bg-error-container text-on-error-container"
+                        : "bg-surface-container-lowest text-primary"
                   }`}
                 >
                   {photo.status === "done" && "Đã tải lên"}
@@ -170,7 +165,7 @@ export function NewVehicleForm() {
                   type="button"
                   onClick={() => removePhoto(photo.id)}
                   aria-label={`Bỏ ảnh ${index + 1}`}
-                  className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-white/90 text-base font-bold text-ink"
+                  className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-white/90 text-base font-bold text-on-surface"
                 >
                   ×
                 </button>
@@ -178,12 +173,12 @@ export function NewVehicleForm() {
             </div>
           ))}
         </div>
-        <p className="text-[13px] text-muted">
+        <p className="text-label-md text-on-surface-variant">
           {photos.length}/{MAX_IMAGES} ảnh. Ảnh đầu tiên là ảnh bìa.
           {locked && ` Đã tải lên ${doneCount}/${photos.length}.`}
         </p>
         {pickNotice.length > 0 && (
-          <ul role="alert" className="flex list-disc flex-col gap-1 rounded-[10px] bg-red-50 py-3 pr-3.5 pl-8 text-sm text-red-700">
+          <ul role="alert" className="flex list-disc flex-col gap-1 rounded-xl bg-error-container py-space-sm pr-space-md pl-space-lg text-body-md text-on-error-container">
             {pickNotice.map((notice) => (
               <li key={notice}>{notice}</li>
             ))}
@@ -191,34 +186,42 @@ export function NewVehicleForm() {
         )}
       </Card>
 
-      <Card title="3. Giá và đặt cọc">
+      <Card title="3. Giá và tiền cọc" icon="payments" note="Khách trả tiền cọc khi đặt và được hoàn khi trả xe. Nhập 0 nếu không thu cọc">
         <PriceFields disabled={locked} />
       </Card>
 
-      <Card title="4. Địa điểm nhận xe">
+      <Card title="4. Địa điểm nhận xe" icon="location_on" note="Khu vực khách tới nhận và trả xe">
         <LocationFields disabled={locked} />
       </Card>
 
       {error && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
           {error}
         </p>
       )}
 
-      <div className="flex justify-end gap-3">
-        <Link
-          href="/owner"
-          className="flex h-13 items-center rounded-xl border border-[#c5d2e3] bg-white px-7 text-base font-semibold text-ink"
-        >
-          {locked ? "Về trang quản lý" : "Hủy"}
-        </Link>
-        <button
-          type="submit"
-          disabled={submitting || uploading}
-          className="h-13 rounded-xl bg-primary px-7 text-base font-semibold text-white disabled:opacity-60"
-        >
-          {submitting ? "Đang gửi..." : locked ? "Thử tải lại" : "Gửi duyệt"}
-        </button>
+      <div className="sticky bottom-space-md z-10 flex flex-wrap items-center justify-between gap-space-md rounded-2xl bg-surface-container-lowest p-space-md shadow-card">
+        <p className="flex min-w-0 flex-1 items-center gap-space-sm text-body-md text-on-surface-variant">
+          <Icon name="info" className="!text-[20px] text-primary" />
+          Quản trị viên duyệt xong, xe mới hiển thị cho khách.
+        </p>
+        <div className="flex gap-space-sm">
+          <Link
+            href="/owner"
+            className="flex h-12 items-center gap-space-sm rounded-xl bg-surface-container-low px-space-md text-label-lg text-on-surface transition-colors hover:bg-surface-container"
+          >
+            <Icon name="arrow_back" className="!text-[18px]" />
+            {locked ? "Về trang quản lý" : "Quay lại"}
+          </Link>
+          <button
+            type="submit"
+            disabled={submitting || uploading}
+            className="flex h-12 items-center gap-space-sm rounded-xl bg-primary-container px-space-lg text-label-lg text-on-primary shadow-sm transition-colors hover:bg-primary disabled:opacity-60"
+          >
+            {submitting ? "Đang gửi..." : locked ? "Thử tải lại" : "Lưu và gửi duyệt"}
+            <Icon name="send" className="!text-[18px]" />
+          </button>
+        </div>
       </div>
     </form>
   );

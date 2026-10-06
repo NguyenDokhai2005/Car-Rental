@@ -76,8 +76,8 @@ export function VehicleInfoForm({
       </Card>
 
       {pending && (
-        <div role="alertdialog" aria-label="Xác nhận gửi duyệt lại" className="flex flex-col gap-3 rounded-2xl border border-[#f0d9a8] bg-[#fff6e5] p-5">
-          <p className="text-[15px] text-[#8a5a00]">
+        <div role="alertdialog" aria-label="Xác nhận gửi duyệt lại" className="flex flex-col gap-3 rounded-2xl border border-[#f0d9a8] bg-warning-container p-5">
+          <p className="text-[15px] text-warning">
             Bạn đã đổi {pending.triggers.map((f) => FIELD_LABELS[f]).join(", ")}. Xe sẽ chuyển về <strong>Chờ duyệt</strong> và
             tạm thời không hiện cho người thuê cho đến khi quản trị viên duyệt lại.
           </p>
@@ -86,7 +86,7 @@ export function VehicleInfoForm({
               type="button"
               disabled={busy}
               onClick={() => void save(pending.changes)}
-              className="h-11 rounded-xl bg-primary px-5 text-[15px] font-semibold text-white disabled:opacity-60"
+              className="h-11 rounded-xl bg-primary px-5 text-[15px] font-semibold text-on-primary disabled:opacity-60"
             >
               Lưu và gửi duyệt lại
             </button>
@@ -94,7 +94,7 @@ export function VehicleInfoForm({
               type="button"
               disabled={busy}
               onClick={() => setPending(null)}
-              className="h-11 rounded-xl border border-[#c5d2e3] bg-white px-5 text-[15px] font-semibold text-ink"
+              className="h-11 rounded-xl bg-surface-container-low px-5 text-[15px] font-semibold text-on-surface"
             >
               Quay lại chỉnh sửa
             </button>
@@ -103,12 +103,12 @@ export function VehicleInfoForm({
       )}
 
       {error && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">
           {error}
         </p>
       )}
       {notice && (
-        <p role="status" className="rounded-[10px] bg-[#e8f6ee] px-3.5 py-3 text-sm text-[#137a43]">
+        <p role="status" className="rounded-xl bg-tertiary-fixed/40 px-3.5 py-3 text-sm text-on-tertiary-fixed-variant">
           {notice}
         </p>
       )}
@@ -117,7 +117,7 @@ export function VehicleInfoForm({
         <button
           type="submit"
           disabled={busy || pending !== null}
-          className="h-13 rounded-xl bg-primary px-7 text-base font-semibold text-white disabled:opacity-60"
+          className="h-13 rounded-xl bg-primary px-7 text-base font-semibold text-on-primary disabled:opacity-60"
         >
           {busy ? "Đang lưu..." : "Lưu thay đổi"}
         </button>

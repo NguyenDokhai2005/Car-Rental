@@ -1,21 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Icon } from "@/components/icon";
 import { StatusPill } from "@/components/status-pill";
+import { VehicleImage } from "@/components/vehicle-image";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { listOwnerBookings, ownerAction } from "@/lib/bookings/api";
 import { formatVnDateTime, OwnerAction, OwnerBooking, ownerState } from "@/lib/bookings/rules";
 import { formatVnd } from "@/lib/cars";
 
 const ACTION_LABELS: Record<OwnerAction, string> = {
-  approve: "Chấp nhận",
+  approve: "Chấp nhận đơn",
   reject: "Từ chối",
   handover: "Giao xe",
   receive: "Đã nhận lại xe",
 };
 
-const PRIMARY = "h-10 rounded-[10px] bg-primary px-4 text-sm font-semibold text-white disabled:opacity-50";
-const SECONDARY = "h-10 rounded-[10px] border border-[#c5d2e3] bg-white px-4 text-sm font-semibold text-ink disabled:opacity-50";
+const PRIMARY =
+  "flex h-11 items-center gap-space-sm rounded-xl bg-primary px-space-md text-label-lg text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:opacity-50";
+const SECONDARY =
+  "flex h-11 items-center rounded-xl bg-surface-container-lowest px-space-md text-label-lg text-on-surface-variant transition-colors hover:text-on-surface disabled:opacity-50";
 
 type Load = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; items: OwnerBooking[] };
 
@@ -73,17 +77,28 @@ export function OwnerRequests({ onNeedsAction }: { onNeedsAction?: (count: numbe
   }
 
   return (
-    <section className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold text-ink">Đơn thuê</h2>
+    <section className="flex flex-col gap-space-md rounded-2xl bg-surface-container-lowest p-space-md shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-space-sm">
+        <div className="flex flex-col gap-1">
+          <h2 className="flex items-center gap-space-sm text-headline-md text-on-surface">
+            <Icon name="pending_actions" className="text-primary" />
+            Đơn thuê{ready ? ` (${String(sorted.length).padStart(2, "0")})` : ""}
+          </h2>
+          <p className="text-body-md text-on-surface-variant">Khách đã thanh toán đủ. Bạn có 6 giờ để chấp nhận hoặc từ chối.</p>
+        </div>
+        {needsAction > 0 && (
+          <span className="rounded-lg bg-error-container px-space-sm py-1 text-label-md text-on-error-container">{needsAction} đơn cần xử lý</span>
+        )}
+      </div>
 
-      {load.status === "loading" && <p className="text-muted">Đang tải đơn thuê...</p>}
+      {load.status === "loading" && <p className="text-body-md text-on-surface-variant">Đang tải đơn thuê...</p>}
       {load.status === "error" && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
           {load.message}
         </p>
       )}
       {ready && sorted.length === 0 && (
-        <p className="rounded-2xl border border-line bg-white px-6 py-8 text-center text-[15px] text-muted">
+        <p className="rounded-xl bg-surface-container-low px-space-md py-space-lg text-center text-body-md text-on-surface-variant">
           Chưa có đơn nào. Đơn xuất hiện ở đây sau khi khách đặt xe và thanh toán.
         </p>
       )}
@@ -94,65 +109,32 @@ export function OwnerRequests({ onNeedsAction }: { onNeedsAction?: (count: numbe
         return (
           <article
             key={b.id}
-            className={`flex flex-col gap-3 rounded-2xl border bg-white p-5 ${state.needsAction ? "border-primary" : "border-line"}`}
+            className={`flex flex-col gap-space-sm rounded-xl bg-surface-container-low p-space-md ${state.needsAction ? "ring-2 ring-primary-container" : ""}`}
           >
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col gap-space-md md:flex-row md:items-center">
+              <div className="h-16 w-20 shrink-0 overflow-hidden rounded-lg">
+                <VehicleImage src={b.vehicle.coverUrl} alt={b.vehicle.title} emptyLabel="" />
+              </div>
               <div className="flex min-w-0 flex-1 flex-col gap-1">
-                <div className="flex items-center gap-2.5">
-                  <h3 className="text-lg font-semibold text-ink">{b.vehicle.title}</h3>
+                <div className="flex flex-wrap items-center gap-space-sm">
+                  <h3 className="text-title-lg text-on-surface">{b.renter.fullName}</h3>
                   <StatusPill tone={state.tone}>{state.label}</StatusPill>
                 </div>
-                <p className="text-[15px] text-ink">
-                  {b.renter.fullName} · {b.renter.phone}
+                <p className="text-body-md text-on-surface">
+                  {b.vehicle.title} · {b.renter.phone}
                 </p>
-                <p className="text-sm text-muted">
-                  {formatVnDateTime(b.startAt)} đến {formatVnDateTime(b.endAt)} · {b.rentalDays} ngày
+                <p className="flex flex-wrap items-center gap-x-space-md gap-y-1 text-label-md text-on-surface-variant">
+                  <span className="flex items-center gap-1">
+                    <Icon name="calendar_today" className="!text-[16px]" />
+                    {formatVnDateTime(b.startAt)} đến {formatVnDateTime(b.endAt)} ({b.rentalDays} ngày)
+                  </span>
+                  <span className="text-tertiary">
+                    Tiền thuê: {formatVnd(b.totalAmount)} · khách đã cọc {formatVnd(b.depositAmount)}
+                  </span>
                 </p>
               </div>
-              <div className="flex shrink-0 flex-col items-end gap-0.5">
-                <p className="text-lg font-bold text-ink">{formatVnd(b.totalAmount)}</p>
-                <p className="text-[13px] text-muted">Tiền thuê · khách đã cọc {formatVnd(b.depositAmount)}</p>
-              </div>
-            </div>
-
-            {state.hint && <p className="rounded-[10px] bg-surface px-3.5 py-2.5 text-sm leading-[22px] text-ink">{state.hint}</p>}
-            {errors[b.id] && (
-              <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
-                {errors[b.id]}
-              </p>
-            )}
-
-            {isRejecting ? (
-              <form
-                className="flex flex-col gap-2.5"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void run(b, "reject", rejecting.reason.trim());
-                }}
-              >
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-sm font-semibold text-ink">Lý do từ chối (khách sẽ đọc được)</span>
-                  <textarea
-                    value={rejecting.reason}
-                    onChange={(e) => setRejecting({ id: b.id, reason: e.target.value })}
-                    maxLength={500}
-                    rows={2}
-                    required
-                    className="rounded-[10px] border border-[#c5d2e3] bg-white px-3.5 py-2.5 text-[15px] text-ink"
-                  />
-                </label>
-                <div className="flex justify-end gap-2">
-                  <button type="submit" disabled={busy || rejecting.reason.trim() === ""} className={`${SECONDARY} text-[#c0281c]`}>
-                    Xác nhận từ chối
-                  </button>
-                  <button type="button" onClick={() => setRejecting(null)} className={SECONDARY}>
-                    Quay lại
-                  </button>
-                </div>
-              </form>
-            ) : (
-              state.actions.length > 0 && (
-                <div className="flex justify-end gap-2">
+              {!isRejecting && state.actions.length > 0 && (
+                <div className="flex shrink-0 flex-wrap gap-space-sm">
                   {state.actions.map((action) =>
                     action === "reject" ? (
                       <button key={action} type="button" onClick={() => setRejecting({ id: b.id, reason: "" })} disabled={busy} className={SECONDARY}>
@@ -160,16 +142,64 @@ export function OwnerRequests({ onNeedsAction }: { onNeedsAction?: (count: numbe
                       </button>
                     ) : (
                       <button key={action} type="button" onClick={() => run(b, action)} disabled={busy} className={PRIMARY}>
+                        <Icon name="check_circle" className="!text-[18px]" />
                         {busy ? "Đang gửi..." : ACTION_LABELS[action]}
                       </button>
                     ),
                   )}
                 </div>
-              )
+              )}
+            </div>
+
+            {state.hint && (
+              <p className="flex items-start gap-space-sm rounded-lg bg-surface-container-lowest px-space-md py-space-sm text-body-md text-on-surface">
+                <Icon name="info" className="mt-0.5 !text-[18px] text-primary" />
+                {state.hint}
+              </p>
+            )}
+            {errors[b.id] && (
+              <p role="alert" className="rounded-lg bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
+                {errors[b.id]}
+              </p>
+            )}
+
+            {isRejecting && (
+              <form
+                className="flex flex-col gap-space-sm"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void run(b, "reject", rejecting.reason.trim());
+                }}
+              >
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-label-lg text-on-surface">Lý do từ chối (khách sẽ đọc được)</span>
+                  <textarea
+                    value={rejecting.reason}
+                    onChange={(e) => setRejecting({ id: b.id, reason: e.target.value })}
+                    maxLength={500}
+                    rows={2}
+                    required
+                    className="rounded-xl bg-surface-container-lowest px-space-md py-space-sm text-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </label>
+                <div className="flex justify-end gap-space-sm">
+                  <button type="submit" disabled={busy || rejecting.reason.trim() === ""} className={`${SECONDARY} !text-error`}>
+                    Xác nhận từ chối
+                  </button>
+                  <button type="button" onClick={() => setRejecting(null)} className={SECONDARY}>
+                    Quay lại
+                  </button>
+                </div>
+              </form>
             )}
           </article>
         );
       })}
+
+      <p className="flex items-center gap-space-sm rounded-xl bg-surface-container-low px-space-md py-space-sm text-body-md text-on-surface-variant">
+        <Icon name="lock_clock" className="!text-[20px] text-primary" />
+        Mỗi xe chỉ nhận một đơn cho một khoảng thời gian, không bao giờ trùng lịch.
+      </p>
     </section>
   );
 }
