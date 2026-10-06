@@ -1,7 +1,13 @@
 const TONES = {
-  warning: "bg-[#fff6e5] text-[#8a5a00]",
-  success: "bg-[#e8f6ee] text-[#137a43]",
-  info: "bg-primary-50 text-primary",
+  warning: "bg-warning-container text-warning",
+  success: "bg-tertiary-fixed/40 text-on-tertiary-fixed-variant",
+  info: "bg-primary-fixed text-primary",
+} as const;
+
+const DOTS = {
+  warning: "bg-warning",
+  success: "bg-tertiary",
+  info: "bg-primary",
 } as const;
 
 export function StatusPill({
@@ -12,9 +18,8 @@ export function StatusPill({
   children: React.ReactNode;
 }) {
   return (
-    <span
-      className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${TONES[tone]}`}
-    >
+    <span className={`flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-label-md whitespace-nowrap ${TONES[tone]}`}>
+      <i aria-hidden className={`size-1.5 rounded-full ${DOTS[tone]}`} />
       {children}
     </span>
   );

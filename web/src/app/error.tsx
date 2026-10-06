@@ -7,15 +7,15 @@ import Link from "next/link";
 export default function ErrorPage({ reset }: { error: Error; reset: () => void }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
-      <h1 className="text-[28px] font-bold text-ink">Đã có lỗi xảy ra</h1>
-      <p className="max-w-[420px] text-base text-muted">
+      <h1 className="text-[28px] font-bold text-on-surface">Đã có lỗi xảy ra</h1>
+      <p className="max-w-[420px] text-base text-on-surface-variant">
         Trang này tạm thời chưa tải được. Bạn thử lại sau ít phút nhé.
       </p>
       <div className="flex gap-3">
-        <button type="button" onClick={reset} className="h-12 rounded-xl bg-primary px-6 text-[15px] font-semibold text-white">
+        <button type="button" onClick={reset} className="h-12 rounded-xl bg-primary px-6 text-[15px] font-semibold text-on-primary">
           Thử lại
         </button>
-        <Link href="/" className="flex h-12 items-center rounded-xl border border-[#c5d2e3] bg-white px-6 text-[15px] font-semibold text-ink">
+        <Link href="/" className="flex h-12 items-center rounded-xl bg-surface-container-low px-6 text-[15px] font-semibold text-on-surface">
           Về trang chủ
         </Link>
       </div>

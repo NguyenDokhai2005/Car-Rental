@@ -21,7 +21,7 @@ export function RequireRole({ roles, children }: { roles: Role[]; children: Reac
 
   if (!allowed) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-muted" role="status">
+      <div className="flex min-h-screen items-center justify-center text-sm text-on-surface-variant" role="status">
         Đang kiểm tra phiên đăng nhập...
       </div>
     );
