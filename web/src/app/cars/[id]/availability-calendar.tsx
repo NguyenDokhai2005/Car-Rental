@@ -20,28 +20,28 @@ export function AvailabilityCalendar({
   const prevDisabled = month <= currentMonth();
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-5">
+    <div className="flex flex-col gap-space-sm">
       <div className="flex items-center justify-between">
         {prevDisabled ? (
-          <span aria-hidden className="px-3 py-1 text-muted opacity-40">‹</span>
+          <span aria-hidden className="px-3 py-1 text-outline opacity-40">‹</span>
         ) : (
-          <Link href={href(shiftMonth(month, -1))} aria-label="Tháng trước" className="px-3 py-1 text-lg text-ink">
+          <Link href={href(shiftMonth(month, -1))} aria-label="Tháng trước" className="rounded-lg px-3 py-1 text-lg text-on-surface hover:bg-surface-container-low">
             ‹
           </Link>
         )}
-        <p className="text-base font-semibold text-ink">
+        <p className="text-title-lg text-on-surface">
           Tháng {Number(m)}/{year}
         </p>
-        <Link href={href(shiftMonth(month, 1))} aria-label="Tháng sau" className="px-3 py-1 text-lg text-ink">
+        <Link href={href(shiftMonth(month, 1))} aria-label="Tháng sau" className="rounded-lg px-3 py-1 text-lg text-on-surface hover:bg-surface-container-low">
           ›
         </Link>
       </div>
 
       {busy === null ? (
-        <p className="text-sm text-muted">Chưa tải được lịch trống. Vui lòng thử lại sau.</p>
+        <p className="text-body-md text-on-surface-variant">Chưa tải được lịch trống. Vui lòng thử lại sau.</p>
       ) : (
         <>
-          <div className="grid grid-cols-7 gap-2 text-center text-xs text-muted">
+          <div className="grid grid-cols-7 gap-2 text-center text-label-sm text-on-surface-variant">
             {WEEKDAYS.map((d) => (
               <span key={d}>{d}</span>
             ))}
@@ -55,19 +55,19 @@ export function AvailabilityCalendar({
                 key={day}
                 title={busySet.has(day) ? "Đã có người thuê hoặc chủ xe chặn" : "Còn trống"}
                 className={`flex h-10 items-center justify-center rounded-lg text-sm font-medium ${
-                  busySet.has(day) ? "bg-[#c5d2e3] text-muted line-through" : "bg-surface text-ink"
+                  busySet.has(day) ? "bg-surface-container-highest text-outline line-through" : "bg-surface-container-low text-on-surface"
                 }`}
               >
                 {day}
               </span>
             ))}
           </div>
-          <div className="flex gap-4 text-[13px] text-muted">
+          <div className="flex flex-wrap gap-4 text-label-md text-on-surface-variant">
             <span className="flex items-center gap-1.5">
-              <i className="size-3 rounded-sm bg-surface ring-1 ring-line" /> Còn trống
+              <i className="size-3 rounded-sm bg-surface-container-low ring-1 ring-outline-variant" /> Còn trống
             </span>
             <span className="flex items-center gap-1.5">
-              <i className="size-3 rounded-sm bg-[#c5d2e3]" /> Đã có người thuê hoặc chủ xe chặn
+              <i className="size-3 rounded-sm bg-surface-container-highest" /> Đã có người thuê hoặc chủ xe chặn
             </span>
           </div>
         </>
