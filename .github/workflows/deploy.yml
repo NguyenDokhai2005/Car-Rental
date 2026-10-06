@@ -1,11 +1,13 @@
 name: Deploy
 
-# Tự đưa bản mới lên máy chủ SAU KHI CI xanh trên nhánh main.
+# Tự đưa bản mới lên CẢ HAI máy chủ SAU KHI CI xanh trên nhánh main:
+#   - máy ảo VMware tại nhà   (runner nhãn carrental-vm,    environment production)
+#   - server cloud            (runner nhãn carrental-cloud, environment production-cloud)
 #
-# Job deploy chạy trên self-hosted runner đặt trong máy ảo VMware (máy chủ nằm sau NAT nên GitHub không SSH vào được;
-# runner tự kết nối ra GitHub nên không phải mở cổng router).
+# Mỗi máy chủ chạy một self-hosted runner. Runner tự kết nối ra GitHub nên không phải mở cổng nào cho GitHub và không
+# phải cất khóa SSH trên GitHub (máy ảo còn nằm sau NAT nên GitHub không SSH vào được).
 #
-# AN TOÀN (repo công khai, runner chạy mã ngay trên máy của bạn):
+# AN TOÀN (repo công khai, runner chạy mã ngay trên máy chủ của bạn):
 #   - Chỉ chạy khi CI vừa chạy cho một lần PUSH vào main trong chính repo này.
 #   - Không bao giờ chạy cho Pull Request: các job CI của PR chạy trên máy do GitHub cấp (ubuntu-latest).
 on:
@@ -17,23 +19,34 @@ on:
 permissions:
   contents: read
 
-# Deploy lần lượt, không cái nào chen vào cái nào, và không hủy giữa chừng một lần deploy đang chạy.
-concurrency:
-  group: deploy-production
-  cancel-in-progress: false
-
 jobs:
   deploy:
-    name: Deploy lên máy ảo VMware
+    name: Deploy lên ${{ matrix.name }}
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_branch == 'main' &&
       github.event.workflow_run.head_repository.full_name == github.repository
-    runs-on: [self-hosted, linux, carrental-vm]
+    strategy:
+      # Hai máy chủ độc lập: một máy lỗi hoặc đang tắt (máy ảo tắt theo máy tính) không được hủy lần deploy của máy kia.
+      fail-fast: false
+      matrix:
+        include:
+          - name: máy ảo VMware
+            runner: carrental-vm
+            environment: production
+          - name: server cloud
+            runner: carrental-cloud
+            environment: production-cloud
+    runs-on: [self-hosted, linux, "${{ matrix.runner }}"]
     timeout-minutes: 30
-    # Có thể bật "Required reviewers" cho environment này để mỗi lần deploy phải chờ bạn bấm duyệt (xem docs/ci-cd.md).
-    environment: production
+    # Có thể bật "Required reviewers" riêng cho từng environment để mỗi lần deploy phải chờ bạn bấm duyệt (xem docs/ci-cd.md).
+    environment: ${{ matrix.environment }}
+    # Trên MỖI máy chủ: deploy lần lượt, không cái nào chen vào cái nào, không hủy giữa chừng một lần đang chạy.
+    # Khóa theo từng máy (không khóa chung cả workflow) để một máy đang tắt không giữ chân lần deploy của máy còn lại.
+    concurrency:
+      group: deploy-${{ matrix.runner }}
+      cancel-in-progress: false
     steps:
       # Lấy đúng commit đã được CI kiểm tra, không phải "main mới nhất" (tránh deploy mã chưa qua CI).
       - uses: actions/checkout@v4

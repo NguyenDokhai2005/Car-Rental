@@ -66,7 +66,16 @@ Nếu các lệnh này qua trên máy bạn thì CI gần như chắc chắn xan
 
 ## CD: `.github/workflows/deploy.yml`
 
-Tự đưa bản mới lên máy ảo VMware sau khi CI xanh trên `main`.
+Tự đưa bản mới lên **hai máy chủ** sau khi CI xanh trên `main`, mỗi máy một job riêng:
+
+| Máy chủ | Nhãn runner | Environment | Hướng dẫn cài |
+| --- | --- | --- | --- |
+| Máy ảo VMware tại nhà | `carrental-vm` | `production` | Mục "Cài runner" bên dưới |
+| Server cloud | `carrental-cloud` | `production-cloud` | [deploy-cloud.md](deploy-cloud.md) |
+
+Hai job **độc lập**: một máy lỗi hoặc đang tắt không hủy và không giữ chân lần deploy của máy kia (`fail-fast: false`, và khóa `concurrency` đặt theo từng máy chứ không chung cả workflow). Trên mỗi máy, các lần deploy vẫn chạy lần lượt. Job của một máy đang tắt nằm ở trạng thái *Queued* và tự chạy khi runner của máy đó lên lại; quá 24 giờ thì GitHub đánh dấu lỗi.
+
+Phần còn lại của mục này mô tả máy ảo VMware; server cloud làm tương tự với nhãn và environment của nó.
 
 ### Vì sao cần "self-hosted runner"
 
