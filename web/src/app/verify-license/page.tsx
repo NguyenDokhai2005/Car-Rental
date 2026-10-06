@@ -1,77 +1,129 @@
 import Link from "next/link";
+import { AccountSidebar } from "@/components/account-sidebar";
 import { Header } from "@/components/header";
-import { LockIcon } from "@/components/icons";
+import { Icon } from "@/components/icon";
+import { pageTitle } from "@/lib/brand";
+import { LicenseStatus } from "./license-status";
 import { LicenseUploads } from "./license-uploads";
 
-export const metadata = { title: "Xác minh giấy phép lái xe — Car-Rental" };
+export const metadata = { title: pageTitle("Xác minh giấy phép lái xe") };
 
-const FIELDS = [
-  { name: "licenseNumber", label: "Số giấy phép", placeholder: "[Số GPLX]", type: "text" },
-  { name: "licenseClass", label: "Hạng", placeholder: "B1, B2...", type: "text" },
-  { name: "expiresAt", label: "Ngày hết hạn", placeholder: "dd/mm/yyyy", type: "text" },
+const GUIDE = [
+  { ok: true, icon: "check", title: "Đủ 4 góc, rõ nét", note: "Không lóa sáng đèn flash" },
+  { ok: false, icon: "back_hand", title: "Bị che ngón tay", note: "Che khuất số bằng hoặc ảnh" },
+  { ok: false, icon: "flash_on", title: "Chói đèn flash", note: "Mất chi tiết thông tin" },
+  { ok: false, icon: "blur_on", title: "Mờ nhòe / mất góc", note: "Không đọc được thông tin" },
 ];
+
+function StepTitle({ index, title, note }: { index: number; title: string; note: string }) {
+  return (
+    <div className="flex items-center gap-space-md">
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary-fixed text-label-lg text-primary">{index}</span>
+      <div className="flex flex-col">
+        <h2 className="text-headline-sm text-on-surface">{title}</h2>
+        <p className="text-label-md text-on-surface-variant">{note}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function VerifyLicensePage() {
   return (
     <>
-      <Header minimal />
-      <main className="flex justify-center pt-12 pb-16">
-        <form action="/cars" className="flex w-full max-w-[760px] flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-[34px] font-bold text-ink">Xác minh giấy phép lái xe</h1>
-            <p className="text-base text-muted">
-              Bạn cần xác minh trước khi đặt xe đầu tiên. Quản trị viên sẽ duyệt thủ công và thông
-              báo cho bạn.
-            </p>
-          </div>
-
-          <section className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-7">
-            <h2 className="text-xl font-bold text-ink">Thông tin giấy phép</h2>
-            <div className="flex gap-4">
-              {FIELDS.map((f) => (
-                <label key={f.name} className="flex min-w-0 flex-1 flex-col gap-1.5">
-                  <span className="text-sm font-semibold text-ink">{f.label}</span>
-                  <input
-                    name={f.name}
-                    type={f.type}
-                    placeholder={f.placeholder}
-                    className="h-12 rounded-[10px] border border-[#c5d2e3] bg-white px-3.5 text-[15px] placeholder:text-[#8a99ae]"
-                  />
-                </label>
-              ))}
-            </div>
-          </section>
-
-          <section className="flex flex-col gap-5 rounded-2xl border border-line bg-white p-7">
-            <h2 className="text-xl font-bold text-ink">Ảnh giấy phép</h2>
-            <LicenseUploads />
-            <div className="flex items-start gap-3 rounded-[10px] bg-primary-50 px-4 py-3.5 text-primary">
-              <LockIcon className="mt-px shrink-0" />
-              <p className="text-sm leading-[22px] text-muted">
-                Ảnh được lưu trong kho riêng, chỉ quản trị viên được xem và không hiển thị công khai
-                với chủ xe.
+      <Header active="/verify-license" />
+      <div className="mx-auto flex w-full max-w-page items-start gap-gutter px-margin-sm py-space-lg lg:px-margin">
+        <AccountSidebar active="/verify-license" />
+        <main className="flex min-w-0 flex-1 flex-col gap-gutter">
+          <section className="flex flex-wrap items-center justify-between gap-space-md rounded-2xl bg-gradient-to-r from-surface-container-lowest to-primary-fixed/60 p-space-lg shadow-sm">
+            <div className="flex min-w-0 flex-1 flex-col items-start gap-space-sm">
+              <span className="flex items-center gap-space-sm rounded-lg bg-primary-fixed px-space-sm py-1 text-label-md tracking-wider text-on-surface uppercase">
+                <Icon name="verified_user" className="!text-[16px]" />
+                Xác minh thủ công
+              </span>
+              <h1 className="text-headline-lg text-on-surface">Xác minh Giấy phép lái xe</h1>
+              <p className="max-w-2xl text-body-lg text-on-surface-variant">
+                Bạn cần được xác minh giấy phép lái xe trước khi đặt xe. Ảnh được lưu riêng, chỉ quản trị viên xem để xác minh.
               </p>
             </div>
+            <LicenseStatus />
           </section>
 
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-[15px] font-semibold text-muted">
-              Để sau
-            </Link>
-            <button
-              type="submit"
-              className="h-[52px] rounded-xl bg-primary px-8 text-base font-semibold text-white"
-            >
-              Gửi xác minh
-            </button>
-          </div>
+          <div className="grid items-start gap-gutter xl:grid-cols-12">
+            <div className="flex min-w-0 flex-col gap-gutter xl:col-span-7">
+              <section className="flex flex-col gap-space-md rounded-2xl bg-surface-container-lowest p-space-md shadow-sm">
+                <StepTitle index={1} title="Tải ảnh chụp GPLX thực tế" note="Chụp thẳng, đủ hai mặt, không mất góc" />
+                <LicenseUploads />
+                <p className="flex items-start gap-space-sm rounded-xl bg-surface-container-low p-space-md text-body-md text-on-surface-variant">
+                  <Icon name="admin_panel_settings" className="!text-[20px] text-primary" />
+                  <span>
+                    <strong className="block text-label-lg text-primary">Duyệt thủ công</strong>
+                    Quản trị viên xem ảnh và duyệt. Vui lòng không dùng ảnh chụp màn hình hoặc bản photocopy.
+                  </span>
+                </p>
+              </section>
 
-          <p className="rounded-xl border border-[#f5c877] bg-[#fff6e5] px-5 py-4 text-sm leading-[22px] text-[#5c3b00]">
-            Trạng thái hồ sơ sau khi gửi: Chờ duyệt. Bạn có thể xem xe trong lúc chờ, nhưng chưa đặt
-            được xe cho đến khi hồ sơ được duyệt.
-          </p>
-        </form>
-      </main>
+              <section className="flex flex-col gap-space-md rounded-2xl bg-surface-container-lowest p-space-md shadow-sm">
+                <h2 className="flex items-center gap-space-sm text-headline-sm text-on-surface">
+                  <Icon name="photo_camera" className="text-primary" />
+                  Hướng dẫn chụp ảnh đạt chuẩn
+                </h2>
+                <ul className="grid grid-cols-2 gap-space-md sm:grid-cols-4">
+                  {GUIDE.map((item) => (
+                    <li key={item.title} className="flex flex-col gap-1">
+                      <span
+                        className={`flex h-20 items-center justify-center rounded-xl ${
+                          item.ok ? "bg-tertiary-fixed/50 text-tertiary" : "bg-error-container text-error"
+                        }`}
+                      >
+                        <Icon name={item.icon} className="!text-[32px]" />
+                      </span>
+                      <span className={`text-label-lg ${item.ok ? "text-tertiary" : "text-error"}`}>{item.title}</span>
+                      <span className="text-label-md text-on-surface-variant">{item.note}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+
+            <section className="flex flex-col gap-space-md rounded-2xl bg-surface-container-lowest p-space-md shadow-sm xl:col-span-5">
+              <StepTitle index={2} title="Cam kết & Xác nhận" note="Kiểm tra thông tin trước khi gửi xác minh" />
+              <div className="flex flex-col gap-space-sm rounded-xl bg-surface-container-low p-space-md">
+                <p className="flex items-start gap-space-sm text-body-md text-on-surface">
+                  <Icon name="check_box" className="!text-[20px] text-primary" />
+                  Giấy phép lái xe phải là thật và còn hiệu lực.
+                </p>
+                <p className="flex items-start gap-space-sm text-label-md text-on-surface-variant">
+                  <Icon name="shield" className="!text-[18px] text-tertiary" />
+                  Chúng tôi không chia sẻ ảnh giấy phép cho bên thứ ba.
+                </p>
+              </div>
+              <p role="status" className="flex items-start gap-space-sm rounded-xl bg-warning-container p-space-md text-body-md text-warning">
+                <Icon name="construction" className="!text-[20px]" />
+                Chức năng gửi ảnh đang được hoàn thiện. Trong giai đoạn thử nghiệm, quản trị viên xác minh tài khoản trực tiếp.
+              </p>
+              <div className="flex gap-space-sm">
+                <button
+                  type="button"
+                  disabled
+                  className="flex h-12 flex-1 items-center justify-center gap-space-sm rounded-xl bg-primary text-label-lg text-on-primary shadow-sm disabled:opacity-50"
+                >
+                  Gửi xác minh
+                  <Icon name="arrow_forward" className="!text-[18px]" />
+                </button>
+                <Link
+                  href="/cars"
+                  className="flex h-12 items-center rounded-xl bg-surface-container-low px-space-md text-label-lg text-on-surface transition-colors hover:bg-surface-container"
+                >
+                  Để sau
+                </Link>
+              </div>
+              <Link href="/support#gplx" className="text-center text-label-md text-primary hover:underline">
+                Cần trợ giúp? Xem câu hỏi về giấy phép lái xe
+              </Link>
+            </section>
+          </div>
+        </main>
+      </div>
     </>
   );
 }

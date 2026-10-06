@@ -109,6 +109,12 @@ export function rangeProblem(startIso: string | null, endIso: string | null, now
   return null;
 }
 
+// Tiền thuê chia cho chủ xe làm hai lần: nửa đầu (làm tròn xuống, như API) khi giao xe, phần còn lại khi trả xe.
+export function payoutSplit(totalAmount: number): { atPickup: number; atReturn: number } {
+  const atPickup = Math.floor(totalAmount / 2);
+  return { atPickup, atReturn: totalAmount - atPickup };
+}
+
 // ---- Trạng thái hiển thị ----
 
 // Đơn pending đã quá hạn được coi là hết hạn ngay trên màn hình, không chờ tải lại trang (API cũng tính như vậy).

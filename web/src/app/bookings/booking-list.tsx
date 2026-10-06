@@ -2,18 +2,22 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { Icon } from "@/components/icon";
 import { StatusPill } from "@/components/status-pill";
+import { VehicleImage } from "@/components/vehicle-image";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { listMyBookings, renterAction } from "@/lib/bookings/api";
 import { Booking, cancelRefund, formatVnDateTime, RenterAction, renterState, RenterTab } from "@/lib/bookings/rules";
 import { formatVnd } from "@/lib/cars";
 
 const TABS: { id: RenterTab; label: string }[] = [
-  { id: "upcoming", label: "Sắp tới" },
-  { id: "active", label: "Đang thuê" },
-  { id: "done", label: "Hoàn tất" },
+  { id: "upcoming", label: "Sắp diễn ra" },
+  { id: "active", label: "Đang đi chuyến" },
+  { id: "done", label: "Đã hoàn thành" },
   { id: "cancelled", label: "Đã hủy" },
 ];
+
+const ACTION_ICONS: Record<Exclude<RenterAction, "pay" | "cancel">, string> = { pickup: "task_alt", return: "assignment_turned_in" };
 
 const ACTION_LABELS: Record<Exclude<RenterAction, "pay">, string> = {
   cancel: "Hủy đơn",
@@ -21,8 +25,10 @@ const ACTION_LABELS: Record<Exclude<RenterAction, "pay">, string> = {
   return: "Đã trả xe",
 };
 
-const PRIMARY = "flex h-10 items-center rounded-[10px] bg-primary px-4 text-sm font-semibold text-white disabled:opacity-50";
-const SECONDARY = "flex h-10 items-center rounded-[10px] border border-[#c5d2e3] bg-white px-4 text-sm font-semibold text-ink disabled:opacity-50";
+const PRIMARY =
+  "flex h-10 items-center gap-space-sm rounded-xl bg-primary px-space-md text-label-lg text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:opacity-50";
+const SECONDARY =
+  "flex h-10 items-center gap-space-sm rounded-xl bg-surface-container-low px-space-md text-label-lg text-on-surface transition-colors hover:bg-surface-container disabled:opacity-50";
 
 type Load = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; items: Booking[] };
 
@@ -74,7 +80,7 @@ export function BookingList() {
 
   return (
     <>
-      <div role="tablist" className="flex gap-2 border-b border-line">
+      <div role="tablist" className="flex flex-wrap gap-space-sm">
         {TABS.map((t) => {
           const selected = t.id === tab;
           const count = all.filter((entry) => entry.state.tab === t.id).length;
@@ -84,106 +90,132 @@ export function BookingList() {
               role="tab"
               aria-selected={selected}
               onClick={() => setTab(t.id)}
-              className={`-mb-px border-b-2 px-5 py-3.5 text-base font-semibold ${
-                selected ? "border-primary text-primary" : "border-transparent text-muted"
+              className={`flex h-10 items-center gap-space-sm rounded-full px-space-md text-label-lg transition-colors ${
+                selected ? "bg-on-surface text-surface-container-lowest" : "bg-surface-container-low text-on-surface hover:bg-surface-container"
               }`}
             >
               {t.label}
-              {count > 0 ? ` (${count})` : ""}
+              <span
+                className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-label-sm ${
+                  selected ? "bg-surface-container-lowest text-on-surface" : "bg-surface-container-high text-on-surface-variant"
+                }`}
+              >
+                {count}
+              </span>
             </button>
           );
         })}
       </div>
 
-      {load.status === "loading" && <p className="text-muted">Đang tải đơn...</p>}
+      {load.status === "loading" && <p className="text-body-md text-on-surface-variant">Đang tải đơn...</p>}
       {load.status === "error" && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
           {load.message}
         </p>
       )}
       {load.status === "ready" && items.length === 0 && (
-        <p className="rounded-2xl border border-line bg-white p-8 text-center text-[15px] text-muted">Chưa có đơn nào trong mục này.</p>
+        <div className="flex flex-col items-center gap-space-sm rounded-2xl bg-surface-container-lowest p-space-xl text-center shadow-sm">
+          <Icon name="receipt_long" className="!text-[40px] text-outline" />
+          <p className="text-body-md text-on-surface-variant">Chưa có đơn nào trong mục này.</p>
+          <Link href="/cars" className="text-label-lg text-primary hover:underline">
+            Tìm xe để đặt
+          </Link>
+        </div>
       )}
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-space-md">
         {items.map(({ booking: b, state }) => {
           const busy = busyId === b.id;
           return (
-            <article key={b.id} className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-5">
-              <div className="flex items-center gap-5">
-                <div className="flex h-[110px] w-40 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-placeholder text-xs font-medium text-primary">
-                  {b.vehicle.coverUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px)
-                    <img src={b.vehicle.coverUrl} alt={b.vehicle.title} className="size-full object-cover" />
-                  ) : (
-                    "Chưa có ảnh"
-                  )}
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                  <div className="flex items-center gap-2.5">
-                    <h2 className="text-xl font-semibold text-ink">{b.vehicle.title}</h2>
-                    <StatusPill tone={state.tone}>{state.label}</StatusPill>
-                  </div>
-                  <p className="text-base font-medium text-ink">
+            <article key={b.id} className="flex flex-col gap-space-md rounded-2xl bg-surface-container-lowest p-space-md shadow-sm">
+              <div className="flex flex-wrap items-center gap-space-sm">
+                <span className="rounded-lg bg-surface-container-low px-space-sm py-1 font-mono text-label-md text-on-surface-variant">
+                  #{b.id.slice(0, 8).toUpperCase()}
+                </span>
+                <StatusPill tone={state.tone}>{state.label}</StatusPill>
+                <span className="ml-auto flex items-center gap-1 text-label-md text-on-surface-variant">
+                  <Icon name="event_note" className="!text-[16px]" />
+                  Đặt lúc {formatVnDateTime(b.createdAt)}
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-space-md md:flex-row md:items-center">
+                <Link href={`/cars/${b.vehicle.id}`} className="block h-24 w-full shrink-0 overflow-hidden rounded-xl md:w-36" aria-label={`Xem ${b.vehicle.title}`}>
+                  <VehicleImage src={b.vehicle.coverUrl} alt={b.vehicle.title} emptyLabel="" />
+                </Link>
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <h2 className="text-headline-sm text-on-surface">{b.vehicle.title}</h2>
+                  <p className="flex items-center gap-1 text-label-lg text-on-surface">
+                    <Icon name="schedule" className="!text-[16px] text-primary" />
                     {formatVnDateTime(b.startAt)} đến {formatVnDateTime(b.endAt)}
                   </p>
-                  <p className="text-sm text-muted">
+                  <p className="flex items-center gap-1 text-body-md text-on-surface-variant">
+                    <Icon name="location_on" className="!text-[16px]" />
                     Nhận xe tại {b.vehicle.district}, {b.vehicle.city} · {b.rentalDays} ngày
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-col items-end gap-1">
-                  <p className="text-[22px] font-bold text-primary">{formatVnd(b.payableAmount)}</p>
-                  <p className="text-[13px] text-muted">
+                <div className="flex shrink-0 flex-col gap-1 rounded-xl bg-surface-container-low px-space-md py-space-sm md:items-end">
+                  <p className="text-label-sm tracking-wider text-on-surface-variant uppercase">Thanh toán khi đặt</p>
+                  <p className="text-headline-sm text-primary">{formatVnd(b.payableAmount)}</p>
+                  <p className="text-label-md text-on-surface-variant">
                     Thuê {formatVnd(b.totalAmount)} + cọc {formatVnd(b.depositAmount)}
                   </p>
                 </div>
               </div>
 
-              {state.hint && <p className="rounded-[10px] bg-surface px-3.5 py-2.5 text-sm leading-[22px] text-ink">{state.hint}</p>}
+              {state.hint && (
+                <p className="flex items-start gap-space-sm rounded-xl bg-surface-container-low px-space-md py-space-sm text-body-md text-on-surface">
+                  <Icon name="info" className="mt-0.5 !text-[18px] text-primary" />
+                  {state.hint}
+                </p>
+              )}
               {errors[b.id] && (
-                <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
+                <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
                   {errors[b.id]}
                 </p>
               )}
 
               {confirmCancelId === b.id ? (
-                <div className="flex items-center justify-between gap-4 rounded-[10px] border border-[#f5c877] bg-[#fff6e5] px-3.5 py-3">
-                  <p className="text-sm leading-[22px] text-[#5c3b00]">
+                <div className="flex flex-wrap items-center justify-between gap-space-md rounded-xl bg-warning-container px-space-md py-space-sm">
+                  <p className="min-w-0 flex-1 text-body-md text-warning">
                     {b.paidAt
                       ? `Hủy đơn này? Nếu hủy ngay bây giờ, bạn được hoàn ${formatVnd(cancelRefund(b, now))} trên ${formatVnd(b.paidAmount)} đã trả.`
                       : "Hủy đơn này? Bạn chưa thanh toán nên không mất khoản nào."}
                   </p>
-                  <div className="flex shrink-0 gap-2">
-                    <button type="button" onClick={() => run(b, "cancel")} disabled={busy} className={`${SECONDARY} text-[#c0281c]`}>
+                  <div className="flex shrink-0 gap-space-sm">
+                    <button type="button" onClick={() => run(b, "cancel")} disabled={busy} className={`${SECONDARY} !bg-surface-container-lowest text-error`}>
                       Xác nhận hủy
                     </button>
-                    <button type="button" onClick={() => setConfirmCancelId(null)} className={SECONDARY}>
+                    <button type="button" onClick={() => setConfirmCancelId(null)} className={`${SECONDARY} !bg-surface-container-lowest`}>
                       Giữ đơn
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="flex justify-end gap-2.5">
-                  <Link href={`/cars/${b.vehicle.id}`} className={SECONDARY}>
-                    Xem xe
+                <div className="flex flex-wrap justify-end gap-space-sm">
+                  <Link href={`/bookings/${b.id}`} className={SECONDARY}>
+                    <Icon name="visibility" className="!text-[18px]" />
+                    Xem chi tiết
                   </Link>
                   {state.actions.map((action) => {
                     if (action === "pay") {
                       return (
                         <Link key={action} href={`/checkout?booking=${b.id}`} className={PRIMARY}>
+                          <Icon name="payments" className="!text-[18px]" />
                           Thanh toán
                         </Link>
                       );
                     }
                     if (action === "cancel") {
                       return (
-                        <button key={action} type="button" onClick={() => setConfirmCancelId(b.id)} disabled={busy} className={`${SECONDARY} text-[#c0281c]`}>
+                        <button key={action} type="button" onClick={() => setConfirmCancelId(b.id)} disabled={busy} className={`${SECONDARY} text-error`}>
                           {ACTION_LABELS.cancel}
                         </button>
                       );
                     }
                     return (
                       <button key={action} type="button" onClick={() => run(b, action)} disabled={busy} className={PRIMARY}>
+                        <Icon name={ACTION_ICONS[action]} className="!text-[18px]" />
                         {busy ? "Đang gửi..." : ACTION_LABELS[action]}
                       </button>
                     );
