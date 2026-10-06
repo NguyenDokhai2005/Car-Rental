@@ -9,5 +9,6 @@ import { OwnerBookingsController } from "./owner-bookings.controller";
 @Module({
   controllers: [BookingsController, OwnerBookingsController],
   providers: [BookingsService, BookingTransitionsService, BookingPresenter, BookingExpiryJob],
+  exports: [BookingPresenter],
 })
 export class BookingsModule {}
