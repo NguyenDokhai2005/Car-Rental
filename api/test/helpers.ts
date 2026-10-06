@@ -102,6 +102,9 @@ export function makeBooking(
   endAt: Date,
   status: "pending" | "confirmed" | "in_use" | "completed" | "cancelled" | "expired" | "rejected" = "confirmed",
 ) {
+  // CSDL buộc đơn confirmed, in_use, completed phải đã thanh toán, và đơn in_use phải có xác nhận giao xe của cả hai bên.
+  const paid = status === "confirmed" || status === "in_use" || status === "completed";
+  const handedOver = status === "in_use" || status === "completed";
   return ctx.prisma.booking.create({
     data: {
       vehicleId,
@@ -113,6 +116,10 @@ export function makeBooking(
       pricePerDay: 650000,
       totalAmount: 650000,
       depositAmount: 195000,
+      paidAt: paid ? new Date() : null,
+      paidAmount: paid ? 650000 + 195000 : 0,
+      ownerHandedOverAt: handedOver ? startAt : null,
+      renterReceivedAt: handedOver ? startAt : null,
       cancelledAt: status === "cancelled" ? new Date() : null,
       rejectReason: status === "rejected" ? "Không phù hợp" : null,
     },

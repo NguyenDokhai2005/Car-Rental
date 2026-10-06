@@ -224,6 +224,15 @@ model Booking {
   cancelledAt     DateTime?     @map("cancelled_at") @db.Timestamptz(6)
   cancelledById   String?       @map("cancelled_by") @db.Uuid
   refundAmount    Int           @default(0) @map("refund_amount")
+  // Sổ tiền của đơn (SPEC §4): khách đã trả, đã hoàn cho khách (refundAmount ở trên), đã ghi nhận cho chủ xe.
+  paidAt              DateTime? @map("paid_at") @db.Timestamptz(6)
+  paidAmount          Int       @default(0) @map("paid_amount")
+  ownerPayoutAmount   Int       @default(0) @map("owner_payout_amount")
+  // Xác nhận của từng bên khi giao xe và khi trả xe. Đơn chỉ đổi trạng thái khi đủ cả hai cột của một cặp.
+  ownerHandedOverAt   DateTime? @map("owner_handed_over_at") @db.Timestamptz(6)
+  renterReceivedAt    DateTime? @map("renter_received_at") @db.Timestamptz(6)
+  renterReturnedAt    DateTime? @map("renter_returned_at") @db.Timestamptz(6)
+  ownerReceivedBackAt DateTime? @map("owner_received_back_at") @db.Timestamptz(6)
   createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
