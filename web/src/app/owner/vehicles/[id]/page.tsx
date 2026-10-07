@@ -1,7 +1,7 @@
 import { Header } from "@/components/header";
 import { VehicleManager } from "./vehicle-manager";
 
-export const metadata = { title: "Quản lý xe — Car-Rental" };
+export const metadata = { title: "Quản lý xe — AutoRent VN" };
 
 export default async function ManageVehiclePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

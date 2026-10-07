@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CheckIcon } from "@/components/icons";
+import { Icon } from "@/components/icon";
 import { AdminVehicle, approveVehicle, listPendingVehicles, rejectVehicle } from "@/lib/admin/api";
 import { ApiError } from "@/lib/api/client";
 import { formatVnd } from "@/lib/cars";
@@ -95,9 +95,12 @@ export function AdminReview() {
 
   return (
     <div className="flex flex-col gap-7">
-      <h1 className="text-[32px] font-bold text-ink">Duyệt xe và người dùng</h1>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-headline-lg text-on-surface">Kiểm duyệt xe</h1>
+        <p className="text-body-md text-on-surface-variant">Xe chờ lâu nhất đứng đầu. Duyệt xong, xe mới hiển thị cho khách thuê.</p>
+      </div>
 
-      <div role="tablist" className="flex gap-2 border-b border-line">
+      <div role="tablist" className="flex gap-2 border-b border-outline-variant/40">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -105,7 +108,7 @@ export function AdminReview() {
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
             className={`-mb-px border-b-2 px-5 py-3.5 text-base font-semibold ${
-              tab === t.id ? "border-primary text-primary" : "border-transparent text-muted"
+              tab === t.id ? "border-primary text-primary" : "border-transparent text-on-surface-variant"
             }`}
           >
             {t.label}
@@ -114,37 +117,37 @@ export function AdminReview() {
       </div>
 
       {tab === "licenses" ? (
-        <p className="rounded-2xl border border-line bg-white p-8 text-center text-[15px] text-muted">
+        <p className="rounded-2xl bg-surface-container-lowest shadow-sm p-8 text-center text-[15px] text-on-surface-variant">
           Danh sách giấy phép lái xe chờ xác minh sẽ hiển thị ở đây.
         </p>
       ) : load.status === "loading" ? (
-        <p className="text-muted">Đang tải danh sách xe chờ duyệt...</p>
+        <p className="text-on-surface-variant">Đang tải danh sách xe chờ duyệt...</p>
       ) : load.status === "error" ? (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">
           {load.message}
         </p>
       ) : (
         <div className="flex items-start gap-7">
-          <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-line bg-white">
-            <div className={`${ROW_GRID} h-[45px] bg-surface text-[13px] font-semibold text-muted`}>
+          <div className="min-w-0 flex-1 overflow-hidden rounded-2xl bg-surface-container-lowest shadow-sm">
+            <div className={`${ROW_GRID} h-[45px] bg-surface-container-low text-[13px] font-semibold text-on-surface-variant`}>
               <span>Xe</span>
               <span>Chủ xe</span>
               <span>Cập nhật lần cuối</span>
             </div>
             {items.length === 0 && (
-              <p className="px-6 py-8 text-center text-[15px] text-muted">Không còn xe nào chờ duyệt.</p>
+              <p className="px-6 py-8 text-center text-[15px] text-on-surface-variant">Không còn xe nào chờ duyệt.</p>
             )}
             {items.map((item) => (
               <button
                 key={item.id}
                 onClick={() => select(item.id)}
                 aria-pressed={item.id === selected?.id}
-                className={`${ROW_GRID} h-[89px] w-full border-t border-line text-left ${
-                  item.id === selected?.id ? "bg-primary-50" : "bg-white"
+                className={`${ROW_GRID} h-[89px] w-full border-t border-outline-variant/40 text-left ${
+                  item.id === selected?.id ? "bg-primary-fixed/60" : "bg-surface-container-lowest"
                 }`}
               >
                 <span className="flex items-center gap-3.5">
-                  <span className="flex h-[52px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-placeholder text-[11px] font-medium text-primary">
+                  <span className="flex h-[52px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-surface-container text-[11px] font-medium text-primary">
                     {item.images[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px)
                       <img src={item.images[0].url} alt="" className="size-full object-cover" />
@@ -152,17 +155,17 @@ export function AdminReview() {
                       "Chưa có ảnh"
                     )}
                   </span>
-                  <span className="text-base font-semibold text-ink">{item.title}</span>
+                  <span className="text-base font-semibold text-on-surface">{item.title}</span>
                 </span>
-                <span className="text-base text-ink">{item.owner.fullName}</span>
-                <span className="text-base text-muted">{formatDate(item.updatedAt)}</span>
+                <span className="text-base text-on-surface">{item.owner.fullName}</span>
+                <span className="text-base text-on-surface-variant">{formatDate(item.updatedAt)}</span>
               </button>
             ))}
           </div>
 
           {selected && (
-            <aside className="flex w-[420px] shrink-0 flex-col gap-4 rounded-2xl border border-line bg-white p-6">
-              <div className="flex h-[200px] items-center justify-center overflow-hidden rounded-xl bg-placeholder text-base font-medium text-primary">
+            <aside className="flex w-[420px] shrink-0 flex-col gap-4 rounded-2xl bg-surface-container-lowest shadow-sm p-6">
+              <div className="flex h-[200px] items-center justify-center overflow-hidden rounded-xl bg-surface-container text-base font-medium text-primary">
                 {mainImage ? (
                   // eslint-disable-next-line @next/next/no-img-element -- ảnh đã được API xử lý (WebP, ≤ 1600 px)
                   <img src={mainImage.url} alt={selected.title} className="size-full object-cover" />
@@ -190,26 +193,26 @@ export function AdminReview() {
               )}
 
               <div className="flex flex-col gap-1">
-                <h2 className="text-[22px] font-bold text-ink">{selected.title}</h2>
-                <p className="text-sm text-muted">
+                <h2 className="text-[22px] font-bold text-on-surface">{selected.title}</h2>
+                <p className="text-sm text-on-surface-variant">
                   {selected.district}, {selected.city} · Biển số {selected.plateNumber}
                 </p>
-                <p className="text-sm text-muted">
+                <p className="text-sm text-on-surface-variant">
                   {selected.seats} chỗ · {TRANSMISSION_LABELS[selected.transmission]} · {FUEL_LABELS[selected.fuel]}
                 </p>
-                <p className="text-sm text-ink">
+                <p className="text-sm text-on-surface">
                   {formatVnd(selected.pricePerDay)} mỗi ngày · cọc {selected.depositRate}%
                 </p>
-                <p className="text-sm text-muted">
+                <p className="text-sm text-on-surface-variant">
                   Chủ xe: {selected.owner.fullName} · {selected.owner.phone} · {selected.owner.email}
                 </p>
-                {selected.description && <p className="text-sm text-ink">{selected.description}</p>}
+                {selected.description && <p className="text-sm text-on-surface">{selected.description}</p>}
               </div>
 
               <div className="flex flex-col gap-2.5">
-                <p className="text-[15px] font-semibold text-ink">Danh sách kiểm tra</p>
+                <p className="text-[15px] font-semibold text-on-surface">Danh sách kiểm tra</p>
                 {CHECKLIST.map((label, i) => (
-                  <label key={label} className="flex cursor-pointer items-center gap-2.5 text-[15px] text-ink">
+                  <label key={label} className="flex cursor-pointer items-center gap-2.5 text-[15px] text-on-surface">
                     <input
                       type="checkbox"
                       checked={checked[i]}
@@ -217,11 +220,11 @@ export function AdminReview() {
                       className="sr-only"
                     />
                     <span
-                      className={`flex size-5 items-center justify-center rounded-[5px] border text-white ${
-                        checked[i] ? "border-primary bg-primary" : "border-[#c5d2e3] bg-white"
+                      className={`flex size-5 items-center justify-center rounded-[5px] border text-on-primary ${
+                        checked[i] ? "border-primary bg-primary" : "border-outline-variant bg-surface-container-lowest"
                       }`}
                     >
-                      {checked[i] && <CheckIcon />}
+                      {checked[i] && <Icon name="check" className="!text-[14px]" />}
                     </span>
                     {label}
                   </label>
@@ -229,23 +232,23 @@ export function AdminReview() {
               </div>
 
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-semibold text-ink">Lý do từ chối (nếu có)</span>
+                <span className="text-sm font-semibold text-on-surface">Lý do từ chối (nếu có)</span>
                 <textarea
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   maxLength={500}
                   placeholder="Ghi rõ để chủ xe sửa lại"
-                  className="h-20 resize-none rounded-[10px] border border-[#c5d2e3] bg-white p-3.5 text-[15px] placeholder:text-[#8a99ae]"
+                  className="h-20 resize-none rounded-xl bg-surface-container-low p-3.5 text-[15px] placeholder:text-outline"
                 />
               </label>
 
               {!hasImages && (
-                <p className="rounded-[10px] bg-[#fff6e5] px-3.5 py-3 text-sm text-[#8a5a00]">
+                <p className="rounded-xl bg-warning-container px-3.5 py-3 text-sm text-warning">
                   Xe chưa có ảnh nào nên chưa thể duyệt. Hãy từ chối kèm lý do để chủ xe bổ sung ảnh.
                 </p>
               )}
               {actionError && (
-                <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+                <p role="alert" className="rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">
                   {actionError}
                 </p>
               )}
@@ -254,14 +257,14 @@ export function AdminReview() {
                 <button
                   onClick={() => void decide("approve")}
                   disabled={busy || !hasImages || !checked.every(Boolean)}
-                  className="h-12 flex-1 rounded-xl bg-primary text-[15px] font-semibold text-white disabled:opacity-50"
+                  className="h-12 flex-1 rounded-xl bg-primary text-[15px] font-semibold text-on-primary disabled:opacity-50"
                 >
                   {busy ? "Đang xử lý..." : "Duyệt xe"}
                 </button>
                 <button
                   onClick={() => void decide("reject")}
                   disabled={busy || reason.trim() === ""}
-                  className="h-12 flex-1 rounded-xl border border-[#c5d2e3] bg-white text-[15px] font-semibold text-[#c0281c] disabled:opacity-50"
+                  className="h-12 flex-1 rounded-xl bg-surface-container-low text-[15px] font-semibold text-error disabled:opacity-50"
                 >
                   Từ chối
                 </button>

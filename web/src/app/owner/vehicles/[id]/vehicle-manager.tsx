@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { Icon } from "@/components/icon";
 import { StatusPill } from "@/components/status-pill";
 import { ApiError } from "@/lib/api/client";
 import { apiErrorMessage as errorMessage } from "@/lib/api/error-message";
@@ -57,13 +58,13 @@ export function VehicleManager({ id }: { id: string }) {
   }
 
   if (load.status === "loading") {
-    return <p className="flex justify-center pt-10 text-muted">Đang tải thông tin xe...</p>;
+    return <p className="flex justify-center pt-10 text-on-surface-variant">Đang tải thông tin xe...</p>;
   }
   if (load.status === "missing") {
     return (
       <main className="flex flex-col items-center gap-3 pt-16 text-center">
-        <h1 className="text-[28px] font-bold text-ink">Không tìm thấy xe</h1>
-        <p className="text-muted">Xe này không tồn tại hoặc không thuộc tài khoản của bạn.</p>
+        <h1 className="text-headline-md text-on-surface">Không tìm thấy xe</h1>
+        <p className="text-on-surface-variant">Xe này không tồn tại hoặc không thuộc tài khoản của bạn.</p>
         <Link href="/owner" className="font-semibold text-primary">
           Về trang quản lý
         </Link>
@@ -72,7 +73,7 @@ export function VehicleManager({ id }: { id: string }) {
   }
   if (load.status === "error" || !vehicle) {
     return (
-      <p role="alert" className="mx-auto mt-10 max-w-page rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+      <p role="alert" className="mx-auto mt-10 max-w-page rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">
         {load.status === "error" ? load.message : "Không tải được xe."}
       </p>
     );
@@ -81,32 +82,46 @@ export function VehicleManager({ id }: { id: string }) {
   const { label, tone } = STATUS_LABELS[vehicle.status];
 
   return (
-    <main className="flex justify-center pt-8 pb-16">
-      <div className="flex w-full max-w-[860px] flex-col gap-6">
-        <p className="text-sm text-muted">
-          <Link href="/owner" className="font-semibold text-primary">
-            Quản lý xe
+    <main className="mx-auto flex w-full max-w-[960px] flex-col gap-gutter px-margin-sm py-space-lg">
+        <nav aria-label="Đường dẫn" className="flex items-center gap-1 text-label-md text-on-surface-variant">
+          <Link href="/owner" className="hover:text-primary">
+            Tổng quan
           </Link>
-          {"  /  "}
-          {vehicle.title}
-        </p>
+          <Icon name="chevron_right" className="!text-[16px]" />
+          <span className="text-on-surface">{vehicle.title}</span>
+        </nav>
 
-        <section className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-7">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex min-w-0 flex-col gap-1">
-              <h1 className="text-[28px] font-bold text-ink">{vehicle.title}</h1>
-              <p className="text-sm text-muted">Biển số {vehicle.plateNumber}</p>
+        <section className="flex flex-col gap-space-md rounded-2xl bg-surface-container-lowest p-space-md shadow-sm lg:p-space-lg">
+          <div className="flex flex-wrap items-start justify-between gap-space-md">
+            <div className="flex min-w-0 flex-col gap-space-sm">
+              <div className="flex flex-wrap items-center gap-space-sm">
+                <h1 className="text-headline-lg text-on-surface">{vehicle.title}</h1>
+                <StatusPill tone={tone}>{label}</StatusPill>
+              </div>
+              <p className="flex items-center gap-space-sm text-body-md text-on-surface-variant">
+                <span className="rounded-lg bg-surface-container-low px-space-sm py-1 font-mono text-label-md text-on-surface">{vehicle.plateNumber}</span>
+                {vehicle.district}, {vehicle.city}
+              </p>
             </div>
-            <StatusPill tone={tone}>{label}</StatusPill>
+            <Link
+              href={`/cars/${vehicle.id}`}
+              className="flex h-11 items-center gap-space-sm rounded-xl bg-surface-container-low px-space-md text-label-lg text-on-surface transition-colors hover:bg-surface-container"
+            >
+              <Icon name="visibility" className="!text-[18px]" />
+              Xem trang công khai
+            </Link>
           </div>
-          <p className="text-[15px] text-muted">{STATUS_HINT[vehicle.status]}</p>
+          <p className="flex items-start gap-space-sm rounded-xl bg-surface-container-low p-space-md text-body-md text-on-surface-variant">
+            <Icon name="info" className="!text-[20px] text-primary" />
+            {STATUS_HINT[vehicle.status]}
+          </p>
           {vehicle.status === "rejected" && vehicle.rejectReason && (
-            <p className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+            <p className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
               Lý do từ chối: {vehicle.rejectReason}
             </p>
           )}
           {error && (
-            <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+            <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
               {error}
             </p>
           )}
@@ -116,9 +131,10 @@ export function VehicleManager({ id }: { id: string }) {
                 type="button"
                 disabled={busy}
                 onClick={() => void toggleHidden(vehicle.status === "approved")}
-                className="h-11 rounded-xl border border-[#c5d2e3] bg-white px-5 text-[15px] font-semibold text-ink disabled:opacity-60"
+                className="flex h-11 items-center gap-space-sm rounded-xl bg-surface-container-low px-space-md text-label-lg text-on-surface transition-colors hover:bg-surface-container disabled:opacity-60"
               >
-                {vehicle.status === "approved" ? "Ẩn xe" : "Hiện lại xe"}
+                <Icon name={vehicle.status === "approved" ? "visibility_off" : "visibility"} className="!text-[18px]" />
+                {vehicle.status === "approved" ? "Tạm ẩn xe" : "Hiện lại xe"}
               </button>
             </div>
           )}
@@ -136,7 +152,6 @@ export function VehicleManager({ id }: { id: string }) {
         />
         <PhotoManager vehicleId={id} status={vehicle.status} onChanged={reload} />
         <BlockManager vehicleId={id} />
-      </div>
     </main>
   );
 }

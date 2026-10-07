@@ -185,11 +185,11 @@ Cho tới khi tích hợp cổng VNPay/MoMo sandbox (PLAN Ngày 15 và 16), `POS
 | GET | /admin/vehicles | Danh sách xe, chỉ admin. Query `status` (tùy chọn), `page`, `limit`. Mỗi xe kèm `owner` `{ id, fullName, email, phone }` và `images` `[{ id, url, position }]`. `status=pending` sắp theo cũ nhất trước (hàng đợi duyệt), các trạng thái khác mới nhất trước |
 | POST | /admin/vehicles/:id/approve | Duyệt xe: chỉ `pending` thành `approved`, ghi người duyệt và thời điểm duyệt, xóa lý do từ chối cũ. Xe chưa có ảnh nào, hoặc đang ở trạng thái khác, trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `approved` vẫn thành công. Trả xe theo dạng của danh sách |
 | POST | /admin/vehicles/:id/reject | Từ chối xe. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). Chỉ `pending` thành `rejected`; trạng thái khác trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `rejected` vẫn thành công và giữ lý do đầu tiên |
-| GET | /admin/users | Danh sách, lọc theo `licenseStatus` |
+| GET | /admin/users | Danh sách người dùng, chỉ admin, mới nhất trước. Query tùy chọn: `role`, `status`, `licenseStatus`, `q` (tìm trong họ tên, email, số điện thoại; tối đa 100 ký tự), `page`, `limit`. Mỗi người gồm các trường công khai (không có mật khẩu hay khóa file GPLX) kèm `vehicleCount` và `bookingCount` |
 | GET | /admin/users/:id/license | Xem file GPLX (có log) |
 | POST | /admin/users/:id/license/verify · /reject | Xác minh GPLX |
-| POST | /admin/users/:id/block · /unblock | Khóa/mở |
-| GET | /admin/bookings | Mọi đơn |
+| POST | /admin/users/:id/block · /unblock | Khóa hoặc mở tài khoản, trả người dùng theo dạng của danh sách. Gọi lặp lại vẫn thành công. Không khóa được chính mình hay admin khác: trả 409 `INVALID_STATE`. Tài khoản bị khóa bị từ chối ở mọi yêu cầu kế tiếp (guard đọc lại trạng thái mỗi lần), không cần chờ token hết hạn. Đơn đang có của người bị khóa giữ nguyên |
+| GET | /admin/bookings | Mọi đơn, chỉ admin, mới nhất trước. Query `status` (tùy chọn, tính theo trạng thái hiệu lực), `page`, `limit`. Mỗi đơn theo dạng chi tiết của chủ xe (`renter`, `ownerPayoutAmount`) kèm `owner` `{ fullName, phone }`. Phản hồi có thêm `totals` `{ paidAmount, refundAmount, ownerPayoutAmount, heldAmount }` cộng trên **toàn bộ** đơn (không theo bộ lọc hay trang): `heldAmount = paidAmount - refundAmount - ownerPayoutAmount` là số tiền nền tảng đang giữ hộ |
 
 ## 8. Tác vụ nền
 

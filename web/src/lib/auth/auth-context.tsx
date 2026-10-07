@@ -23,6 +23,7 @@ type AuthContextValue = AuthState & {
   login: (email: string, password: string) => Promise<AuthUser>;
   register: (input: RegisterInput) => Promise<AuthUser>;
   logout: () => Promise<void>;
+  updateProfile: (input: { fullName: string; phone: string }) => Promise<AuthUser>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -119,7 +120,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setState({ status: "anonymous", user: null });
   }, []);
 
-  const value = useMemo<AuthContextValue>(() => ({ ...state, login, register, logout }), [state, login, register, logout]);
+  // Sửa hồ sơ rồi cập nhật ngay người dùng đang giữ trong bộ nhớ, để thanh đầu trang hiện tên mới mà không cần tải lại.
+  const updateProfile = useCallback(async (input: { fullName: string; phone: string }) => {
+    const user = await apiFetch<AuthUser>("/me", { method: "PATCH", body: input });
+    setState((prev) => (prev.status === "authenticated" ? { status: "authenticated", user } : prev));
+    return user;
+  }, []);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({ ...state, login, register, logout, updateProfile }),
+    [state, login, register, logout, updateProfile],
+  );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   Booking,
+  payoutSplit,
   cancelRefund,
   effectiveStatus,
   formatClock,
@@ -210,5 +211,15 @@ describe("chủ xe thấy gì", () => {
     const late = ownerState(confirmed({ status: "cancelled", ownerPayoutAmount: 1_300_000 }), NOW);
     expect(late.hint).toContain("1.300.000đ");
     expect(ownerState(confirmed({ status: "cancelled" }), NOW).hint).toBe("");
+  });
+});
+
+describe("payoutSplit", () => {
+  it("chia đôi tiền thuê chẵn", () => {
+    expect(payoutSplit(2_000_000)).toEqual({ atPickup: 1_000_000, atReturn: 1_000_000 });
+  });
+
+  it("số lẻ: nửa đầu làm tròn xuống, phần còn lại dồn vào lúc trả xe, tổng không đổi", () => {
+    expect(payoutSplit(1_000_001)).toEqual({ atPickup: 500_000, atReturn: 500_001 });
   });
 });

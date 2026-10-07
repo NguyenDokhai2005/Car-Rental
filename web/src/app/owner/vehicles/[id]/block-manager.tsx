@@ -84,24 +84,24 @@ export function BlockManager({ vehicleId }: { vehicleId: string }) {
   return (
     <Card title="Lịch xe và chặn ngày">
       {loadError && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">
           {loadError}
         </p>
       )}
 
-      <div className="flex flex-col gap-3 rounded-2xl border border-line p-5">
+      <div className="flex flex-col gap-3 rounded-2xl border border-outline-variant/40 p-5">
         <div className="flex items-center justify-between">
-          <button type="button" onClick={() => setMonth(shiftMonth(month, -1))} aria-label="Tháng trước" className="px-3 py-1 text-lg text-ink">
+          <button type="button" onClick={() => setMonth(shiftMonth(month, -1))} aria-label="Tháng trước" className="px-3 py-1 text-lg text-on-surface">
             ‹
           </button>
-          <p className="text-base font-semibold text-ink">
+          <p className="text-base font-semibold text-on-surface">
             Tháng {Number(m)}/{year}
           </p>
-          <button type="button" onClick={() => setMonth(shiftMonth(month, 1))} aria-label="Tháng sau" className="px-3 py-1 text-lg text-ink">
+          <button type="button" onClick={() => setMonth(shiftMonth(month, 1))} aria-label="Tháng sau" className="px-3 py-1 text-lg text-on-surface">
             ›
           </button>
         </div>
-        <div className="grid grid-cols-7 gap-2 text-center text-xs text-muted">
+        <div className="grid grid-cols-7 gap-2 text-center text-xs text-on-surface-variant">
           {WEEKDAYS.map((d) => (
             <span key={d}>{d}</span>
           ))}
@@ -114,14 +114,14 @@ export function BlockManager({ vehicleId }: { vehicleId: string }) {
             <span
               key={day}
               className={`flex h-10 items-center justify-center rounded-lg text-sm font-medium ${
-                booked.has(day) ? "bg-primary text-white" : blocked.has(day) ? "bg-[#c5d2e3] text-ink" : "bg-surface text-ink"
+                booked.has(day) ? "bg-primary text-on-primary" : blocked.has(day) ? "bg-[#c5d2e3] text-on-surface" : "bg-surface-container-low text-on-surface"
               }`}
             >
               {day}
             </span>
           ))}
         </div>
-        <div className="flex gap-4 text-[13px] text-muted">
+        <div className="flex gap-4 text-[13px] text-on-surface-variant">
           <span className="flex items-center gap-1.5">
             <i className="size-3 rounded-sm bg-primary" /> Đã có đơn
           </span>
@@ -132,48 +132,48 @@ export function BlockManager({ vehicleId }: { vehicleId: string }) {
       </div>
 
       <form key={formKey} onSubmit={onSubmit} className="flex flex-col gap-3">
-        <p className="text-[15px] font-semibold text-ink">Chặn một khoảng ngày</p>
+        <p className="text-[15px] font-semibold text-on-surface">Chặn một khoảng ngày</p>
         <div className="flex gap-3">
           <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-            <span className="text-sm text-muted">Từ ngày</span>
+            <span className="text-sm text-on-surface-variant">Từ ngày</span>
             <input type="date" name="startDate" min={today} required className={INPUT_CLASS} />
           </label>
           <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-            <span className="text-sm text-muted">Đến hết ngày</span>
+            <span className="text-sm text-on-surface-variant">Đến hết ngày</span>
             <input type="date" name="endDate" min={today} required className={INPUT_CLASS} />
           </label>
         </div>
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm text-muted">Lý do (không bắt buộc)</span>
+          <span className="text-sm text-on-surface-variant">Lý do (không bắt buộc)</span>
           <input name="reason" maxLength={200} placeholder="Ví dụ: bảo dưỡng, chủ xe đi công tác" className={INPUT_CLASS} />
         </label>
         <div>
-          <button type="submit" disabled={saving} className="h-11 rounded-xl bg-primary px-5 text-[15px] font-semibold text-white disabled:opacity-60">
+          <button type="submit" disabled={saving} className="h-11 rounded-xl bg-primary px-5 text-[15px] font-semibold text-on-primary disabled:opacity-60">
             {saving ? "Đang chặn..." : "Chặn ngày"}
           </button>
         </div>
       </form>
 
       {error && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">
           {error}
         </p>
       )}
 
       <div className="flex flex-col gap-2">
-        <p className="text-[15px] font-semibold text-ink">Các khoảng đang chặn</p>
+        <p className="text-[15px] font-semibold text-on-surface">Các khoảng đang chặn</p>
         {blocks === null ? (
-          <p className="text-muted">Đang tải...</p>
+          <p className="text-on-surface-variant">Đang tải...</p>
         ) : blocks.length === 0 ? (
-          <p className="text-[15px] text-muted">Chưa chặn ngày nào.</p>
+          <p className="text-[15px] text-on-surface-variant">Chưa chặn ngày nào.</p>
         ) : (
           blocks.map((block) => (
-            <div key={block.id} className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3">
+            <div key={block.id} className="flex items-center justify-between gap-3 rounded-xl border border-outline-variant/40 px-4 py-3">
               <div className="flex min-w-0 flex-col">
-                <span className="text-[15px] font-semibold text-ink">{describeBlock(block.startAt, block.endAt)}</span>
-                {block.reason && <span className="truncate text-sm text-muted">{block.reason}</span>}
+                <span className="text-[15px] font-semibold text-on-surface">{describeBlock(block.startAt, block.endAt)}</span>
+                {block.reason && <span className="truncate text-sm text-on-surface-variant">{block.reason}</span>}
               </div>
-              <button type="button" onClick={() => void remove(block)} className="shrink-0 text-sm font-semibold text-[#c0281c]">
+              <button type="button" onClick={() => void remove(block)} className="shrink-0 text-sm font-semibold text-error">
                 Bỏ chặn
               </button>
             </div>
