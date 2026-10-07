@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { AuthField } from "@/components/auth-field";
+import { Icon } from "@/components/icon";
 import { useAuth } from "@/lib/auth/auth-context";
 import { authErrorMessage } from "@/lib/auth/messages";
 import { postLoginPath } from "@/lib/auth/redirect";
-
-const INPUT_CLASS =
-  "h-[52px] rounded-[10px] border border-[#c5d2e3] px-3.5 text-base placeholder:text-[#8a99ae]";
 
 export function LoginForm() {
   const { login } = useAuth();
@@ -33,55 +32,61 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex w-[440px] flex-col gap-5">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-[34px] font-bold text-ink">Chào mừng trở lại</h1>
-        <p className="text-base text-muted">Đăng nhập để đặt xe hoặc quản lý xe của bạn.</p>
+    <form onSubmit={onSubmit} className="flex w-full max-w-[448px] flex-col gap-space-md">
+      <div className="flex flex-col gap-space-sm">
+        <span className="flex w-fit items-center gap-1 rounded-full bg-surface-container-low px-space-sm py-1 text-label-md text-primary">
+          <Icon name="lock" className="!text-[14px]" />
+          Cổng đăng nhập an toàn
+        </span>
+        <h1 className="text-headline-lg text-on-surface">Đăng nhập tài khoản</h1>
+        <p className="text-body-md text-on-surface-variant">Chào mừng bạn quay lại với AutoRent VN</p>
       </div>
-      <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-semibold text-ink">Email</span>
-        <input
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="ten@email.com"
-          className={INPUT_CLASS}
-        />
-      </label>
-      <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-semibold text-ink">Mật khẩu</span>
-        <input
-          name="password"
-          type="password"
-          required
-          autoComplete="current-password"
-          placeholder="Nhập mật khẩu"
-          className={INPUT_CLASS}
-        />
-      </label>
-      <div className="flex justify-end text-sm">
-        <Link href="/forgot-password" className="font-semibold text-primary">
-          Quên mật khẩu?
-        </Link>
-      </div>
+
+      <AuthField label="Email" icon="alternate_email" name="email" type="email" required autoComplete="email" placeholder="ban@example.com" />
+      <AuthField
+        label="Mật khẩu"
+        icon="key"
+        name="password"
+        type="password"
+        required
+        autoComplete="current-password"
+        placeholder="Nhập mật khẩu"
+        aside={
+          <Link href="/forgot-password" className="text-label-md text-primary hover:underline">
+            Quên mật khẩu?
+          </Link>
+        }
+      />
+
       {error && (
-        <p role="alert" className="rounded-[10px] bg-red-50 px-3.5 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
           {error}
         </p>
       )}
+
       <button
         type="submit"
         disabled={submitting}
-        className="h-[54px] rounded-xl bg-primary text-base font-semibold text-white disabled:opacity-60"
+        className="flex h-[54px] items-center justify-center gap-space-sm rounded-xl bg-primary-container text-title-lg text-on-primary shadow-sm transition-colors hover:bg-primary disabled:opacity-60"
       >
-        {submitting ? "Đang đăng nhập..." : "Đăng nhập"}
+        {submitting ? "Đang đăng nhập..." : "Đăng nhập ngay"}
+        {!submitting && <Icon name="arrow_forward" />}
       </button>
-      <p className="flex justify-center gap-1.5 text-[15px]">
-        <span className="text-muted">Chưa có tài khoản?</span>
-        <Link href="/register" className="font-semibold text-primary">
-          Đăng ký
+
+      <p className="rounded-xl bg-surface-container-low px-space-md py-space-sm text-center text-body-md text-on-surface-variant">
+        Đăng nhập để đặt xe và theo dõi đơn của bạn.
+      </p>
+
+      <p className="flex justify-center gap-1.5 text-body-md">
+        <span className="text-on-surface-variant">Chưa có tài khoản?</span>
+        <Link href="/register" className="font-bold text-primary underline underline-offset-4">
+          Đăng ký ngay
         </Link>
+      </p>
+
+      <p className="flex items-center justify-center gap-1 text-label-sm text-on-surface-variant">
+        <Icon name="shield" filled className="!text-[16px] text-tertiary" />
+        Mật khẩu của bạn được mã hóa và không ai xem được.
       </p>
     </form>
   );
