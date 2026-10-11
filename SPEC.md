@@ -109,6 +109,12 @@ Quyết định đã chốt khi thiết kế CSDL: `deposit_rate` là phần tr�
 
 Khách tải ảnh GPLX → `license_status = pending` → admin xem và duyệt/từ chối thủ công. Chỉ `verified` mới được tạo đơn. File lưu trong thư mục **riêng, không phục vụ công khai**; chỉ API trả file cho chính chủ và admin (kèm ghi log truy cập).
 
+- **Hồ sơ gồm:** số GPLX (12 chữ số), hạng (`B1`, `B2`, `B`, `C1`, `C`, `D1`, `D2`, `D`, `E`), ngày hết hạn (chưa qua, tính theo giờ Việt Nam), ảnh mặt trước (bắt buộc), ảnh mặt sau (tùy chọn). Ảnh JPG/PNG/WebP, mỗi ảnh tối đa 5 MB; máy chủ vẽ lại thành WebP (bỏ EXIF, vị trí GPS) rồi mới lưu.
+- **Gửi lại:** được gửi khi trạng thái là `none`, `pending` hoặc `rejected`; mỗi lần gửi thay toàn bộ hồ sơ cũ (xóa file cũ), đưa trạng thái về `pending` và xóa kết quả duyệt trước đó. Đã `verified` thì không gửi lại được (409 `INVALID_STATE`).
+- **Duyệt:** chỉ hồ sơ `pending`. Mỗi hồ sơ có `version` (đổi mỗi lần khách gửi lại); admin phải gửi kèm `version` của hồ sơ mình đã xem khi duyệt. Khách vừa gửi lại thì `version` lệch và việc duyệt bị từ chối (409), để admin không bao giờ duyệt nhầm ảnh mình chưa xem. Từ chối bắt buộc có lý do, khách đọc được.
+- **Kho riêng:** thư mục `PRIVATE_UPLOAD_DIR`, khác và không nằm trong `UPLOAD_DIR`; ở production là một volume riêng chỉ gắn vào container API, Nginx không đọc được. API từ chối khởi động nếu hai thư mục lồng nhau. Đường dẫn file không bao giờ trả ra ngoài.
+- **Log truy cập:** mỗi lần trả file (cho chính chủ hay admin) ghi một dòng vào `license_access_logs` (ai, của ai, file nào, IP). Ghi log lỗi thì không trả file.
+
 ## 7. API
 
 Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗi thường dùng: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `BOOKING_OVERLAP` / `INVALID_STATE` / `EMAIL_TAKEN` / `PLATE_TAKEN` / `BLOCK_OVERLAP` / `BLOCK_CONFLICTS_BOOKING` / `IMAGE_LIMIT` / `PENDING_LIMIT` (409), `LICENSE_NOT_VERIFIED` (403), `PAYLOAD_TOO_LARGE` (413), `INVALID_CREDENTIALS` / `INVALID_REFRESH_TOKEN` (401), `ACCOUNT_BLOCKED` (403), `TOO_MANY_REQUESTS` (429), `INTERNAL_ERROR` (500). Phân trang: `?page=1&limit=20` trả `{ items, total, page, limit }`.
@@ -120,9 +126,12 @@ Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗ
 | POST | /auth/login | công khai | `{ email, password }`. Trả `{ accessToken, expiresIn, user }` (access token 15 phút) và đặt refresh token vào cookie httpOnly `refresh_token` (7 ngày, path `/api/auth`) |
 | POST | /auth/refresh | cookie | Đổi refresh token lấy access token mới. Mỗi lần dùng, refresh token cũ bị thu hồi và cấp token mới (xoay vòng). Dùng lại token đã thu hồi bị coi là bị lộ: thu hồi mọi refresh token của người dùng |
 | POST | /auth/logout | cookie | Thu hồi refresh token trong cookie, xóa cookie. Không cần access token còn hạn; gọi lặp lại vẫn trả 204 |
+| GET | /health | công khai | Cho công cụ giám sát: trả `{ status: "ok" }` khi API chạy và truy vấn được CSDL, ngược lại 503 `UNAVAILABLE`. Không trả chi tiết nào khác |
 | GET | /me | đăng nhập | Hồ sơ hiện tại |
 | PATCH | /me | đăng nhập | Sửa `fullName`, `phone`. Không sửa được email, role, trạng thái |
-| POST | /me/license | renter | Tải GPLX |
+| GET | /me/license | renter | Hồ sơ GPLX của mình: `{ status, licenseNumber, licenseClass, licenseExpiresOn, rejectReason, reviewedAt, hasBack, version }` (chưa gửi thì các trường là `null`) |
+| POST | /me/license | renter | Gửi hồ sơ GPLX, `multipart/form-data`: `licenseNumber`, `licenseClass`, `licenseExpiresOn` (`yyyy-mm-dd`), file `front` (bắt buộc), file `back` (tùy chọn). Trả hồ sơ theo dạng của GET. Quy tắc ở mục 6 |
+| GET | /me/license/:side | renter | Ảnh GPLX của chính mình, `side` là `front` hoặc `back`. Trả `image/webp`, `Cache-Control: private, no-store`. Không có ảnh trả 404 |
 
 Mật khẩu 8 đến 128 ký tự, băm argon2id. Đăng nhập, đăng ký và refresh có giới hạn tốc độ theo IP. Mặc định mọi endpoint yêu cầu đăng nhập; endpoint công khai phải đánh dấu rõ. Tài khoản `blocked` bị từ chối ngay cả khi access token còn hạn.
 
@@ -157,7 +166,7 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 | POST | /bookings | renter | Tạo đơn `{ vehicleId, startAt, endAt }` (ISO 8601 có múi giờ). Đơn `pending` chưa thanh toán, giữ lịch 15 phút chờ khách trả tiền (`expires_at`, không muộn hơn `startAt`). `rentalDays`, `pricePerDay` (chụp giá lúc đặt), `totalAmount`, `depositAmount` do hệ thống tính; `payableAmount` = `totalAmount + depositAmount` là số khách phải trả. Lỗi: 400 `VALIDATION_ERROR` (thời gian sai, ngoài 1 đến 30 ngày, `start_at` đã qua hoặc quá 365 ngày), 403 `LICENSE_NOT_VERIFIED`, 404 (xe không tồn tại hoặc chưa `approved`), 409 `BOOKING_OVERLAP` (trùng đơn đang giữ lịch hoặc lịch chặn), 409 `PENDING_LIMIT`. Trùng đơn khác do ràng buộc `bookings_no_overlap` quyết định, không do kiểm tra bằng code. Gửi lại đúng yêu cầu cũ (cùng khách, xe, `startAt`, `endAt`, đơn còn hạn) thì trả lại đơn đã tạo. Có giới hạn tốc độ riêng. Trả 201 |
 | GET | /bookings | renter | Đơn của tôi, mới nhất trước. Query `status`, `page`, `limit`. Mỗi đơn kèm `vehicle` `{ id, title, city, district, coverUrl }` |
 | GET | /bookings/:id | renter/owner/admin | Chi tiết, kèm `vehicle`. Khách chỉ xem đơn của mình, chủ xe chỉ xem đơn trên xe của mình, admin xem mọi đơn; người khác trả 404, không trả 403. Chủ xe và admin thấy thêm `renter` `{ fullName, phone }` và `ownerPayoutAmount` |
-| POST | /bookings/:id/pay | renter | Thanh toán `payableAmount` cho đơn `pending` chưa thanh toán và còn hạn. Thành công: ghi `paid_at`, `paid_amount`, đặt `expires_at` = lúc thanh toán + 6 giờ (không muộn hơn `startAt`) cho chủ xe duyệt. Gọi lặp lại trên đơn đã thanh toán vẫn thành công và không thu lần hai. Trạng thái khác hoặc đơn quá hạn trả 409 `INVALID_STATE` |
+| POST | /bookings/:id/pay | renter | Thanh toán `payableAmount` cho đơn `pending` chưa thanh toán và còn hạn. Thành công: ghi `paid_at`, `paid_amount`, đặt `expires_at` = lúc thanh toán + 6 giờ (không muộn hơn `startAt`) cho chủ xe duyệt. Gọi lặp lại trên đơn đã thanh toán vẫn thành công và không thu lần hai. Trạng thái khác hoặc đơn quá hạn trả 409 `INVALID_STATE`. Body tùy chọn `{ scenario }` để giả lập kết quả (xem mục Thanh toán); kịch bản thất bại trả 402 `PAYMENT_FAILED` và đơn không đổi |
 | POST | /bookings/:id/cancel | renter | Hủy đơn `pending` còn hạn hoặc `confirmed`. Tiền hoàn theo chính sách ở mục 4, ghi vào `refundAmount`; phần tiền thuê không hoàn ghi cho chủ xe. Ghi `cancelled_at`, `cancelled_by`. Gọi lặp lại trên đơn đã hủy vẫn thành công và không tính lại tiền. Trạng thái khác trả 409 `INVALID_STATE` |
 | POST | /bookings/:id/pickup | renter | Khách xác nhận **đã nhận xe**. Đơn phải `confirmed` và trong khung giờ giao xe (từ 1 giờ trước `startAt` đến trước `endAt`). Ghi `renter_received_at`. Khi chủ xe cũng đã xác nhận giao xe thì đơn thành `in_use` và chủ xe được ghi nhận 50% tiền thuê. Gọi lặp lại vẫn thành công |
 | POST | /bookings/:id/return | renter | Khách xác nhận **đã trả xe**. Đơn phải `in_use`. Ghi `renter_returned_at`. Khi chủ xe cũng đã xác nhận nhận lại xe thì đơn thành `completed`: chủ xe được ghi nhận phần tiền thuê còn lại, khách được hoàn tiền cọc. Gọi lặp lại vẫn thành công |
@@ -170,7 +179,18 @@ Mọi endpoint yêu cầu vai trò `owner` và chỉ thao tác trên xe của ch
 Quy tắc chung của các endpoint đổi trạng thái: sai trạng thái trả 409 `INVALID_STATE`; đơn không phải của mình (hoặc không thuộc xe của mình) trả 404; mỗi bên chỉ ghi được xác nhận của chính mình, không xác nhận thay bên kia.
 
 ### Thanh toán
-Cho tới khi tích hợp cổng VNPay/MoMo sandbox (PLAN Ngày 15 và 16), `POST /bookings/:id/pay` ở chế độ **thanh toán tức thì**: ghi nhận đã thanh toán ngay, không qua cổng. Khi có cổng, endpoint này sẽ tạo giao dịch và trả `paymentUrl`, còn việc ghi nhận đã thanh toán chuyển sang IPN; phần còn lại của luồng không đổi.
+**Quyết định 2026-10-11:** tạm chưa tích hợp cổng VNPay/MoMo. `POST /bookings/:id/pay` là **thanh toán giả lập**: không qua cổng nào, không có tiền thật. Body tùy chọn `{ scenario }`:
+
+| `scenario` | Kết quả |
+| --- | --- |
+| `success` (mặc định) | Ghi nhận đã thanh toán ngay |
+| `insufficient_funds` | 402 `PAYMENT_FAILED`: tài khoản không đủ số dư |
+| `cancelled` | 402 `PAYMENT_FAILED`: khách hủy giao dịch tại cổng |
+| `gateway_timeout` | 402 `PAYMENT_FAILED`: cổng thanh toán không phản hồi |
+
+Kịch bản thất bại dùng để thử luồng lỗi: đơn giữ nguyên (`pending`, chưa thanh toán, hạn giữ chỗ 15 phút **không** được gia hạn), khách thanh toán lại được cho tới khi hết hạn. Các kiểm tra quyền và trạng thái chạy trước: đơn của người khác vẫn 404, đơn hết hạn vẫn 409, và đơn đã thanh toán vẫn trả thành công dù gửi kịch bản thất bại (không "hoàn tác" được một lần thanh toán). `scenario` lạ trả 400.
+
+Khi có cổng thật, endpoint này sẽ tạo giao dịch và trả `paymentUrl`, còn việc ghi nhận đã thanh toán chuyển sang IPN; phần còn lại của luồng không đổi. Các endpoint dưới đây là thiết kế cho lúc đó, **chưa được viết**:
 
 | Method | Path | Quyền | Mô tả |
 | --- | --- | --- | --- |
@@ -186,8 +206,10 @@ Cho tới khi tích hợp cổng VNPay/MoMo sandbox (PLAN Ngày 15 và 16), `POS
 | POST | /admin/vehicles/:id/approve | Duyệt xe: chỉ `pending` thành `approved`, ghi người duyệt và thời điểm duyệt, xóa lý do từ chối cũ. Xe chưa có ảnh nào, hoặc đang ở trạng thái khác, trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `approved` vẫn thành công. Trả xe theo dạng của danh sách |
 | POST | /admin/vehicles/:id/reject | Từ chối xe. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). Chỉ `pending` thành `rejected`; trạng thái khác trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `rejected` vẫn thành công và giữ lý do đầu tiên |
 | GET | /admin/users | Danh sách người dùng, chỉ admin, mới nhất trước. Query tùy chọn: `role`, `status`, `licenseStatus`, `q` (tìm trong họ tên, email, số điện thoại; tối đa 100 ký tự), `page`, `limit`. Mỗi người gồm các trường công khai (không có mật khẩu hay khóa file GPLX) kèm `vehicleCount` và `bookingCount` |
-| GET | /admin/users/:id/license | Xem file GPLX (có log) |
-| POST | /admin/users/:id/license/verify · /reject | Xác minh GPLX |
+| GET | /admin/users/:id/license | Hồ sơ GPLX của một người dùng, theo dạng của `GET /me/license` kèm `user` `{ id, fullName, email, phone }` |
+| GET | /admin/users/:id/license/:side | Ảnh GPLX (`front` hoặc `back`), có ghi log truy cập. Trả như `GET /me/license/:side` |
+| POST | /admin/users/:id/license/verify | Duyệt hồ sơ `pending`. Body `{ version }` (bắt buộc). Sai `version` hoặc trạng thái khác `pending` trả 409 `INVALID_STATE`; gọi lặp lại trên hồ sơ đã `verified` cùng `version` vẫn thành công. Ghi người duyệt và thời điểm duyệt |
+| POST | /admin/users/:id/license/reject | Từ chối hồ sơ `pending`. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). Trạng thái khác `pending` trả 409 `INVALID_STATE`; gọi lặp lại trên hồ sơ đã `rejected` vẫn thành công và giữ lý do đầu tiên |
 | POST | /admin/users/:id/block · /unblock | Khóa hoặc mở tài khoản, trả người dùng theo dạng của danh sách. Gọi lặp lại vẫn thành công. Không khóa được chính mình hay admin khác: trả 409 `INVALID_STATE`. Tài khoản bị khóa bị từ chối ở mọi yêu cầu kế tiếp (guard đọc lại trạng thái mỗi lần), không cần chờ token hết hạn. Đơn đang có của người bị khóa giữ nguyên |
 | GET | /admin/bookings | Mọi đơn, chỉ admin, mới nhất trước. Query `status` (tùy chọn, tính theo trạng thái hiệu lực), `page`, `limit`. Mỗi đơn theo dạng chi tiết của chủ xe (`renter`, `ownerPayoutAmount`) kèm `owner` `{ fullName, phone }`. Phản hồi có thêm `totals` `{ paidAmount, refundAmount, ownerPayoutAmount, heldAmount }` cộng trên **toàn bộ** đơn (không theo bộ lọc hay trang): `heldAmount = paidAmount - refundAmount - ownerPayoutAmount` là số tiền nền tảng đang giữ hộ |
 
