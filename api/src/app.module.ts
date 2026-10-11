@@ -7,6 +7,7 @@ import { AuthModule } from "./auth/auth.module";
 import { BookingsModule } from "./bookings/bookings.module";
 import { PrismaModule } from "./common/prisma/prisma.module";
 import { validateEnv } from "./config/env";
+import { HealthController } from "./health/health.controller";
 import { LicensesModule } from "./licenses/licenses.module";
 import { StorageModule } from "./storage/storage.module";
 import { UsersModule } from "./users/users.module";
@@ -29,6 +30,7 @@ import { VehiclesModule } from "./vehicles/vehicles.module";
     BookingsModule,
     LicensesModule,
   ],
+  controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}
