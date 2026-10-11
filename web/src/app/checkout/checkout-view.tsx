@@ -8,7 +8,7 @@ import { Icon } from "@/components/icon";
 import { VehicleImage } from "@/components/vehicle-image";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { useAuth } from "@/lib/auth/auth-context";
-import { getBooking, renterAction } from "@/lib/bookings/api";
+import { getBooking, payBooking, PAYMENT_SCENARIOS, PaymentScenario } from "@/lib/bookings/api";
 import { Booking, effectiveStatus, formatClock, formatVnDateTime } from "@/lib/bookings/rules";
 import { formatVnd } from "@/lib/cars";
 
@@ -102,6 +102,7 @@ export function CheckoutView({ bookingId }: { bookingId: string }) {
   const [now, setNow] = useState(() => new Date());
   const [agreed, setAgreed] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [scenario, setScenario] = useState<PaymentScenario>("success");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -128,7 +129,7 @@ export function CheckoutView({ bookingId }: { bookingId: string }) {
     setPaying(true);
     setError(null);
     try {
-      await renterAction(booking.id, "pay");
+      await payBooking(booking.id, scenario);
       router.push(`/checkout/result?booking=${booking.id}`);
     } catch (e) {
       setError(apiErrorMessage(e));
@@ -215,19 +216,48 @@ export function CheckoutView({ bookingId }: { bookingId: string }) {
             </Card>
 
             <Card icon="credit_card" title="Phương thức thanh toán">
-              <div className="flex items-center gap-space-md rounded-xl bg-surface-container-low p-space-md ring-2 ring-primary-container">
-                <span aria-hidden className="flex size-5 items-center justify-center rounded-full border-[6px] border-primary-container bg-surface-container-lowest" />
+              <div className="flex items-center gap-space-md rounded-xl bg-surface-container-low p-space-md">
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <span className="text-title-lg text-on-surface">Thanh toán thử nghiệm</span>
-                  <span className="text-body-md text-on-surface-variant">Bấm thanh toán là ghi nhận ngay, không trừ tiền thật.</span>
+                  <span className="text-title-lg text-on-surface">Thanh toán giả lập</span>
+                  <span className="text-body-md text-on-surface-variant">Không qua cổng thanh toán nào và không trừ tiền thật.</span>
                 </div>
-                <span className="rounded-md bg-primary px-2 py-1 text-label-sm text-on-primary">SANDBOX</span>
+                <span className="rounded-md bg-primary px-2 py-1 text-label-sm text-on-primary">GIẢ LẬP</span>
               </div>
+              <fieldset className="flex flex-col gap-space-sm">
+                <legend className="mb-space-sm text-label-lg text-on-surface">Chọn kết quả muốn thử</legend>
+                <div className="grid gap-space-sm sm:grid-cols-2">
+                  {PAYMENT_SCENARIOS.map((option) => {
+                    const selected = option.id === scenario;
+                    return (
+                      <label
+                        key={option.id}
+                        className={`flex cursor-pointer items-start gap-space-sm rounded-xl p-space-md transition-colors ${
+                          selected ? "bg-surface-container-lowest ring-2 ring-primary-container" : "bg-surface-container-low hover:bg-surface-container"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="scenario"
+                          value={option.id}
+                          checked={selected}
+                          disabled={paying}
+                          onChange={() => setScenario(option.id)}
+                          className="mt-1 size-4 shrink-0 accent-primary"
+                        />
+                        <span className="flex flex-col">
+                          <span className={`text-label-lg ${option.id === "success" ? "text-tertiary" : "text-on-surface"}`}>{option.label}</span>
+                          <span className="text-label-md text-on-surface-variant">{option.note}</span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
               <div className="flex flex-col gap-space-sm rounded-xl bg-surface-container-low p-space-md">
                 <Row label="Số tiền" value={formatVnd(booking.payableAmount)} />
                 <p className="flex items-center gap-space-sm text-label-md text-on-surface-variant">
-                  <Icon name="check_circle" className="!text-[16px] text-tertiary" />
-                  Hệ thống tự ghi nhận ngay sau khi bạn bấm thanh toán.
+                  <Icon name="info" className="!text-[16px] text-primary" />
+                  Thất bại thì đơn giữ nguyên, bạn thanh toán lại được cho tới khi hết thời gian giữ chỗ.
                 </p>
               </div>
             </Card>

@@ -184,6 +184,70 @@ describe("Booking payment and state machine API", () => {
       expect((await row(booking.id)).paidAmount).toBe(PAID);
     });
 
+    describe("thanh toán giả lập: kịch bản thất bại", () => {
+      const pay = (id: string, auth: Auth, scenario?: string) =>
+        http().post(`/api/bookings/${id}/pay`).set(auth).send(scenario === undefined ? {} : { scenario });
+
+      it.each(["insufficient_funds", "cancelled", "gateway_timeout"])("%s: 402 và đơn không đổi gì, kể cả hạn giữ chỗ", async (scenario) => {
+        const { renter, booking } = await setup();
+        const before = await row(booking.id);
+
+        const res = await pay(booking.id, renter.auth, scenario);
+
+        expect(res.status).toBe(402);
+        expect(res.body.code).toBe("PAYMENT_FAILED");
+        expect(typeof res.body.message).toBe("string");
+        const after = await row(booking.id);
+        expect(after).toMatchObject({ status: "pending", paidAt: null, paidAmount: 0 });
+        expect(after.expiresAt).toEqual(before.expiresAt);
+        expect(after.updatedAt).toEqual(before.updatedAt);
+      });
+
+      it("thất bại rồi thanh toán lại thành công trong thời gian giữ chỗ", async () => {
+        const { renter, booking } = await setup();
+        expect((await pay(booking.id, renter.auth, "insufficient_funds")).status).toBe(402);
+
+        const res = await pay(booking.id, renter.auth, "success");
+
+        expect(res.status).toBe(200);
+        expectMoney(await row(booking.id), { paid: PAID, refund: 0, payout: 0 });
+      });
+
+      it("không gửi scenario nghĩa là thành công", async () => {
+        const { renter, booking } = await setup();
+        expect((await pay(booking.id, renter.auth)).status).toBe(200);
+        expect((await row(booking.id)).paidAt).not.toBeNull();
+      });
+
+      it("đơn đã thanh toán: kịch bản thất bại không hoàn tác được, vẫn trả thành công", async () => {
+        const { renter, booking } = await setup();
+        await pay(booking.id, renter.auth);
+
+        const res = await pay(booking.id, renter.auth, "cancelled");
+
+        expect(res.status).toBe(200);
+        expectMoney(await row(booking.id), { paid: PAID, refund: 0, payout: 0 });
+      });
+
+      it("kiểm tra quyền và trạng thái chạy trước kịch bản: đơn người khác 404, đơn hết hạn 409", async () => {
+        const { booking } = await setup();
+        const stranger = await verifiedRenter();
+        expect((await pay(booking.id, stranger.auth, "insufficient_funds")).status).toBe(404);
+
+        const expired = await setup({ expiresInMs: -MIN_MS });
+        const res = await pay(expired.booking.id, expired.renter.auth, "insufficient_funds");
+        expect(res.status).toBe(409);
+        expect(res.body.code).toBe("INVALID_STATE");
+      });
+
+      it.each(["refund", "SUCCESS", "", 1])("scenario lạ (%p): 400 và đơn không được thanh toán", async (scenario) => {
+        const { renter, booking } = await setup();
+        const res = await http().post(`/api/bookings/${booking.id}/pay`).set(renter.auth).send({ scenario });
+        expect(res.status).toBe(400);
+        expect((await row(booking.id)).paidAt).toBeNull();
+      });
+    });
+
     it("khách khác: 404 và đơn không đổi; chủ xe: 403; chưa đăng nhập: 401", async () => {
       const { owner, booking } = await setup();
       const stranger = await verifiedRenter();

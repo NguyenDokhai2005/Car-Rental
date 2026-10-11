@@ -9,6 +9,7 @@ import type { BookingDetailView, BookingView } from "./booking.view";
 import { BookingsService } from "./bookings.service";
 import { CreateBookingDto } from "./dto/create-booking.dto";
 import { ListBookingsQuery } from "./dto/list-bookings.query";
+import { PayBookingDto } from "./dto/pay-booking.dto";
 
 // Người thực hiện luôn lấy từ access token (@CurrentUser), không nhận renterId từ client.
 @Controller("bookings")
@@ -37,8 +38,8 @@ export class BookingsController {
   @HttpCode(200)
   @Post(":id/pay")
   @Roles("renter")
-  pay(@CurrentUser() user: AuthUser, @Param("id", uuidParam) id: string): Promise<BookingDetailView> {
-    return this.transitions.pay(user.id, id);
+  pay(@CurrentUser() user: AuthUser, @Param("id", uuidParam) id: string, @Body() dto: PayBookingDto): Promise<BookingDetailView> {
+    return this.transitions.pay(user.id, id, dto.scenario);
   }
 
   // Khách hủy đơn của chính mình. Số tiền hoàn nằm trong refundAmount của kết quả.
