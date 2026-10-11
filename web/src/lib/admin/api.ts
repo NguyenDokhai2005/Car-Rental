@@ -43,7 +43,14 @@ export function rejectVehicle(id: string, reason: string): Promise<AdminVehicle>
 // Khớp AdminUser của API (api/src/admin/admin-user.view.ts).
 export type AdminUser = AuthUser & { vehicleCount: number; bookingCount: number };
 
-export type UserFilters = { q?: string; role?: Role; status?: AuthUser["status"]; page?: number; limit?: number };
+export type UserFilters = {
+  q?: string;
+  role?: Role;
+  status?: AuthUser["status"];
+  licenseStatus?: AuthUser["licenseStatus"];
+  page?: number;
+  limit?: number;
+};
 
 export type Page<T> = { items: T[]; total: number; page: number; limit: number };
 

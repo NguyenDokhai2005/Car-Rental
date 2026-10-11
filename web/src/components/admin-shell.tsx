@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth/auth-context";
 
 const NAV = [
   { href: "/admin", icon: "garage", label: "Kiểm duyệt xe" },
+  { href: "/admin/licenses", icon: "badge", label: "Duyệt GPLX" },
   { href: "/admin/users", icon: "group", label: "Quản lý người dùng" },
   { href: "/admin/bookings", icon: "receipt_long", label: "Quản lý đơn & Sổ tiền" },
 ];

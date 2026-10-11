@@ -24,6 +24,7 @@ type AuthContextValue = AuthState & {
   register: (input: RegisterInput) => Promise<AuthUser>;
   logout: () => Promise<void>;
   updateProfile: (input: { fullName: string; phone: string }) => Promise<AuthUser>;
+  reloadUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -127,9 +128,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return user;
   }, []);
 
+  // Đọc lại hồ sơ từ API sau một thao tác làm đổi nó ở phía máy chủ (ví dụ gửi GPLX đổi licenseStatus).
+  const reloadUser = useCallback(async () => {
+    const user = await apiFetch<AuthUser>("/me");
+    setState((prev) => (prev.status === "authenticated" ? { status: "authenticated", user } : prev));
+  }, []);
+
   const value = useMemo<AuthContextValue>(
-    () => ({ ...state, login, register, logout, updateProfile }),
-    [state, login, register, logout, updateProfile],
+    () => ({ ...state, login, register, logout, updateProfile, reloadUser }),
+    [state, login, register, logout, updateProfile, reloadUser],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

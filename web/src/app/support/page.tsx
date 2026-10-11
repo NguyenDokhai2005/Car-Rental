@@ -95,7 +95,7 @@ const FAQ = [
   {
     id: "gplx",
     q: "Vì sao phải xác minh giấy phép lái xe?",
-    a: "Chỉ tài khoản có giấy phép lái xe đã được duyệt mới đặt được xe. Trang Giấy phép lái xe cho biết trạng thái hồ sơ của bạn. Trong giai đoạn thử nghiệm, quản trị viên xác minh tài khoản trực tiếp.",
+    a: "Chỉ tài khoản có giấy phép lái xe đã được duyệt mới đặt được xe. Vào trang Giấy phép lái xe, nhập số, hạng, ngày hết hạn và tải ảnh giấy phép. Quản trị viên xem ảnh rồi duyệt hoặc từ chối kèm lý do; bị từ chối thì bạn gửi lại được.",
   },
   {
     id: "chu-xe",

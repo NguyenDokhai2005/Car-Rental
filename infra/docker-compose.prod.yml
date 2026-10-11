@@ -3,10 +3,19 @@
 # Chỉ Nginx mở cổng ra ngoài; PostgreSQL, API, Web chỉ nói chuyện với nhau qua mạng nội bộ.
 name: carrental
 
+# Mặc định Docker ghi log container không giới hạn dung lượng, lâu ngày sẽ làm đầy đĩa của máy chủ nhỏ.
+# Mỗi container giữ tối đa 3 file x 10 MB; file cũ nhất tự bị xóa.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
+    logging: *default-logging
     mem_limit: 320m
     environment:
       POSTGRES_USER: carrental
@@ -26,6 +35,7 @@ services:
       context: ..
       dockerfile: api/Dockerfile
     restart: unless-stopped
+    logging: *default-logging
     mem_limit: 384m
     depends_on:
       db:
@@ -37,11 +47,14 @@ services:
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Thiếu JWT_ACCESS_SECRET trong .env.production}
       CORS_ORIGIN: https://${DOMAIN:?Thiếu DOMAIN trong .env.production}
       UPLOAD_DIR: /data/uploads
+      PRIVATE_UPLOAD_DIR: /data/private
       NODE_OPTIONS: --max-old-space-size=256
     # Áp dụng migration chưa chạy rồi mới nhận request. Migration lỗi thì API không lên, tránh chạy với DB sai cấu trúc.
     command: ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node dist/main"]
     volumes:
       - uploads:/data/uploads
+      # Ảnh GPLX: volume riêng, CHỈ gắn vào API. Không gắn vào nginx, nên không có đường nào đọc file mà không qua API.
+      - private_uploads:/data/private
     healthcheck:
       # Không có curl trong image; 401 nghĩa là API đang chạy và đang chặn request chưa đăng nhập.
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/me').then(r=>process.exit(r.status===401?0:1)).catch(()=>process.exit(1))"]
@@ -55,6 +68,7 @@ services:
       context: ..
       dockerfile: web/Dockerfile
     restart: unless-stopped
+    logging: *default-logging
     mem_limit: 320m
     environment:
       NODE_OPTIONS: --max-old-space-size=256
@@ -72,6 +86,7 @@ services:
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
+    logging: *default-logging
     mem_limit: 64m
     depends_on:
       api:
@@ -96,6 +111,7 @@ services:
   certbot:
     image: certbot/certbot
     restart: unless-stopped
+    logging: *default-logging
     mem_limit: 128m
     volumes:
       - letsencrypt:/etc/letsencrypt
@@ -106,5 +122,6 @@ services:
 volumes:
   pgdata:
   uploads:
+  private_uploads:
   letsencrypt:
   certbot-www:

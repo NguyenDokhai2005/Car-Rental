@@ -116,12 +116,22 @@ export function refreshSession(): Promise<SessionPayload | null> {
   return refreshInFlight;
 }
 
-export async function apiFetch<T>(path: string, init: ApiInit = {}): Promise<T> {
+// Gửi yêu cầu; nếu access token hết hạn (15 phút) thì làm mới phiên bằng cookie rồi thử lại đúng một lần.
+async function sendWithRefresh(path: string, init: ApiInit): Promise<Response> {
   const first = await send(path, init);
-  if (first.status !== 401 || init.auth === false) return parse<T>(first);
-
-  // Access token hết hạn (15 phút): làm mới phiên bằng cookie rồi thử lại đúng một lần.
+  if (first.status !== 401 || init.auth === false) return first;
   const session = await refreshSession();
-  if (!session) return parse<T>(first);
-  return parse<T>(await send(path, init));
+  return session ? send(path, init) : first;
+}
+
+export async function apiFetch<T>(path: string, init: ApiInit = {}): Promise<T> {
+  return parse<T>(await sendWithRefresh(path, init));
+}
+
+// Tải một file cần đăng nhập (ảnh GPLX). Thẻ <img src> không gửi được access token, nên phải tải bằng fetch rồi đưa
+// nội dung vào ảnh qua URL tạm (URL.createObjectURL).
+export async function apiFetchBlob(path: string): Promise<Blob> {
+  const res = await sendWithRefresh(path, {});
+  if (!res.ok) return parse<never>(res);
+  return res.blob();
 }

@@ -5,6 +5,7 @@
 dist/
 .next/
 uploads/
+private-uploads/
 *.log
 
 *.tsbuildinfo
@@ -13,3 +14,4 @@ uploads/
 
 # Ảnh thử tay do api/scripts/make-test-images.mjs tạo
 api/test/manual-images/
+test-results/
