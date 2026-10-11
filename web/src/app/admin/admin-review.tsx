@@ -35,7 +35,6 @@ export function AdminReview() {
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [tab, setTab] = useState<"cars" | "licenses">("cars");
 
   const refresh = useCallback(async () => {
     try {
@@ -85,42 +84,17 @@ export function AdminReview() {
     }
   }
 
-  const tabs = [
-    { id: "cars" as const, label: `Xe chờ duyệt (${items.length})` },
-    { id: "licenses" as const, label: "Giấy phép lái xe chờ xác minh" },
-  ];
-
   const hasImages = (selected?.images.length ?? 0) > 0;
   const mainImage = selected?.images[imageIndex] ?? selected?.images[0];
 
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-col gap-1">
-        <h1 className="text-headline-lg text-on-surface">Kiểm duyệt xe</h1>
+        <h1 className="text-headline-lg text-on-surface">Kiểm duyệt xe{load.status === "ready" ? ` (${items.length})` : ""}</h1>
         <p className="text-body-md text-on-surface-variant">Xe chờ lâu nhất đứng đầu. Duyệt xong, xe mới hiển thị cho khách thuê.</p>
       </div>
 
-      <div role="tablist" className="flex gap-2 border-b border-outline-variant/40">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            aria-selected={tab === t.id}
-            onClick={() => setTab(t.id)}
-            className={`-mb-px border-b-2 px-5 py-3.5 text-base font-semibold ${
-              tab === t.id ? "border-primary text-primary" : "border-transparent text-on-surface-variant"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      {tab === "licenses" ? (
-        <p className="rounded-2xl bg-surface-container-lowest shadow-sm p-8 text-center text-[15px] text-on-surface-variant">
-          Danh sách giấy phép lái xe chờ xác minh sẽ hiển thị ở đây.
-        </p>
-      ) : load.status === "loading" ? (
+      {load.status === "loading" ? (
         <p className="text-on-surface-variant">Đang tải danh sách xe chờ duyệt...</p>
       ) : load.status === "error" ? (
         <p role="alert" className="rounded-xl bg-error-container px-3.5 py-3 text-sm text-on-error-container">

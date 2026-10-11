@@ -25,7 +25,7 @@ FROM base AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 # Thư mục lưu file; volume mới tạo sẽ thừa hưởng quyền sở hữu của node
-RUN mkdir -p /data/uploads && chown node:node /data /data/uploads
+RUN mkdir -p /data/uploads /data/private && chown node:node /data /data/uploads /data/private
 # --chown tại lúc COPY, không chown -R sau đó (chown -R sẽ nhân đôi dung lượng node_modules trong image)
 COPY --from=build --chown=node:node /out ./
 USER node

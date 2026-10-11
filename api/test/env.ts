@@ -12,3 +12,4 @@ process.env.THROTTLE_DISABLED = "1";
 process.env.JOBS_DISABLED = "1";
 // Ảnh tải lên khi test nằm trong thư mục tạm của hệ điều hành, không lẫn vào thư mục uploads thật.
 process.env.UPLOAD_DIR = join(tmpdir(), "carrental-test-uploads");
+process.env.PRIVATE_UPLOAD_DIR = join(tmpdir(), "carrental-test-private-uploads");

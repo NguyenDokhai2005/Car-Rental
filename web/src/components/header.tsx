@@ -79,6 +79,7 @@ function userCaption(user: AuthUser): { text: string; verified: boolean } {
   if (user.role !== "renter") return { text: ROLE_LABELS[user.role], verified: false };
   if (user.licenseStatus === "verified") return { text: "Đã xác minh GPLX", verified: true };
   if (user.licenseStatus === "pending") return { text: "GPLX chờ duyệt", verified: false };
+  if (user.licenseStatus === "rejected") return { text: "GPLX bị từ chối", verified: false };
   return { text: "Chưa xác minh GPLX", verified: false };
 }
 

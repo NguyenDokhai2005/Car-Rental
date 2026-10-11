@@ -12,6 +12,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { Throttle } from "@nestjs/throttler";
 import type { VehicleBlock } from "@prisma/client";
 import { AuthUser, CurrentUser } from "../common/decorators/current-user.decorator";
 import { Roles } from "../common/decorators/roles.decorator";
@@ -68,6 +69,8 @@ export class OwnerVehiclesController {
 
   // Multer giữ file trong RAM và dừng ngay khi vượt MAX_IMAGE_BYTES (lỗi 413), không ghi tạm ra đĩa.
   // Guard đăng nhập và vai trò chạy trước interceptor này nên người lạ không tải được gì lên.
+  // Mỗi xe tối đa 10 ảnh; 30 lần mỗi phút đủ cho người dùng thật và chặn việc dội ảnh làm nghẽn CPU.
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
   @Post(":id/images")
   @UseInterceptors(FileInterceptor("file", { limits: { fileSize: MAX_IMAGE_BYTES, files: 1 } }))
   uploadImage(

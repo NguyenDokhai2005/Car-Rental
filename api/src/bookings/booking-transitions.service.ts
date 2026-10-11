@@ -12,6 +12,7 @@ import {
   pickupPayout,
 } from "./booking-rules";
 import { BOOKING_DETAIL_SELECT, BookingDetailRow, BookingDetailView } from "./booking.view";
+import type { PaymentScenario } from "./dto/pay-booking.dto";
 
 const STATUS_NAMES: Record<BookingStatus, string> = {
   pending: "đang chờ",
@@ -21,6 +22,12 @@ const STATUS_NAMES: Record<BookingStatus, string> = {
   rejected: "đã bị từ chối",
   cancelled: "đã hủy",
   expired: "đã hết hạn",
+};
+
+const PAYMENT_FAILURES: Record<Exclude<PaymentScenario, "success">, string> = {
+  insufficient_funds: "Thanh toán không thành công: tài khoản không đủ số dư. Xe vẫn được giữ cho bạn tới hết thời gian giữ chỗ.",
+  cancelled: "Bạn đã hủy giao dịch tại cổng thanh toán. Xe vẫn được giữ cho bạn tới hết thời gian giữ chỗ.",
+  gateway_timeout: "Cổng thanh toán không phản hồi. Bạn chưa bị trừ tiền, vui lòng thử lại.",
 };
 
 function notFound(): ApiError {
@@ -89,7 +96,7 @@ export class BookingTransitionsService {
   // Ghi nhận khách đã thanh toán tiền thuê + tiền cọc. Từ đây đồng hồ chuyển sang hạn chủ xe duyệt.
   // Hiện endpoint /pay gọi thẳng hàm này (thanh toán tức thì, SPEC §7). Khi có cổng thanh toán, IPN đã xác thực chữ ký sẽ là nơi
   // gọi; hàm đã an toàn khi bị gọi lặp lại nên IPN gửi nhiều lần cũng chỉ ghi nhận một lần.
-  async pay(renterId: string, bookingId: string): Promise<BookingDetailView> {
+  async pay(renterId: string, bookingId: string, scenario: PaymentScenario = "success"): Promise<BookingDetailView> {
     const scope = this.renterScope(renterId, bookingId);
     const now = new Date();
     const current = await this.findOrThrow(scope);
@@ -99,6 +106,10 @@ export class BookingTransitionsService {
     // hạn thì không coi là thành công, kể cả khi trước đó từng thanh toán.
     if (current.paidAt && PAID_AND_ALIVE.includes(status)) return this.presenter.toDetail(current, false, now);
     if (status !== "pending") throw wrongState("thanh toán", status);
+
+    // Kịch bản thất bại của thanh toán giả lập. Đặt SAU các kiểm tra quyền và trạng thái ở trên và TRƯỚC mọi thao tác ghi:
+    // một lần thanh toán hỏng không được để lại dấu vết nào trên đơn, kể cả gia hạn giữ chỗ.
+    if (scenario !== "success") throw new ApiError(402, "PAYMENT_FAILED", PAYMENT_FAILURES[scenario]);
 
     const result = await this.prisma.booking.updateMany({
       where: { ...scope, ...livePending(now), paidAt: null },

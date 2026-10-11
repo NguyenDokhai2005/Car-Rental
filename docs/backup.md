@@ -125,7 +125,7 @@ Lệnh này chỉ thêm và ghi đè file có trong bản sao lưu, không xóa 
 | --- | --- |
 | Sao lưu mỗi ngày một lần | Khi sự cố có thể mất tối đa dữ liệu của gần 24 giờ, gồm cả ảnh mới tải lên trong ngày. Nếu máy tắt cả ngày thì hôm đó không có bản sao lưu (cũng không có dữ liệu mới) |
 | Ảnh được sao lưu nguyên bộ mỗi ngày | Mỗi bản `tar` chứa toàn bộ ảnh, giữ 7 bản nên tốn khoảng 7 lần dung lượng ảnh. Ảnh đã nén WebP (khoảng 20 đến 600 KB), vài trăm ảnh vẫn chỉ vài chục MB. Nếu sau này lên hàng chục GB thì chuyển sang sao lưu gia tăng (chỉ chép file mới) hoặc kho đối tượng |
-| Ảnh GPLX | Chưa có (PLAN Ngày 20). Khi làm, GPLX nằm ở kho riêng nên cần bổ sung sao lưu riêng, có mã hóa |
+| Ảnh GPLX | **Chưa được sao lưu.** Ảnh nằm ở volume riêng `private_uploads` (`/data/private` trong container API), `backup-uploads.sh` không đụng tới. Mất volume thì mất ảnh; trạng thái "đã xác minh" vẫn còn trong CSDL nên khách vẫn đặt được xe, nhưng không xem lại được ảnh. Cần bổ sung sao lưu riêng, có mã hóa, vì đây là giấy tờ cá nhân |
 | Chưa mã hóa bản sao lưu | Giữ trên máy bạn thì ổn; nếu đưa ra ngoài phải tự mã hóa (xem trên) |
 | Không khôi phục về thời điểm bất kỳ trong ngày | Cần bật lưu nhật ký giao dịch (WAL) nếu sau này cần |
 
