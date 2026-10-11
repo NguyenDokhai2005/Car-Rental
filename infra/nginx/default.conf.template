@@ -53,6 +53,8 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    # Trang không dùng camera, micro hay định vị: tắt hẳn để mã chèn vào (nếu có) cũng không xin được quyền.
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
 
     gzip on;
     gzip_types text/plain text/css application/json application/javascript image/svg+xml;
@@ -66,7 +68,7 @@ server {
 
     # ---- API ----
     location /api/ {
-        client_max_body_size 6m;   # ảnh xe tối đa 5 MB (SPEC §7)
+        client_max_body_size 12m;  # hồ sơ GPLX gửi hai ảnh một lần, mỗi ảnh tối đa 5 MB; API tự chặn từng file
         # Header bảo mật đã do Nginx đặt ở trên; bỏ bản của API (helmet) để không bị lặp
         proxy_hide_header Strict-Transport-Security;
         proxy_hide_header X-Content-Type-Options;
@@ -103,7 +105,13 @@ server {
         alias /var/uploads/;
         expires 30d;
         add_header Cache-Control "public";
+        # Một location có add_header riêng thì KHÔNG thừa hưởng add_header của khối server, nên phải khai lại đủ.
+        add_header Strict-Transport-Security "max-age=15552000" always;
         add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        # File người dùng tải lên chỉ được hiển thị như ảnh: không chạy script, không nhúng nội dung nào khác.
+        add_header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox" always;
     }
 
     # ---- Giao diện web ----
