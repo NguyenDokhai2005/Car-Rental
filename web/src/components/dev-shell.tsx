@@ -10,6 +10,7 @@ const DEV_AREA: ConsoleArea = {
     { href: "/dev", icon: "monitor_heart", label: "Hiện trạng hệ thống" },
     { href: "/dev/requests", icon: "swap_vert", label: "Nhật ký yêu cầu" },
     { href: "/dev/logs", icon: "terminal", label: "Console log" },
+    { href: "/dev/database", icon: "database", label: "Cơ sở dữ liệu" },
   ],
 };
 
