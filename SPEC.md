@@ -21,7 +21,8 @@
 **Vai trò thứ tư: `dev` (kỹ thuật vận hành).** Dùng để theo dõi sức khỏe hệ thống, không phải vai trò nghiệp vụ:
 
 - Xem được: trạng thái máy chủ, API, web và CSDL; nhật ký các yêu cầu HTTP gần đây; log của API; lỗi phát sinh trên trình duyệt của người dùng. Xóa được các nhật ký đó.
-- **Không** có quyền nghiệp vụ nào: không duyệt xe, không xem ảnh hay hồ sơ GPLX, không xem đơn, sổ tiền hay danh sách người dùng, không khóa tài khoản. Mọi endpoint `/admin/*`, `/owner/*` và các endpoint của khách đều từ chối `dev` bằng 403.
+- **Không** có quyền nghiệp vụ nào: không duyệt xe, không xem ảnh GPLX, không duyệt hồ sơ GPLX, không thao tác trên đơn, không khóa tài khoản. Mọi endpoint `/admin/*`, `/owner/*` và các endpoint của khách đều từ chối `dev` bằng 403.
+- **Xem dữ liệu trong các bảng của CSDL, chỉ đọc** (để tra cứu khi gỡ lỗi): `dev` thấy được các dòng dữ liệu, gồm cả dữ liệu khách hàng như họ tên, email, số điện thoại, đơn thuê. Không sửa, không xóa, không chạy được câu SQL tùy ý. Các cột bí mật luôn bị che ngay tại máy chủ (xem mục Dev ở §7), và mỗi lần xem đều được ghi log.
 - Ngược lại, `admin` không vào được các endpoint `/dev/*`. Hai vai trò tách hẳn nhau để người vận hành kỹ thuật không chạm vào dữ liệu khách hàng, và người quản trị nghiệp vụ không cần thấy chi tiết kỹ thuật.
 - Không đăng ký được qua web hay API; tài khoản `dev` (và `admin`) do người vận hành tạo bằng script trên máy chủ. `admin` khóa được tài khoản `dev`.
 - `dev` vẫn xem và sửa được hồ sơ của chính mình (`/me`) như mọi tài khoản. Xem một đơn thuê bất kỳ (`GET /bookings/:id`) thì nhận 404 như người không liên quan.
@@ -231,6 +232,8 @@ Chỉ vai trò `dev`, trừ `POST /client-logs` là công khai.
 | GET | /dev/metrics | Lịch sử chỉ số để vẽ biểu đồ đường: `{ intervalSeconds, samples }`, mẫu cũ nhất trước. Mỗi mẫu có thời điểm, % CPU, % RAM đã dùng, bộ nhớ của API (RSS, heap), độ trễ vòng lặp sự kiện, số yêu cầu và số lỗi 4xx, 5xx trong chu kỳ, thời gian xử lý trung bình và p95, độ trễ truy vấn thử CSDL, số kết nối CSDL, thời gian phản hồi của máy chủ web. Chỉ số nào không đo được ở mẫu đó thì là `null` |
 | GET | /dev/requests | Các yêu cầu HTTP gần đây, mới nhất trước. Query tùy chọn: `limit` (1 đến 500, mặc định 100), `onlyErrors` (`true` chỉ lấy mã từ 400 trở lên), `q` (lọc theo đường dẫn). Kèm `stats`: theo từng route có số lượt, số lỗi 4xx và 5xx, thời gian trung bình, p95, lớn nhất |
 | DELETE | /dev/requests | Xóa nhật ký yêu cầu. Trả 204 |
+| GET | /dev/database/tables | Danh sách bảng của CSDL: tên, số dòng ước lượng, kích thước, và các cột (tên, kiểu, cho phép null, có bị che hay không) |
+| GET | /dev/database/tables/:table/rows | Các dòng của một bảng, chỉ đọc. Query tùy chọn: `page` (mặc định 1), `limit` (1 đến 100, mặc định 25), `sort` (tên cột) và `order` (`asc`/`desc`), `filterColumn` + `filterValue` (lọc các dòng có cột đó bằng đúng giá trị). Trả `{ columns, items, total, page, limit }`; mọi giá trị ở dạng chữ, cắt còn 300 ký tự. Bảng hoặc cột không tồn tại trả 404 `NOT_FOUND`; lọc hay sắp xếp theo cột bị che trả 400 `VALIDATION_ERROR` |
 | GET | /dev/logs | Dòng log gần đây, mới nhất trước. Query `source`: `server` (log của API) hoặc `browser` (lỗi do trình duyệt người dùng gửi về); tùy chọn `level`, `limit` (1 đến 500, mặc định 100) |
 | DELETE | /dev/logs | Xóa log của một `source` (bắt buộc). Trả 204 |
 | POST | /client-logs | **Công khai.** Trang web gửi lỗi JavaScript xảy ra trên trình duyệt: `{ level, message, stack?, url? }`, `level` là `error` hoặc `warn`; `message` tối đa 2.000 ký tự, `stack` tối đa 4.000, `url` tối đa 500. Giới hạn 20 lần mỗi phút cho mỗi IP. Trả 204 |
@@ -239,6 +242,10 @@ Quy tắc của nhật ký:
 
 - **Lưu trong bộ nhớ của tiến trình API**, không ghi vào CSDL và không dùng Redis: giữ 2.000 yêu cầu, 1.000 dòng log máy chủ và 500 dòng log trình duyệt gần nhất, cũ hơn thì bỏ. Khởi động lại API (mỗi lần deploy) là mất. Log đầy đủ lâu dài vẫn nằm ở `docker logs`.
 - **Không ghi nội dung nhạy cảm:** nhật ký yêu cầu chỉ có thời điểm, phương thức, đường dẫn **không kèm query string**, mẫu route, mã trạng thái, thời gian xử lý, IP, id và vai trò người gọi. Không bao giờ ghi body, header `Authorization`, cookie hay mật khẩu.
+- **Xem dữ liệu bảng:**
+  - Chỉ đọc: truy vấn chạy trong giao dịch `READ ONLY`, giới hạn 5 giây. Tên bảng và tên cột phải khớp danh mục của CSDL; không nhận câu SQL từ người dùng.
+  - **Cột bị che** (giá trị được thay bằng `••••••` ngay trong câu truy vấn, không bao giờ rời CSDL; `null` vẫn là `null`): `users.password_hash`, `users.license_number`, `users.license_front_key`, `users.license_back_key`, `refresh_tokens.token_hash`, `license_access_logs.file_key`, `payments.raw_payload`, và mọi cột có tên chứa `password`, `secret`, `token` hoặc `hash` (để cột bí mật thêm sau này mặc định cũng bị che). Không lọc hay sắp xếp được theo cột bị che, vì làm vậy sẽ dò ra được giá trị.
+  - Mỗi lần xem ghi một dòng log: ai xem, bảng nào, trang nào, có lọc theo cột nào (không ghi giá trị lọc).
 - **Nội dung do trình duyệt gửi về là dữ liệu không tin cậy** (ai cũng gọi được endpoint này): bị cắt theo giới hạn độ dài, chỉ hiển thị dạng chữ, không bao giờ được diễn giải thành HTML hay lệnh.
 - **Lịch sử chỉ số:** API tự lấy một mẫu mỗi 10 giây và giữ 360 mẫu gần nhất (1 giờ), cũng trong bộ nhớ. Mỗi mẫu tốn một truy vấn nhỏ vào CSDL và một lần gọi thử máy chủ web.
 - Các yêu cầu tới `/health` và `/dev/*` không được ghi vào nhật ký yêu cầu, để việc theo dõi không tự làm đầy nhật ký.
