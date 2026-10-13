@@ -11,7 +11,7 @@ export type RegisterInput = {
   password: string;
   fullName: string;
   phone: string;
-  role: Exclude<Role, "admin">;
+  role: Exclude<Role, "admin" | "dev">;
 };
 
 type AuthState =

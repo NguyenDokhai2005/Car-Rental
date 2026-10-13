@@ -1,4 +1,4 @@
-export type Role = "renter" | "owner" | "admin";
+export type Role = "renter" | "owner" | "admin" | "dev";
 
 // Khớp PublicUser của API (api/src/users/user.view.ts). Không bao giờ có mật khẩu.
 export type AuthUser = {

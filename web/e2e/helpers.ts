@@ -8,6 +8,7 @@ export const SEED = {
   renter: "khach.an@carrental.test",
   owner: "chuxe.tran@carrental.test",
   admin: "admin@carrental.test",
+  dev: "dev@carrental.test",
 };
 
 export const FIXTURES = path.join(__dirname, "fixtures");

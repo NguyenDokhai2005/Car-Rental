@@ -37,6 +37,10 @@ describe("postLoginPath", () => {
     expect(postLoginPath("admin", "/cars/1")).toBe("/admin");
   });
 
+  it("dev luôn vào /dev", () => {
+    expect(postLoginPath("dev", "/cars/1")).toBe("/dev");
+  });
+
   it("khách quay lại trang đang đứng trước khi đăng nhập", () => {
     expect(postLoginPath("renter", "/cars/1?from=2026-10-10")).toBe("/cars/1?from=2026-10-10");
   });
@@ -50,6 +54,8 @@ describe("postLoginPath", () => {
     expect(postLoginPath("renter", "/owner")).toBe("/");
     expect(postLoginPath("renter", "/owner/new")).toBe("/");
     expect(postLoginPath("renter", "/admin")).toBe("/");
+    expect(postLoginPath("renter", "/dev/logs")).toBe("/");
+    expect(postLoginPath("renter", "/developers")).toBe("/developers");
     expect(postLoginPath("renter", "/ownership")).toBe("/ownership");
   });
 });

@@ -11,7 +11,7 @@ const CARD = "rounded-2xl bg-surface-container-lowest p-space-md shadow-sm";
 const INPUT =
   "h-12 w-full rounded-xl bg-surface-container-low px-space-md text-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary/30 disabled:text-on-surface-variant";
 
-const ROLE_LABELS: Record<Role, string> = { renter: "Khách thuê", owner: "Chủ xe", admin: "Quản trị viên" };
+const ROLE_LABELS: Record<Role, string> = { renter: "Khách thuê", owner: "Chủ xe", admin: "Quản trị viên", dev: "Kỹ thuật viên" };
 
 const LICENSE: Record<AuthUser["licenseStatus"], { label: string; note: string; tone: string }> = {
   verified: { label: "Đã xác minh", note: "Đã được quản trị viên xác minh. Bạn đặt được xe.", tone: "bg-tertiary-fixed/50 text-on-tertiary-fixed-variant" },
