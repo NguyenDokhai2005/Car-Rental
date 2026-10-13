@@ -117,6 +117,7 @@ Mở <http://localhost:3000>. Dữ liệu mẫu có sẵn các tài khoản sau,
 | Vai trò | Email |
 | --- | --- |
 | Quản trị viên | `admin@carrental.test` |
+| Kỹ thuật viên (trang `/dev`) | `dev@carrental.test` |
 | Chủ xe | `chuxe.tran@carrental.test`, `chuxe.le@carrental.test` |
 | Khách thuê (giấy phép đã duyệt) | `khach.an@carrental.test` |
 | Khách thuê (giấy phép chờ duyệt) | `khach.binh@carrental.test` |
