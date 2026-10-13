@@ -65,6 +65,9 @@ async function main() {
   const admin = await prisma.user.create({
     data: { email: "admin@carrental.test", passwordHash, fullName: "Quản Trị Viên", phone: "0900000001", role: "admin" },
   });
+  await prisma.user.create({
+    data: { email: "dev@carrental.test", passwordHash, fullName: "Kỹ Thuật Viên", phone: "0900000009", role: "dev" },
+  });
   const ownerTran = await prisma.user.create({
     data: { email: "chuxe.tran@carrental.test", passwordHash, fullName: "Trần Minh Chủ", phone: "0900000002", role: "owner" },
   });
