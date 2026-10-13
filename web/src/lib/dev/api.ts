@@ -93,6 +93,29 @@ export type LogEntry = {
   ip?: string | null;
 };
 
+export type TableColumn = { name: string; type: string; nullable: boolean; masked: boolean };
+export type TableInfo = { name: string; rows: number; sizeMb: number; columns: TableColumn[] };
+// Mọi giá trị ở dạng chữ, đã cắt còn 300 ký tự; cột bí mật đã bị che ngay tại máy chủ.
+export type TableRows = { columns: TableColumn[]; items: Record<string, string | null>[]; total: number; page: number; limit: number };
+
+export type RowsQuery = { page: number; sort: string | null; order: "asc" | "desc"; filterColumn: string; filterValue: string };
+
+export const TABLE_PAGE_SIZE = 25;
+
+export function listTables(): Promise<{ items: TableInfo[] }> {
+  return apiFetch("/dev/database/tables");
+}
+
+export function listTableRows(table: string, query: RowsQuery): Promise<TableRows> {
+  const params = new URLSearchParams({ page: String(query.page), limit: String(TABLE_PAGE_SIZE), order: query.order });
+  if (query.sort) params.set("sort", query.sort);
+  if (query.filterColumn) {
+    params.set("filterColumn", query.filterColumn);
+    params.set("filterValue", query.filterValue);
+  }
+  return apiFetch(`/dev/database/tables/${encodeURIComponent(table)}/rows?${params.toString()}`);
+}
+
 export function getSystemStatus(): Promise<SystemStatus> {
   return apiFetch("/dev/status");
 }

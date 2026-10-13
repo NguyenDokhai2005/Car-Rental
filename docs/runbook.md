@@ -139,6 +139,7 @@ Dành cho vai trò `dev`: hiện trạng máy chủ, API, web và CSDL; nhật k
   docker exec -u root "$ID" rm -rf /app/scripts
   ```
 
+- **Mục Cơ sở dữ liệu** cho xem dữ liệu trong các bảng, chỉ đọc. Tài khoản `dev` vì thế thấy được dữ liệu khách hàng (họ tên, email, số điện thoại, đơn thuê); chỉ cấp cho người thật sự cần. Cột mật khẩu, token, số và đường dẫn ảnh GPLX luôn bị che. Xem ai đã tra cứu gì: `$COMPOSE logs api | grep "Xem dữ liệu bảng"`.
 - **Thu hồi quyền:** quản trị viên khóa tài khoản đó ở `/admin/users`; tài khoản bị khóa mất quyền ngay ở yêu cầu kế tiếp.
 - Phần "Frontend (Web)" báo sự cố trong khi trang web vẫn mở được: kiểm tra biến `WEB_INTERNAL_URL` của container API (mặc định trong compose là `http://web:3000`).
 

@@ -47,3 +47,21 @@ test("dev không vào được khu quản trị, admin không vào được khu 
   await page.goto("/dev");
   await expect(page).toHaveURL(/localhost:3000\/$/);
 });
+
+test("dev xem dữ liệu bảng users: đọc được dữ liệu thường, cột bí mật bị che", async ({ page }) => {
+  await login(page, SEED.dev);
+  await page.getByRole("link", { name: "Cơ sở dữ liệu" }).first().click();
+  await page.getByRole("navigation", { name: "Các bảng" }).getByRole("button", { name: /^users/ }).click();
+
+  await page.getByLabel("Cột để lọc").selectOption("email");
+  await page.getByLabel("Giá trị cần lọc").fill(SEED.admin);
+  await page.getByRole("button", { name: "Lọc", exact: true }).click();
+
+  const row = page.locator("tbody tr");
+  await expect(row).toHaveCount(1);
+  await expect(row).toContainText(SEED.admin);
+  await expect(row).toContainText("đã che");
+  await expect(page.locator("body")).not.toContainText("$argon2");
+  // Cột bí mật không có trong danh sách cột lọc được.
+  await expect(page.getByLabel("Cột để lọc").locator("option", { hasText: "password_hash" })).toHaveCount(0);
+});
