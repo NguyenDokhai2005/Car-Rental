@@ -5,7 +5,7 @@ import { trim } from "../../common/transforms";
 
 export class ListUsersQuery {
   @IsOptional()
-  @IsEnum(UserRole, { message: "role chỉ nhận renter, owner hoặc admin." })
+  @IsEnum(UserRole, { message: "role chỉ nhận renter, owner, admin hoặc dev." })
   role?: UserRole;
 
   @IsOptional()

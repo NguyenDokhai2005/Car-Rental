@@ -19,6 +19,7 @@ enum UserRole {
   renter
   owner
   admin
+  dev
 
   @@map("user_role")
 }

@@ -22,16 +22,17 @@ export function safeNextPath(raw: string | null | undefined): string | null {
 }
 
 // Đích sau khi đăng nhập thành công:
-//   chủ xe -> /owner, admin -> /admin, khách -> trang họ đang đứng trước khi đăng nhập (mặc định trang chủ).
+//   chủ xe -> /owner, admin -> /admin, dev -> /dev, khách -> trang họ đang đứng trước khi đăng nhập (mặc định trang chủ).
 export function postLoginPath(role: Role, next: string | null | undefined): string {
   if (role === "owner") return "/owner";
   if (role === "admin") return "/admin";
+  if (role === "dev") return "/dev";
 
   const safe = safeNextPath(next);
   if (!safe) return "/";
-  // Khách không vào được khu chủ xe và khu quản trị: quay về trang chủ thay vì bị chặn ngay.
+  // Khách không vào được khu chủ xe, khu quản trị và khu kỹ thuật: quay về trang chủ thay vì bị chặn ngay.
   const path = pathOf(safe);
-  if (isUnder(path, "/owner") || isUnder(path, "/admin")) return "/";
+  if (isUnder(path, "/owner") || isUnder(path, "/admin") || isUnder(path, "/dev")) return "/";
   return safe;
 }
 

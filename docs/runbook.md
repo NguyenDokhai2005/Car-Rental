@@ -123,6 +123,25 @@ Trên GitHub: Settings → Actions → Runners phải thấy runner ở trạng 
 
 - **Thanh toán:** đang là giả lập (SPEC mục Thanh toán), không có tiền thật. Sổ tiền ở `/admin/bookings` là số liệu theo dõi.
 
+## Trang kỹ thuật (`/dev`)
+
+Dành cho vai trò `dev`: hiện trạng máy chủ, API, web và CSDL; nhật ký yêu cầu HTTP; log của API; lỗi JavaScript trên trình duyệt người dùng. Vai trò này không có quyền nghiệp vụ (không xem được người dùng, đơn, GPLX), và quản trị viên không vào được trang này.
+
+- **Dữ liệu nằm trong bộ nhớ của API** (2.000 yêu cầu, 1.000 dòng log máy chủ, 500 lỗi trình duyệt): mỗi lần deploy hoặc khởi động lại API là mất. Cần log cũ hơn thì dùng `$COMPOSE logs api`.
+- **Tạo tài khoản `dev` hoặc `admin`** (hai vai trò này không đăng ký được qua web). Script đọc mật khẩu từ biến môi trường; gõ lệnh với dấu cách ở đầu để shell không lưu vào lịch sử, và không dán mật khẩu vào nơi nào khác:
+
+  ```bash
+  ID=$($COMPOSE ps -q api)
+  docker exec -u root "$ID" mkdir -p /app/scripts
+  docker cp api/scripts/create-staff.mjs "$ID":/app/scripts/create-staff.mjs
+   docker exec -w /app -e STAFF_ROLE=dev -e STAFF_EMAIL=ky-thuat@example.com -e STAFF_NAME="Họ Tên" \
+    -e STAFF_PHONE=0901234567 -e STAFF_PASSWORD='mat-khau-dai-it-nhat-12-ky-tu' "$ID" node scripts/create-staff.mjs
+  docker exec -u root "$ID" rm -rf /app/scripts
+  ```
+
+- **Thu hồi quyền:** quản trị viên khóa tài khoản đó ở `/admin/users`; tài khoản bị khóa mất quyền ngay ở yêu cầu kế tiếp.
+- Phần "Frontend (Web)" báo sự cố trong khi trang web vẫn mở được: kiểm tra biến `WEB_INTERNAL_URL` của container API (mặc định trong compose là `http://web:3000`).
+
 ## Việc định kỳ
 
 | Tần suất | Việc |

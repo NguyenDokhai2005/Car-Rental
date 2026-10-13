@@ -33,9 +33,13 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { href: "/admin", label: "Quản trị" },
     { href: "/support", label: "Hỗ trợ" },
   ],
+  dev: [
+    { href: "/dev", label: "Kỹ thuật" },
+    { href: "/support", label: "Hỗ trợ" },
+  ],
 };
 
-const ROLE_LABELS: Record<Role, string> = { renter: "Khách thuê", owner: "Chủ xe", admin: "Quản trị viên" };
+const ROLE_LABELS: Record<Role, string> = { renter: "Khách thuê", owner: "Chủ xe", admin: "Quản trị viên", dev: "Kỹ thuật viên" };
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (

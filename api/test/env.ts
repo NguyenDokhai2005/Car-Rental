@@ -13,3 +13,5 @@ process.env.JOBS_DISABLED = "1";
 // Ảnh tải lên khi test nằm trong thư mục tạm của hệ điều hành, không lẫn vào thư mục uploads thật.
 process.env.UPLOAD_DIR = join(tmpdir(), "carrental-test-uploads");
 process.env.PRIVATE_UPLOAD_DIR = join(tmpdir(), "carrental-test-private-uploads");
+// Trang trạng thái của dev gọi thử máy chủ web; khi test trỏ vào một cổng đóng để kết quả không phụ thuộc máy đang chạy gì.
+process.env.WEB_INTERNAL_URL = "http://127.0.0.1:9";

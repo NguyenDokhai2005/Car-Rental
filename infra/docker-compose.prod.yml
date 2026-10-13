@@ -48,6 +48,8 @@ services:
       CORS_ORIGIN: https://${DOMAIN:?Thiếu DOMAIN trong .env.production}
       UPLOAD_DIR: /data/uploads
       PRIVATE_UPLOAD_DIR: /data/private
+      # Trang dev: API gọi thử máy chủ web qua mạng nội bộ để báo web còn sống hay không.
+      WEB_INTERNAL_URL: http://web:3000
       NODE_OPTIONS: --max-old-space-size=256
     # Áp dụng migration chưa chạy rồi mới nhận request. Migration lỗi thì API không lên, tránh chạy với DB sai cấu trúc.
     command: ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node dist/main"]

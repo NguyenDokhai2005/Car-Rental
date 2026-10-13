@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { ClientLogReporter } from "@/components/client-log-reporter";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { BRAND } from "@/lib/brand";
 import "./globals.css";
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="antialiased">
+        <ClientLogReporter />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

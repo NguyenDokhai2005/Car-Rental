@@ -18,6 +18,7 @@ const ROLES: Record<Role, { label: string; icon: string }> = {
   renter: { label: "Khách thuê", icon: "directions_car" },
   owner: { label: "Chủ xe", icon: "key" },
   admin: { label: "Quản trị viên", icon: "shield_person" },
+  dev: { label: "Kỹ thuật viên", icon: "terminal" },
 };
 
 const LICENSES: Record<AuthUser["licenseStatus"], { label: string; tone: string } | null> = {
@@ -151,6 +152,7 @@ export function AdminUsers() {
           <option value="renter">Khách thuê</option>
           <option value="owner">Chủ xe</option>
           <option value="admin">Quản trị viên</option>
+          <option value="dev">Kỹ thuật viên</option>
         </select>
         <select
           aria-label="Trạng thái"
