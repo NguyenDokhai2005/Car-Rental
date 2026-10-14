@@ -14,12 +14,15 @@ type Props = {
   series: ChartSeries[];
   // Đỉnh trục dọc cố định (ví dụ 100 cho phần trăm). Không đặt thì tự co giãn theo dữ liệu.
   max?: number;
+  // Cách hiện một mốc thời gian trên trục và trong chú giải. Mặc định là giờ:phút:giây.
+  formatTime?: (time: string) => string;
+  emptyText?: string;
 };
 
 const clock = (iso: string) => formatLogTime(iso).split(" ")[0];
 const show = (value: number | null, unit: string) => (value === null ? "–" : `${value.toLocaleString("vi-VN")} ${unit}`);
 
-export function LineChart({ title, hint, unit, times, series, max }: Props) {
+export function LineChart({ title, hint, unit, times, series, max, formatTime = clock, emptyText = "Đang thu thập dữ liệu, biểu đồ hiện sau khoảng 20 giây." }: Props) {
   const [hover, setHover] = useState<number | null>(null);
   const top = max ?? niceMax(seriesMax(series));
   const lastIndex = times.length - 1;
@@ -42,12 +45,12 @@ export function LineChart({ title, hint, unit, times, series, max }: Props) {
             <span className="font-semibold text-on-surface">{times.length > 0 ? show(s.values[shown] ?? null, unit) : "–"}</span>
           </li>
         ))}
-        {times.length > 0 && <li className="ml-auto text-outline">{focus === null ? "Mới nhất" : `Lúc ${clock(times[shown])}`}</li>}
+        {times.length > 0 && <li className="ml-auto text-outline">{focus === null ? "Mới nhất" : formatTime(times[shown])}</li>}
       </ul>
 
       {times.length < 2 ? (
         <p className="flex h-44 items-center justify-center rounded-xl bg-surface-container-low text-body-md text-on-surface-variant">
-          Đang thu thập dữ liệu, biểu đồ hiện sau khoảng 20 giây.
+          {emptyText}
         </p>
       ) : (
         <div className="flex gap-space-sm">
@@ -109,9 +112,9 @@ export function LineChart({ title, hint, unit, times, series, max }: Props) {
               )}
             </div>
             <div aria-hidden className="flex justify-between text-label-sm text-outline">
-              <span>{clock(times[0])}</span>
-              <span>{clock(times[Math.floor(lastIndex / 2)])}</span>
-              <span>{clock(times[lastIndex])}</span>
+              <span>{formatTime(times[0])}</span>
+              <span>{formatTime(times[Math.floor(lastIndex / 2)])}</span>
+              <span>{formatTime(times[lastIndex])}</span>
             </div>
           </div>
         </div>

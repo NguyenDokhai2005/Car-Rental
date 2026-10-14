@@ -6,6 +6,7 @@ import { Icon } from "@/components/icon";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { useAuth } from "@/lib/auth/auth-context";
 import type { AuthUser, Role } from "@/lib/auth/types";
+import { ChangePasswordForm } from "./change-password-form";
 
 const CARD = "rounded-2xl bg-surface-container-lowest p-space-md shadow-sm";
 const INPUT =
@@ -179,15 +180,7 @@ export function ProfileView() {
               <h2 className="text-headline-sm text-on-surface">Bảo mật & Đăng nhập</h2>
               <Icon name="verified_user" className="text-primary" />
             </div>
-            <div className="flex items-start gap-space-md rounded-xl bg-surface-container-low p-space-md">
-              <Icon name="key" className="text-on-surface-variant" />
-              <div className="flex flex-col gap-1">
-                <p className="text-title-lg text-on-surface">Mật khẩu đăng nhập</p>
-                <p className="text-body-md text-on-surface-variant">
-                  Mật khẩu được mã hóa và không ai xem được. Chưa đổi được trên trang này; quản trị viên của dự án cấp lại khi bạn cần.
-                </p>
-              </div>
-            </div>
+            <ChangePasswordForm />
           </section>
         </div>
       </div>

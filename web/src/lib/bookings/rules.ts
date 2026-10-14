@@ -42,6 +42,8 @@ export type Booking = {
   ownerReceivedBackAt: string | null;
   completedAt: string | null;
   cancelledAt: string | null;
+  // Lý do khi quản trị viên hủy đơn có tranh chấp; khách tự hủy thì không có.
+  cancelReason: string | null;
   refundAmount: number;
   createdAt: string;
   vehicle: { id: string; title: string; city: string; district: string; coverUrl: string | null };
@@ -227,7 +229,13 @@ export function renterState(booking: Booking, now: Date): RenterState {
       };
 
     case "cancelled":
-      return { tab: "cancelled", tone: "warning", label: "Đã hủy", hint: refundNote(booking.refundAmount), actions: [] };
+      return {
+        tab: "cancelled",
+        tone: "warning",
+        label: booking.cancelReason ? "Quản trị viên đã hủy" : "Đã hủy",
+        hint: [booking.cancelReason ? `Lý do: ${booking.cancelReason}.` : "", refundNote(booking.refundAmount)].filter(Boolean).join(" "),
+        actions: [],
+      };
 
     case "rejected":
       return {
@@ -317,8 +325,12 @@ export function ownerState(booking: OwnerBooking, now: Date): OwnerState {
     case "cancelled":
       return {
         tone: "warning",
-        label: "Khách đã hủy",
-        hint: booking.ownerPayoutAmount > 0 ? `Khách hủy sát giờ nhận xe nên bạn nhận ${received}.` : "",
+        label: booking.cancelReason ? "Quản trị viên đã hủy" : "Khách đã hủy",
+        hint: booking.cancelReason
+          ? [`Lý do: ${booking.cancelReason}.`, booking.ownerPayoutAmount > 0 ? `Bạn nhận ${received}.` : ""].filter(Boolean).join(" ")
+          : booking.ownerPayoutAmount > 0
+            ? `Khách hủy sát giờ nhận xe nên bạn nhận ${received}.`
+            : "",
         actions: [],
         needsAction: false,
       };

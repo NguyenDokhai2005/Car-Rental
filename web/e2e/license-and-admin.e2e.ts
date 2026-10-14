@@ -106,7 +106,10 @@ test("admin khóa tài khoản: người bị khóa không đăng nhập đượ
   const row = page.locator("tbody tr").filter({ hasText: email });
   await expect(row).toHaveCount(1);
   await row.getByRole("button", { name: "Khóa" }).click();
-  await row.getByRole("button", { name: "Xác nhận khóa" }).click();
+  // Khóa phải kèm lý do: chưa nhập thì chưa bấm xác nhận được.
+  await expect(page.getByRole("button", { name: "Xác nhận khóa" })).toBeDisabled();
+  await page.getByLabel(/Lý do khóa tài khoản/).fill("Thử nghiệm khóa tài khoản");
+  await page.getByRole("button", { name: "Xác nhận khóa" }).click();
   await expect(row.getByText("Bị khóa")).toBeVisible();
 
   await logout(page);
@@ -133,3 +136,51 @@ test("khách thuê không vào được khu quản trị và khu chủ xe", asyn
     await expect(page).toHaveURL(/\/$/);
   }
 });
+
+test("admin xem tổng quan: việc đang chờ, biểu đồ sản lượng và phễu đơn", async ({ page }) => {
+  await login(page, SEED.admin);
+  await page.goto("/admin/overview");
+  for (const heading of ["Việc đang chờ", "Hiệu năng vận hành", "Phễu đơn thuê"]) {
+    await expect(page.getByRole("heading", { name: heading })).toBeVisible();
+  }
+  await expect(page.getByRole("img", { name: /^Đơn thuê theo ngày/ })).toBeVisible();
+  await page.getByRole("button", { name: "7 ngày" }).click();
+  await expect(page.getByRole("heading", { name: "Sản lượng 7 ngày qua" })).toBeVisible();
+  // Thẻ việc đang chờ dẫn tới đúng nơi xử lý.
+  await page.getByRole("link", { name: /GPLX chờ duyệt/ }).click();
+  await expect(page).toHaveURL(/\/admin\/licenses/);
+});
+
+test("quên mật khẩu: admin đặt lại, người dùng đăng nhập bằng mật khẩu tạm rồi tự đổi", async ({ page }) => {
+  const email = uniqueEmail("quen");
+  await register(page, email, "Khách Quên Mật Khẩu");
+  await logout(page);
+
+  await login(page, SEED.admin);
+  await page.goto("/admin/users");
+  await page.getByLabel("Tìm người dùng").fill(email);
+  await page.getByRole("button", { name: "Tìm" }).click();
+  await page.locator("tbody tr").filter({ hasText: email }).getByRole("link", { name: "Khách Quên Mật Khẩu" }).click();
+  await expect(page).toHaveURL(/\/admin\/users\/[0-9a-f-]{36}/);
+
+  page.once("dialog", (dialog) => void dialog.accept());
+  await page.getByRole("button", { name: "Đặt lại mật khẩu" }).click();
+  const temporary = (await page.locator("strong.font-mono").innerText()).trim();
+  expect(temporary).toMatch(/^[A-Za-z0-9]{14}$/);
+  await expect(page.getByText("Đặt lại mật khẩu").last()).toBeVisible();
+
+  await logout(page);
+  await loginWith(page, email);
+  await expect(alertBox(page)).toBeVisible();
+  await login(page, email, temporary);
+
+  await page.goto("/profile");
+  await page.locator("input[name=currentPassword]").fill(temporary);
+  await page.locator("input[name=newPassword]").fill("MatKhauMoi123!");
+  await page.locator("input[name=confirmPassword]").fill("MatKhauMoi123!");
+  await page.getByRole("button", { name: "Đổi mật khẩu" }).click();
+  await expect(page).toHaveURL(/\/login\?changed=1/);
+  await expect(page.getByText("Đã đổi mật khẩu")).toBeVisible();
+  await login(page, email, "MatKhauMoi123!");
+});
+

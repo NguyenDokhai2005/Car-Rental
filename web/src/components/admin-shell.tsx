@@ -7,8 +7,10 @@ const ADMIN_AREA: ConsoleArea = {
   breadcrumb: "Trang quản trị",
   roleLabel: "Quản trị viên",
   nav: [
+    { href: "/admin/overview", icon: "monitoring", label: "Tổng quan" },
     { href: "/admin", icon: "garage", label: "Kiểm duyệt xe" },
     { href: "/admin/licenses", icon: "badge", label: "Duyệt GPLX" },
+    { href: "/admin/vehicles", icon: "directions_car", label: "Quản lý xe" },
     { href: "/admin/users", icon: "group", label: "Quản lý người dùng" },
     { href: "/admin/bookings", icon: "receipt_long", label: "Quản lý đơn & Sổ tiền" },
   ],

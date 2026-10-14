@@ -26,6 +26,7 @@ function booking(patch: Partial<OwnerBooking>): OwnerBooking {
     ownerReceivedBackAt: null,
     completedAt: null,
     cancelledAt: null,
+    cancelReason: null,
     refundAmount: 0,
     createdAt: "2026-10-10T03:00:00.000Z",
     vehicle: { id: "v1", title: "Toyota Vios 2022", city: "TP. Hồ Chí Minh", district: "Quận 7", coverUrl: null },

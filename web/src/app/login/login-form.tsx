@@ -42,6 +42,12 @@ export function LoginForm() {
         <p className="text-body-md text-on-surface-variant">Chào mừng bạn quay lại với AutoRent VN</p>
       </div>
 
+      {params.get("changed") && (
+        <p role="status" className="rounded-xl bg-tertiary-fixed/40 px-space-md py-space-sm text-body-md text-on-tertiary-fixed-variant">
+          Đã đổi mật khẩu. Hãy đăng nhập lại bằng mật khẩu mới.
+        </p>
+      )}
+
       <AuthField label="Email" icon="alternate_email" name="email" type="email" required autoComplete="email" placeholder="ban@example.com" />
       <AuthField
         label="Mật khẩu"

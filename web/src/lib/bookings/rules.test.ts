@@ -45,6 +45,7 @@ function booking(patch: Partial<OwnerBooking> = {}): OwnerBooking {
     ownerReceivedBackAt: null,
     completedAt: null,
     cancelledAt: null,
+    cancelReason: null,
     refundAmount: 0,
     createdAt: at(0),
     vehicle: { id: "v1", title: "Toyota Vios 2022", city: "TP. Hồ Chí Minh", district: "Quận 7", coverUrl: null },
@@ -223,3 +224,26 @@ describe("payoutSplit", () => {
     expect(payoutSplit(1_000_001)).toEqual({ atPickup: 500_000, atReturn: 500_001 });
   });
 });
+
+describe("đơn bị quản trị viên hủy", () => {
+  const cancelledByAdmin = { status: "cancelled" as const, cancelReason: "Chủ xe không giao xe" };
+
+  it("khách thấy ai hủy, lý do và số tiền được hoàn", () => {
+    const state = renterState(confirmed({ ...cancelledByAdmin, refundAmount: 1_690_000 }), NOW);
+    expect(state.label).toBe("Quản trị viên đã hủy");
+    expect(state.hint).toContain("Lý do: Chủ xe không giao xe.");
+    expect(state.hint).toContain("hoàn");
+    expect(state.actions).toEqual([]);
+  });
+
+  it("chủ xe thấy lý do, và số tiền nhận được nếu có", () => {
+    expect(ownerState(confirmed(cancelledByAdmin), NOW)).toMatchObject({ label: "Quản trị viên đã hủy", hint: "Lý do: Chủ xe không giao xe." });
+    expect(ownerState(confirmed({ ...cancelledByAdmin, ownerPayoutAmount: 650_000 }), NOW).hint).toMatch(/^Lý do: Chủ xe không giao xe\. Bạn nhận /);
+  });
+
+  it("khách tự hủy thì nhãn vẫn như cũ", () => {
+    expect(renterState(booking({ status: "cancelled" }), NOW).label).toBe("Đã hủy");
+    expect(ownerState(confirmed({ status: "cancelled" }), NOW).label).toBe("Khách đã hủy");
+  });
+});
+

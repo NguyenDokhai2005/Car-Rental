@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icon";
 import { Pager } from "@/components/pager";
+import { ReasonForm } from "@/components/reason-form";
 import { StatusPill } from "@/components/status-pill";
-import { ADMIN_PAGE_SIZE, AdminBooking, LedgerTotals, listAllBookings, Page } from "@/lib/admin/api";
+import { ADMIN_PAGE_SIZE, AdminBooking, cancelBooking, LedgerTotals, listAllBookings, Page, previewAdminCancel } from "@/lib/admin/api";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { BookingStatus, formatVnDateTime, Tone } from "@/lib/bookings/rules";
 import { formatVnd } from "@/lib/cars";
@@ -55,17 +56,40 @@ export function AdminBookings() {
   const [page, setPage] = useState(1);
   const [load, setLoad] = useState<Load>({ status: "loading" });
 
-  useEffect(() => {
-    let cancelled = false;
-    listAllBookings({ status: status === "all" ? undefined : status, page })
-      .then((result) => !cancelled && setLoad({ status: "ready", result }))
-      .catch((e) => !cancelled && setLoad({ status: "error", message: apiErrorMessage(e) }));
-    return () => {
-      cancelled = true;
-    };
+  const [cancelling, setCancelling] = useState<string | null>(null);
+  const [percent, setPercent] = useState(100);
+  const [busy, setBusy] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    try {
+      setLoad({ status: "ready", result: await listAllBookings({ status: status === "all" ? undefined : status, page }) });
+    } catch (e) {
+      setLoad({ status: "error", message: apiErrorMessage(e) });
+    }
   }, [status, page]);
 
+  useEffect(() => {
+    void reload();
+  }, [reload]);
+
+  async function cancel(booking: AdminBooking, reason: string) {
+    setBusy(true);
+    setActionError(null);
+    try {
+      await cancelBooking(booking.id, reason, percent);
+      setCancelling(null);
+    } catch (e) {
+      setActionError(apiErrorMessage(e));
+    } finally {
+      setBusy(false);
+      await reload();
+    }
+  }
+
   const result = load.status === "ready" ? load.result : null;
+  const target = result?.items.find((b) => b.id === cancelling) ?? null;
+  const preview = target ? previewAdminCancel(target, percent) : null;
   const money = (value: number | undefined) => (value === undefined ? "–" : formatVnd(value));
 
   return (
@@ -105,6 +129,11 @@ export function AdminBookings() {
           })}
         </div>
 
+        {actionError && (
+          <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
+            {actionError}
+          </p>
+        )}
         {load.status === "loading" && <p className="text-body-md text-on-surface-variant">Đang tải danh sách đơn...</p>}
         {load.status === "error" && (
           <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
@@ -115,9 +144,45 @@ export function AdminBookings() {
           <p className="rounded-xl bg-surface-container-low px-space-md py-space-lg text-center text-body-md text-on-surface-variant">Không có đơn nào trong mục này.</p>
         )}
 
+        {target && preview && (
+          <ReasonForm
+            label={`Lý do hủy đơn #${target.id.slice(0, 8).toUpperCase()}`}
+            placeholder="Khách và chủ xe đều đọc được lý do này, ví dụ: chủ xe không giao xe đúng hẹn"
+            confirmLabel="Xác nhận hủy đơn"
+            busy={busy}
+            onConfirm={(reason) => void cancel(target, reason)}
+            onCancel={() => setCancelling(null)}
+          >
+            {target.paidAt ? (
+              <div className="flex flex-col gap-space-sm text-body-md text-on-surface">
+                <label className="flex flex-wrap items-center gap-space-sm">
+                  Hoàn cho khách
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={percent}
+                    onChange={(e) => setPercent(Math.min(100, Math.max(0, Math.round(Number(e.target.value) || 0))))}
+                    aria-label="Phần trăm tiền thuê hoàn cho khách"
+                    className="h-10 w-20 rounded-xl bg-surface-container-lowest px-space-sm text-right outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  % tiền thuê ({formatVnd(target.totalAmount)}). Tiền cọc {formatVnd(target.depositAmount)} luôn hoàn đủ.
+                </label>
+                <p className="rounded-xl bg-surface-container-lowest px-space-md py-space-sm">
+                  Khách nhận lại <strong>{formatVnd(preview.refundAmount)}</strong>, chủ xe nhận <strong>{formatVnd(preview.ownerPayoutAmount)}</strong>.
+                  {target.status === "in_use" && " Số này thay cho phần chủ xe đã được ghi nhận lúc giao xe."}
+                </p>
+              </div>
+            ) : (
+              <p className="text-label-md text-on-surface-variant">Khách chưa thanh toán đơn này nên không có tiền nào để chia.</p>
+            )}
+          </ReasonForm>
+        )}
+
         {result && result.items.length > 0 && (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1040px] text-left text-body-md">
+            <table className="w-full min-w-[1100px] text-left text-body-md">
               <thead>
                 <tr className="bg-surface-container-low text-label-md tracking-wider text-on-surface-variant uppercase">
                   <th scope="col" className="rounded-l-lg px-space-sm py-space-sm font-semibold">Mã đơn</th>
@@ -127,12 +192,16 @@ export function AdminBookings() {
                   <th scope="col" className="px-space-sm py-space-sm text-right font-semibold">Khách trả</th>
                   <th scope="col" className="px-space-sm py-space-sm text-right font-semibold">Chủ xe nhận</th>
                   <th scope="col" className="px-space-sm py-space-sm text-right font-semibold">Hoàn khách</th>
-                  <th scope="col" className="rounded-r-lg px-space-sm py-space-sm font-semibold">Trạng thái</th>
+                  <th scope="col" className="px-space-sm py-space-sm font-semibold">Trạng thái</th>
+                  <th scope="col" className="rounded-r-lg px-space-sm py-space-sm text-right font-semibold">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {result.items.map((b) => (
-                  <tr key={b.id} className="align-top">
+                {result.items.map((b) => {
+                  const open = b.status === "pending" || b.status === "confirmed" || b.status === "in_use";
+                  return (
+                  <Fragment key={b.id}>
+                  <tr className="align-top">
                     <td className="px-space-sm py-space-md">
                       <span className="block font-mono text-label-lg text-on-surface">#{b.id.slice(0, 8).toUpperCase()}</span>
                       <span className="text-label-md text-on-surface-variant">{formatVnDateTime(b.createdAt)}</span>
@@ -161,9 +230,32 @@ export function AdminBookings() {
                     <td className="px-space-sm py-space-md text-right text-on-surface">{formatVnd(b.refundAmount)}</td>
                     <td className="px-space-sm py-space-md">
                       <StatusPill tone={STATUSES[b.status].tone}>{STATUSES[b.status].label}</StatusPill>
+                      {b.cancelReason && <span className="mt-1 block max-w-56 text-label-md text-on-surface-variant">Quản trị viên hủy: {b.cancelReason}</span>}
+                    </td>
+                    <td className="px-space-sm py-space-md">
+                      <div className="flex justify-end">
+                        {open ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCancelling(b.id);
+                              setPercent(100);
+                            }}
+                            aria-label={`Hủy đơn #${b.id.slice(0, 8).toUpperCase()}`}
+                            className="flex h-9 items-center gap-1 rounded-lg bg-surface-container-low px-space-sm text-label-md text-error transition-colors hover:bg-error-container"
+                          >
+                            <Icon name="gavel" className="!text-[16px]" />
+                            Hủy
+                          </button>
+                        ) : (
+                          <span className="text-label-md text-outline">–</span>
+                        )}
+                      </div>
                     </td>
                   </tr>
-                ))}
+                  </Fragment>
+                  );
+                })}
               </tbody>
             </table>
           </div>
