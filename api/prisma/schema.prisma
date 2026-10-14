@@ -124,6 +124,7 @@ model User {
   cancelledBookings  Booking[]          @relation("BookingCanceller")
   licenseLogsActor   LicenseAccessLog[] @relation("LogActor")
   licenseLogsTarget  LicenseAccessLog[] @relation("LogTarget")
+  adminActions       AdminAction[]
 
   @@index([role, status])
   @@map("users")
@@ -224,6 +225,7 @@ model Booking {
   completedAt     DateTime?     @map("completed_at") @db.Timestamptz(6)
   cancelledAt     DateTime?     @map("cancelled_at") @db.Timestamptz(6)
   cancelledById   String?       @map("cancelled_by") @db.Uuid
+  cancelReason    String?       @map("cancel_reason")
   refundAmount    Int           @default(0) @map("refund_amount")
   // Sổ tiền của đơn (SPEC §4): khách đã trả, đã hoàn cho khách (refundAmount ở trên), đã ghi nhận cho chủ xe.
   paidAt              DateTime? @map("paid_at") @db.Timestamptz(6)
@@ -285,4 +287,24 @@ model LicenseAccessLog {
   @@index([targetUserId, accessedAt(sort: Desc)])
   @@index([actorId, accessedAt(sort: Desc)])
   @@map("license_access_logs")
+}
+
+// Nhật ký thao tác can thiệp của admin (SPEC §4). Chỉ thêm dòng (trigger trong migration chặn sửa và xóa).
+// Các cột target_* không có quan hệ: nhật ký còn nguyên khi đối tượng bị xóa.
+model AdminAction {
+  id              BigInt   @id @default(autoincrement())
+  adminId         String   @map("admin_id") @db.Uuid
+  action          String
+  targetUserId    String?  @map("target_user_id") @db.Uuid
+  targetVehicleId String?  @map("target_vehicle_id") @db.Uuid
+  targetBookingId String?  @map("target_booking_id") @db.Uuid
+  reason          String?
+  details         Json?
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  admin User @relation(fields: [adminId], references: [id], onDelete: Restrict)
+
+  @@index([targetUserId, createdAt(sort: Desc)])
+  @@index([adminId, createdAt(sort: Desc)])
+  @@map("admin_actions")
 }

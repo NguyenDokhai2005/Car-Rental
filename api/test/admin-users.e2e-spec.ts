@@ -114,7 +114,7 @@ describe("Admin users API", () => {
       const renter = await makeUser(ctx, "renter");
       expect((await http().get("/api/me").set(renter.auth)).status).toBe(200);
 
-      const blocked = await http().post(`/api/admin/users/${renter.user.id}/block`).set(admin.auth);
+      const blocked = await http().post(`/api/admin/users/${renter.user.id}/block`).set(admin.auth).send({ reason: "Vi phạm quy định" });
       expect(blocked.status).toBe(200);
       expect(blocked.body).toMatchObject({ id: renter.user.id, status: "blocked", vehicleCount: 0, bookingCount: 0 });
       expect((await http().get("/api/me").set(renter.auth)).status).not.toBe(200);
@@ -128,7 +128,7 @@ describe("Admin users API", () => {
       const admin = await makeUser(ctx, "admin");
       const owner = await makeUser(ctx, "owner");
       for (let i = 0; i < 2; i += 1) {
-        expect((await http().post(`/api/admin/users/${owner.user.id}/block`).set(admin.auth)).status).toBe(200);
+        expect((await http().post(`/api/admin/users/${owner.user.id}/block`).set(admin.auth).send({ reason: "Vi phạm quy định" })).status).toBe(200);
       }
       expect(await statusOf(owner.user.id)).toBe("blocked");
       for (let i = 0; i < 2; i += 1) {
@@ -142,7 +142,7 @@ describe("Admin users API", () => {
       const other = await makeUser(ctx, "admin");
 
       for (const id of [admin.user.id, other.user.id]) {
-        const res = await http().post(`/api/admin/users/${id}/block`).set(admin.auth);
+        const res = await http().post(`/api/admin/users/${id}/block`).set(admin.auth).send({ reason: "Vi phạm quy định" });
         expect(res.status).toBe(409);
         expect(res.body.code).toBe("INVALID_STATE");
         expect(await statusOf(id)).toBe("active");
@@ -152,7 +152,7 @@ describe("Admin users API", () => {
     it("người dùng không tồn tại hoặc id sai định dạng: 404", async () => {
       const admin = await makeUser(ctx, "admin");
       for (const id of ["00000000-0000-4000-8000-000000000000", "khong-phai-uuid"]) {
-        expect((await http().post(`/api/admin/users/${id}/block`).set(admin.auth)).status).toBe(404);
+        expect((await http().post(`/api/admin/users/${id}/block`).set(admin.auth).send({ reason: "Vi phạm quy định" })).status).toBe(404);
       }
     });
 
@@ -164,7 +164,7 @@ describe("Admin users API", () => {
       const start = new Date(Date.now() + 3 * DAY_MS);
       const booking = await makeBooking(ctx, vehicle.id, renter.user.id, start, new Date(start.getTime() + DAY_MS));
 
-      await http().post(`/api/admin/users/${renter.user.id}/block`).set(admin.auth);
+      await http().post(`/api/admin/users/${renter.user.id}/block`).set(admin.auth).send({ reason: "Vi phạm quy định" });
 
       expect((await ctx.prisma.booking.findUniqueOrThrow({ where: { id: booking.id } })).status).toBe("confirmed");
     });

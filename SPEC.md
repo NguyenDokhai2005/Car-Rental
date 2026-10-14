@@ -14,9 +14,11 @@
 | Tạo/sửa/ẩn xe của mình, tải ảnh | | ✓ | |
 | Quản lý lịch chặn (không cho thuê) của xe mình | | ✓ | |
 | Duyệt/từ chối đơn trên xe của mình | | ✓ | |
-| Duyệt/từ chối xe | | | ✓ |
-| Xác minh GPLX, khóa/mở người dùng | | | ✓ |
-| Xem mọi đơn và thanh toán | | | ✓ |
+| Duyệt/từ chối xe, gỡ xe đã duyệt | | | ✓ |
+| Xác minh GPLX, khóa/mở người dùng, đặt lại mật khẩu cho người dùng | | | ✓ |
+| Xem mọi đơn và thanh toán, hủy đơn có tranh chấp | | | ✓ |
+| Xem tổng quan sản lượng và hiệu năng của nền tảng | | | ✓ |
+| Đổi mật khẩu của mình | ✓ | ✓ | ✓ |
 
 **Vai trò thứ tư: `dev` (kỹ thuật vận hành).** Dùng để theo dõi sức khỏe hệ thống, không phải vai trò nghiệp vụ:
 
@@ -33,7 +35,7 @@ Quy tắc chung: mọi endpoint kiểm tra quyền **sở hữu** (owner chỉ t
 
 **Đăng xe:** owner tạo xe (trạng thái `pending`) → tải ảnh → admin duyệt (`approved`) hoặc từ chối kèm lý do (`rejected`) → xe `approved` mới hiện công khai. **Mọi thay đổi của owner đều phải được admin duyệt lại:** sửa bất kỳ thông tin nào (kể cả mô tả, thành phố, quận, giá thuê, tỷ lệ cọc), tải thêm ảnh hoặc xóa ảnh trên xe `approved`, `hidden` hay `rejected` đều đưa xe về `pending`, xóa kết quả duyệt cũ (lý do từ chối, người duyệt, thời điểm duyệt). Trong lúc chờ duyệt lại, xe không hiện công khai và không nhận đơn mới; các đơn đã có vẫn giữ nguyên. Gửi lại đúng giá trị cũ không tính là thay đổi. Xe đang `pending` mà sửa tiếp thì vẫn `pending`. Xe chưa có ảnh nào thì không duyệt được.
 
-**Trạng thái xe:** `pending` (chờ duyệt) → `approved` (công khai) hoặc `rejected` (kèm lý do). Owner ẩn xe `approved` thì thành `hidden` (không hiện công khai, không nhận đơn mới, đơn đã có vẫn giữ nguyên) và hiện lại thì về `approved` mà không cần duyệt lại (ẩn và hiện không phải thay đổi nội dung). Xe `hidden` mà bị sửa thì về `pending` như trên, và sau khi được duyệt sẽ thành `approved`. Chỉ xe `approved` mới ẩn được; chỉ xe `hidden` mới hiện lại được.
+**Trạng thái xe:** `pending` (chờ duyệt) → `approved` (công khai) hoặc `rejected` (kèm lý do). Owner ẩn xe `approved` thì thành `hidden` (không hiện công khai, không nhận đơn mới, đơn đã có vẫn giữ nguyên) và hiện lại thì về `approved` mà không cần duyệt lại (ẩn và hiện không phải thay đổi nội dung). Xe `hidden` mà bị sửa thì về `pending` như trên, và sau khi được duyệt sẽ thành `approved`. Chỉ xe `approved` mới ẩn được; chỉ xe `hidden` mới hiện lại được. **Admin gỡ xe:** xe `approved` hoặc `hidden` có vấn đề (nội dung vi phạm, có khiếu nại) bị admin gỡ thì thành `rejected` kèm lý do bắt buộc: không hiện công khai, không nhận đơn mới, đơn đã có vẫn giữ nguyên. Chủ xe thấy lý do, sửa xe thì xe về `pending` và được duyệt lại như mọi lần sửa.
 
 **Thuê xe:**
 1. Khách tìm xe theo thành phố, giá, số chỗ, khoảng ngày.
@@ -56,7 +58,7 @@ Quyết định thứ tự thanh toán/duyệt: khách thanh toán **trước**,
 | `in_use` | ✓ | Hai bên đã xác nhận giao xe, đang thuê |
 | `completed` | | Đã trả xe (hai bên xác nhận, hoặc tự hoàn tất sau 24 giờ kể từ `end_at`) |
 | `rejected` | | Chủ xe từ chối, khách được hoàn 100% |
-| `cancelled` | | Khách (hoặc admin) hủy |
+| `cancelled` | | Khách hủy, hoặc admin hủy khi có tranh chấp (kèm lý do) |
 | `expired` | | Hết hạn: khách không thanh toán trong 15 phút, hoặc chủ xe không trả lời trong 6 giờ (khi đó hoàn 100%) |
 
 Chuyển trạng thái hợp lệ:
@@ -68,8 +70,9 @@ pending (đã thanh toán)   -> rejected                  (chủ xe từ chối,
 pending                   -> cancelled                 (khách hủy, hoàn 100% nếu đã thanh toán)
 pending                   -> expired                   (quá expires_at, hoàn 100% nếu đã thanh toán)
 confirmed                 -> in_use                    (chủ xe xác nhận giao xe VÀ khách xác nhận nhận xe)
-confirmed                 -> cancelled                 (khách/admin hủy, áp dụng chính sách hoàn tiền)
+confirmed                 -> cancelled                 (khách hủy theo chính sách hoàn tiền; admin hủy và tự quyết phần tiền thuê hoàn)
 in_use                    -> completed                 (khách xác nhận trả xe VÀ chủ xe xác nhận nhận lại, hoặc quá 24 giờ sau end_at)
+pending / in_use          -> cancelled                 (chỉ admin, khi có tranh chấp; xem mục 4)
 ```
 
 Mọi chuyển khác trả 409 `INVALID_STATE`. Mỗi lần chuyển trạng thái kiểm tra điều kiện ngay trong câu `UPDATE` (trạng thái hiện tại, hạn giữ chỗ, quyền sở hữu), không đọc trước rồi ghi sau: hai thao tác đồng thời trên cùng một đơn (chủ xe duyệt đúng lúc khách hủy) thì đúng một bên thành công, bên kia nhận 409. Các endpoint của owner chỉ thao tác trên đơn thuộc xe của mình; đơn của xe người khác trả 404. Chỉ các trạng thái `pending`, `confirmed`, `in_use` nằm trong ràng buộc chống trùng lịch.
@@ -95,6 +98,8 @@ Mọi chuyển khác trả 409 `INVALID_STATE`. Mỗi lần chuyển trạng th�
 | Chủ xe từ chối, hoặc hết hạn 6 giờ | 100% | 0 |
 
   Hoàn tiền và ghi nhận cho chủ xe ở sandbox chỉ là số liệu trên đơn (và trạng thái `refunded` trong `payments` khi có cổng thanh toán), không gọi API chuyển tiền thật.
+- **Admin hủy đơn có tranh chấp:** admin hủy được đơn `pending` còn hạn, `confirmed` hoặc `in_use` (ví dụ chủ xe không giao xe, xe hỏng giữa chuyến, hai bên không thống nhất). Bắt buộc có lý do; khách và chủ xe đều đọc được lý do này trên đơn. Admin chọn `rentalRefundPercent` (0 đến 100): phần trăm **tiền thuê** hoàn cho khách, phần còn lại ghi cho chủ xe. **Tiền cọc luôn hoàn đủ cho khách.** Sau khi hủy, `refund_amount + owner_payout_amount` đúng bằng `paid_amount`: không đồng nào bị treo. Với đơn `in_use`, số đã ghi nhận cho chủ xe lúc giao xe (50%) được thay bằng số mới theo quyết định của admin. Đơn chưa thanh toán thì không có tiền nào để chia. Đơn đã `completed`, `rejected`, `expired` không can thiệp được (409 `INVALID_STATE`). Bồi thường hư hỏng vượt quá tiền thuê (trừ vào tiền cọc) chưa hỗ trợ, hai bên tự thỏa thuận ngoài ứng dụng.
+- **Nhật ký thao tác của admin:** mọi thao tác can thiệp của admin (khóa, mở khóa, đặt lại mật khẩu, gỡ xe, hủy đơn) ghi một dòng vào `admin_actions` trong cùng giao dịch với thao tác: ai làm, làm gì, trên đối tượng nào, lý do, lúc nào. Bảng chỉ thêm dòng, không sửa, không xóa.
 - **Idempotency:** IPN thanh toán xử lý lặp lại nhiều lần vẫn cho kết quả như một lần (khóa theo mã giao dịch).
 
 ## 5. Mô hình dữ liệu (tóm tắt)
@@ -106,8 +111,9 @@ Mọi chuyển khác trả 409 `INVALID_STATE`. Mỗi lần chuyển trạng th�
 | `vehicles` | id, owner_id, title, brand, model, year, plate_number (unique), seats, transmission, fuel, description, city, district, price_per_day, deposit_rate (% cọc, mặc định 30), status (`pending/approved/rejected/hidden`), reject_reason, reviewed_by, reviewed_at |
 | `vehicle_images` | id, vehicle_id, storage_key, position |
 | `vehicle_blocks` | id, vehicle_id, start_at, end_at, reason |
-| `bookings` | id, renter_id, vehicle_id, start_at, end_at, status, rental_days, price_per_day (chụp giá lúc đặt), total_amount (tiền thuê), deposit_amount (tiền cọc bảo đảm), expires_at, paid_at, paid_amount, owner_approved_at, reject_reason, owner_handed_over_at, renter_received_at, started_at, renter_returned_at, owner_received_back_at, completed_at, cancelled_at, cancelled_by, refund_amount, owner_payout_amount |
+| `bookings` | id, renter_id, vehicle_id, start_at, end_at, status, rental_days, price_per_day (chụp giá lúc đặt), total_amount (tiền thuê), deposit_amount (tiền cọc bảo đảm), expires_at, paid_at, paid_amount, owner_approved_at, reject_reason, owner_handed_over_at, renter_received_at, started_at, renter_returned_at, owner_received_back_at, completed_at, cancelled_at, cancelled_by, refund_amount, owner_payout_amount, cancel_reason (lý do khi admin hủy) |
 | `payments` | id, booking_id, provider (`vnpay/momo`), txn_ref (unique, mã do hệ thống sinh), provider_txn_id (nullable), amount, status (`created/paid/failed/refunded`), raw_payload, paid_at, refunded_amount, refunded_at |
+| `admin_actions` | id, admin_id, action (`user.block`, `user.unblock`, `user.reset_password`, `vehicle.takedown`, `booking.cancel`), target_user_id, target_vehicle_id, target_booking_id, reason, details (jsonb), created_at |
 | `license_access_logs` | id, actor_id, target_user_id, file_key, ip_address, accessed_at |
 
 Thiết kế chi tiết từng bảng (kiểu, ràng buộc, index) nằm trong `api/prisma/schema.prisma` và migration. Ngoài `bookings_no_overlap`, migration còn có: `vehicle_blocks_no_overlap` (EXCLUDE), mỗi đơn chỉ một `payments` trạng thái `paid`, và các CHECK về tiền và thời gian. `reviews` để sau MVP.
@@ -143,6 +149,8 @@ Tiền tố `/api`. JSON. Lỗi: `{ "code": "...", "message": "..." }`. Mã lỗ
 | GET | /me/license/:side | renter | Ảnh GPLX của chính mình, `side` là `front` hoặc `back`. Trả `image/webp`, `Cache-Control: private, no-store`. Không có ảnh trả 404 |
 
 Mật khẩu 8 đến 128 ký tự, băm argon2id. Đăng nhập, đăng ký và refresh có giới hạn tốc độ theo IP. Mặc định mọi endpoint yêu cầu đăng nhập; endpoint công khai phải đánh dấu rõ. Tài khoản `blocked` bị từ chối ngay cả khi access token còn hạn.
+
+**Đổi mật khẩu:** `POST /me/password` `{ currentPassword, newPassword }` (mọi vai trò, phải đăng nhập). Sai mật khẩu hiện tại trả 400 `VALIDATION_ERROR`; mật khẩu mới theo quy tắc của đăng ký (8 đến 128 ký tự) và phải khác mật khẩu cũ. Thành công trả 204 và thu hồi mọi phiên đăng nhập khác (refresh token) của tài khoản. Giới hạn 5 lần mỗi phút.
 
 ### Xe (công khai)
 | Method | Path | Mô tả |
@@ -211,16 +219,29 @@ Khi có cổng thật, endpoint này sẽ tạo giao dịch và trả `paymentUr
 ### Admin
 | Method | Path | Mô tả |
 | --- | --- | --- |
-| GET | /admin/vehicles | Danh sách xe, chỉ admin. Query `status` (tùy chọn), `page`, `limit`. Mỗi xe kèm `owner` `{ id, fullName, email, phone }` và `images` `[{ id, url, position }]`. `status=pending` sắp theo cũ nhất trước (hàng đợi duyệt), các trạng thái khác mới nhất trước |
+| GET | /admin/overview | Tổng quan sản lượng và hiệu năng (xem dưới bảng). Query `days`: `7`, `30` (mặc định) hoặc `90` |
+| GET | /admin/vehicles | Danh sách xe, chỉ admin. Query `status` (tùy chọn), `q` (tùy chọn: tìm trong tiêu đề, biển số, họ tên và email chủ xe; tối đa 100 ký tự), `page`, `limit`. Mỗi xe kèm `owner` `{ id, fullName, email, phone }` và `images` `[{ id, url, position }]`. `status=pending` sắp theo cũ nhất trước (hàng đợi duyệt), các trạng thái khác mới nhất trước |
 | POST | /admin/vehicles/:id/approve | Duyệt xe: chỉ `pending` thành `approved`, ghi người duyệt và thời điểm duyệt, xóa lý do từ chối cũ. Xe chưa có ảnh nào, hoặc đang ở trạng thái khác, trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `approved` vẫn thành công. Trả xe theo dạng của danh sách |
 | POST | /admin/vehicles/:id/reject | Từ chối xe. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). Chỉ `pending` thành `rejected`; trạng thái khác trả 409 `INVALID_STATE`. Gọi lặp lại trên xe đã `rejected` vẫn thành công và giữ lý do đầu tiên |
+| POST | /admin/vehicles/:id/takedown | Gỡ xe đã duyệt. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). Xe `approved` hoặc `hidden` thành `rejected` kèm lý do, ghi người gỡ và thời điểm. Trạng thái khác trả 409 `INVALID_STATE`; gọi lặp lại trên xe đã `rejected` vẫn thành công và giữ lý do đầu tiên. Ghi nhật ký `vehicle.takedown` |
 | GET | /admin/users | Danh sách người dùng, chỉ admin, mới nhất trước. Query tùy chọn: `role`, `status`, `licenseStatus`, `q` (tìm trong họ tên, email, số điện thoại; tối đa 100 ký tự), `page`, `limit`. Mỗi người gồm các trường công khai (không có mật khẩu hay khóa file GPLX) kèm `vehicleCount` và `bookingCount` |
+| GET | /admin/users/:id | Chi tiết một người dùng: các trường của danh sách, `blockReason` (lý do của lần khóa gần nhất, chỉ khi đang bị khóa), `vehicles` (10 xe mới nhất: `id`, `title`, `plateNumber`, `status`), `bookings` (10 đơn mới nhất người này đặt: `id`, `status`, `startAt`, `endAt`, `totalAmount`, `vehicleTitle`), `actions` (20 thao tác gần nhất của admin lên tài khoản này: `action`, `reason`, `adminName`, `createdAt`) |
+| POST | /admin/users/:id/reset-password | Đặt lại mật khẩu cho người dùng quên mật khẩu (hệ thống chưa gửi được email). Sinh mật khẩu tạm ngẫu nhiên, thu hồi mọi phiên đăng nhập của người đó, trả `{ temporaryPassword }` **đúng một lần** để admin báo cho người dùng qua kênh khác; người dùng nên đổi lại ngay bằng `POST /me/password`. Không đặt lại được cho chính mình hay admin khác (409 `INVALID_STATE`). Ghi nhật ký `user.reset_password` (không ghi mật khẩu) |
 | GET | /admin/users/:id/license | Hồ sơ GPLX của một người dùng, theo dạng của `GET /me/license` kèm `user` `{ id, fullName, email, phone }` |
 | GET | /admin/users/:id/license/:side | Ảnh GPLX (`front` hoặc `back`), có ghi log truy cập. Trả như `GET /me/license/:side` |
 | POST | /admin/users/:id/license/verify | Duyệt hồ sơ `pending`. Body `{ version }` (bắt buộc). Sai `version` hoặc trạng thái khác `pending` trả 409 `INVALID_STATE`; gọi lặp lại trên hồ sơ đã `verified` cùng `version` vẫn thành công. Ghi người duyệt và thời điểm duyệt |
 | POST | /admin/users/:id/license/reject | Từ chối hồ sơ `pending`. Body `{ reason }` (bắt buộc, 1 đến 500 ký tự). Trạng thái khác `pending` trả 409 `INVALID_STATE`; gọi lặp lại trên hồ sơ đã `rejected` vẫn thành công và giữ lý do đầu tiên |
-| POST | /admin/users/:id/block · /unblock | Khóa hoặc mở tài khoản, trả người dùng theo dạng của danh sách. Gọi lặp lại vẫn thành công. Không khóa được chính mình hay admin khác: trả 409 `INVALID_STATE`. Tài khoản bị khóa bị từ chối ở mọi yêu cầu kế tiếp (guard đọc lại trạng thái mỗi lần), không cần chờ token hết hạn. Đơn đang có của người bị khóa giữ nguyên |
+| POST | /admin/users/:id/block · /unblock | Khóa hoặc mở tài khoản, trả người dùng theo dạng của danh sách. Khóa phải kèm body `{ reason }` (bắt buộc, 1 đến 500 ký tự); mở khóa không cần. Mỗi lần đổi trạng thái thật sự ghi một dòng nhật ký (`user.block`, `user.unblock`). Gọi lặp lại vẫn thành công. Không khóa được chính mình hay admin khác: trả 409 `INVALID_STATE`. Tài khoản bị khóa bị từ chối ở mọi yêu cầu kế tiếp (guard đọc lại trạng thái mỗi lần), không cần chờ token hết hạn. Đơn đang có của người bị khóa giữ nguyên |
 | GET | /admin/bookings | Mọi đơn, chỉ admin, mới nhất trước. Query `status` (tùy chọn, tính theo trạng thái hiệu lực), `page`, `limit`. Mỗi đơn theo dạng chi tiết của chủ xe (`renter`, `ownerPayoutAmount`) kèm `owner` `{ fullName, phone }`. Phản hồi có thêm `totals` `{ paidAmount, refundAmount, ownerPayoutAmount, heldAmount }` cộng trên **toàn bộ** đơn (không theo bộ lọc hay trang): `heldAmount = paidAmount - refundAmount - ownerPayoutAmount` là số tiền nền tảng đang giữ hộ |
+| POST | /admin/bookings/:id/cancel | Hủy đơn có tranh chấp. Body `{ reason, rentalRefundPercent }`: `reason` bắt buộc (1 đến 500 ký tự), `rentalRefundPercent` là số nguyên 0 đến 100 (bắt buộc). Quy tắc và cách chia tiền ở mục 4. Ghi `cancelled_at`, `cancelled_by` (admin), `cancel_reason`. Gọi lặp lại trên đơn đã hủy vẫn thành công và không tính lại tiền. Ghi nhật ký `booking.cancel` kèm số tiền đã chia. Trả đơn theo dạng của danh sách |
+
+`GET /admin/overview` trả về (ngày tính theo giờ Việt Nam):
+
+- `queues`: việc đang chờ admin hoặc cần để mắt: `pendingVehicles`, `pendingLicenses`, `awaitingOwnerApproval` (đơn đã thanh toán đang chờ chủ xe duyệt), `inUse` (đơn đang thuê).
+- `totals`: số người dùng theo vai trò, số xe theo trạng thái, tổng số đơn, và sổ tiền toàn nền tảng (như `totals` của `/admin/bookings`).
+- `series`: mỗi ngày trong khoảng đã chọn một dòng `{ date, newUsers, newVehicles, bookingsCreated, bookingsPaid, bookingsCompleted, paidAmount }` (`paidAmount` là tiền khách thanh toán trong ngày đó), ngày không có gì vẫn có dòng với số 0.
+- `performance`, tính trên các đơn **tạo trong khoảng đã chọn**: phễu `created` → `paid` → `approved` (chủ xe duyệt) → `completed`; số đơn `cancelled`, `rejected`, `expired`; `avgOwnerResponseHours` (từ lúc khách thanh toán đến lúc chủ xe duyệt); `avgVehicleReviewHours` (từ lúc đăng xe đến lúc admin duyệt, trên các xe được duyệt trong khoảng); `avgBookingValue` và `avgRentalDays` của các đơn đã thanh toán; `utilizationPercent` (số ngày-xe có khách thuê chia cho số ngày-xe của các xe đang `approved`); `topCities` (5 thành phố nhiều đơn nhất, kèm số đơn và tiền khách đã trả).
+- Chỉ số nào không có dữ liệu để tính thì là `null`, không phải 0.
 
 ### Dev (vận hành kỹ thuật)
 
@@ -269,7 +290,7 @@ Quy tắc của nhật ký:
 
 ## 10. Câu hỏi còn mở
 
-1. Chấp nhận các mặc định (cọc 30%, chính sách hoàn cọc) hay đổi? Đã chốt: khách trả tiền thuê + tiền cọc trong 15 phút sau khi đặt; chủ xe có 6 giờ để duyệt đơn đã thanh toán; giao xe và trả xe cần hai phía xác nhận; chủ xe nhận 50% tiền thuê khi giao xe và 50% khi trả xe; tiền cọc do ứng dụng giữ và hoàn khi trả xe. Xử lý tranh chấp về tình trạng xe và trường hợp một bên không đến để sau MVP.
+1. Chấp nhận các mặc định (cọc 30%, chính sách hoàn cọc) hay đổi? Đã chốt: khách trả tiền thuê + tiền cọc trong 15 phút sau khi đặt; chủ xe có 6 giờ để duyệt đơn đã thanh toán; giao xe và trả xe cần hai phía xác nhận; chủ xe nhận 50% tiền thuê khi giao xe và 50% khi trả xe; tiền cọc do ứng dụng giữ và hoàn khi trả xe. Tranh chấp do admin xử lý bằng cách hủy đơn và quyết định phần tiền thuê hoàn (mục 4); bồi thường hư hỏng bằng tiền cọc để sau MVP.
 2. ~~Một tài khoản một vai trò~~ — đã chốt: một tài khoản một vai trò; sau đăng nhập chủ xe vào `/owner`, quản trị vào `/admin`, khách quay lại trang đang đứng trước khi đăng nhập.
 3. Chọn VNPay hay MoMo làm cổng đầu tiên?
 4. Có nhận xe có tài xế/giao xe tận nơi không (hiện tại: không)?

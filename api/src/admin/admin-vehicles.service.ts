@@ -3,9 +3,10 @@ import type { Prisma } from "@prisma/client";
 import { ApiError } from "../common/api-error";
 import { PrismaService } from "../common/prisma/prisma.service";
 import { StorageService } from "../storage/storage.service";
-import type { ListVehiclesQuery } from "../vehicles/dto/list-vehicles.query";
 import type { Page } from "../vehicles/vehicle.view";
+import { recordAdminAction } from "./admin-actions";
 import { ADMIN_VEHICLE_SELECT, AdminVehicle, AdminVehicleRow } from "./admin-vehicle.view";
+import type { ListAdminVehiclesQuery } from "./dto/admin-actions.dto";
 
 function notFound(): ApiError {
   return new ApiError(404, "NOT_FOUND", "Không tìm thấy xe.");
@@ -43,8 +44,21 @@ export class AdminVehiclesService {
     return vehicle;
   }
 
-  async list(query: ListVehiclesQuery): Promise<Page<AdminVehicle>> {
-    const where: Prisma.VehicleWhereInput = query.status ? { status: query.status } : {};
+  async list(query: ListAdminVehiclesQuery): Promise<Page<AdminVehicle>> {
+    const where: Prisma.VehicleWhereInput = {
+      ...(query.status ? { status: query.status } : {}),
+      ...(query.q
+        ? {
+            OR: [
+              { title: { contains: query.q, mode: "insensitive" } },
+              // Biển số lưu dạng liền, viết hoa (51K12345): bỏ dấu và khoảng trắng người dùng gõ vào trước khi so.
+              { plateNumber: { contains: query.q.replace(/[^a-z0-9]/gi, "").toUpperCase() || query.q } },
+              { owner: { fullName: { contains: query.q, mode: "insensitive" } } },
+              { owner: { email: { contains: query.q, mode: "insensitive" } } },
+            ],
+          }
+        : {}),
+    };
     // Hàng đợi duyệt: xe chờ lâu nhất lên đầu. Các danh sách khác: mới nhất lên đầu.
     const direction = query.status === "pending" ? "asc" : "desc";
     const [rows, total] = await this.prisma.$transaction([
@@ -97,6 +111,26 @@ export class AdminVehiclesService {
       data: { status: "rejected", rejectReason: reason, reviewedById: adminId, reviewedAt: new Date() },
     });
     if (result.count === 0) throw changedMeanwhile();
+    return this.toView(await this.findOrThrow(vehicleId));
+  }
+
+  // Gỡ xe đang công khai hoặc đang ẩn: approved/hidden -> rejected kèm lý do (SPEC §2). Dùng lại trạng thái rejected để chủ
+  // xe đi đúng con đường quen thuộc: đọc lý do, sửa xe, xe về pending và được duyệt lại. Đơn đã có của xe giữ nguyên.
+  async takedown(adminId: string, vehicleId: string, reason: string): Promise<AdminVehicle> {
+    const current = await this.findOrThrow(vehicleId);
+    if (current.status === "rejected") return this.toView(current);
+    if (current.status !== "approved" && current.status !== "hidden") {
+      throw new ApiError(409, "INVALID_STATE", "Chỉ gỡ được xe đã duyệt hoặc đang ẩn. Xe đang chờ duyệt thì dùng từ chối.");
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      const result = await tx.vehicle.updateMany({
+        where: { id: vehicleId, status: { in: ["approved", "hidden"] } },
+        data: { status: "rejected", rejectReason: reason, reviewedById: adminId, reviewedAt: new Date() },
+      });
+      if (result.count === 0) throw changedMeanwhile();
+      await recordAdminAction(tx, { adminId, action: "vehicle.takedown", target: { vehicleId }, reason, details: { previousStatus: current.status } });
+    });
     return this.toView(await this.findOrThrow(vehicleId));
   }
 }

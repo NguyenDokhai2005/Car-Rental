@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Patch } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Patch, Post } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { AuthUser, CurrentUser } from "../common/decorators/current-user.decorator";
+import { ChangePasswordDto } from "./dto/change-password.dto";
 import { UpdateMeDto } from "./dto/update-me.dto";
 import { PublicUser } from "./user.view";
 import { UsersService } from "./users.service";
@@ -17,5 +19,13 @@ export class UsersController {
   @Patch()
   updateMe(@CurrentUser() user: AuthUser, @Body() dto: UpdateMeDto): Promise<PublicUser> {
     return this.users.updateMe(user.id, dto);
+  }
+
+  // Giới hạn như đăng nhập: endpoint này cũng kiểm tra mật khẩu, nên cũng là chỗ để dò mật khẩu.
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @HttpCode(204)
+  @Post("password")
+  changePassword(@CurrentUser() user: AuthUser, @Body() dto: ChangePasswordDto): Promise<void> {
+    return this.users.changePassword(user.id, dto);
   }
 }
