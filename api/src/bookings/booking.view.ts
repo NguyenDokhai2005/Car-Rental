@@ -23,6 +23,7 @@ const BOOKING_FIELDS = {
   ownerReceivedBackAt: true,
   completedAt: true,
   cancelledAt: true,
+  cancelReason: true,
   refundAmount: true,
   createdAt: true,
 } satisfies Prisma.BookingSelect;

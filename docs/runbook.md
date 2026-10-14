@@ -114,7 +114,13 @@ Trên GitHub: Settings → Actions → Runners phải thấy runner ở trạng 
 ## Thao tác quản trị
 
 - **Khóa hoặc mở tài khoản, duyệt xe, duyệt GPLX:** làm trên trang quản trị (`/admin`), không sửa tay trong CSDL.
-- **Người dùng quên mật khẩu:** hệ thống chưa gửi được email/SMS nên chưa có luồng tự đặt lại. Tạm thời quản trị viên đặt lại trực tiếp trong CSDL bằng mật khẩu đã băm argon2id; không bao giờ lưu hay gửi mật khẩu dạng chữ thường.
+- **Người dùng quên mật khẩu:** hệ thống chưa gửi được email/SMS. Quản trị viên mở `/admin/users`, vào trang chi tiết của người đó và bấm **Đặt lại mật khẩu**; mật khẩu tạm chỉ hiện một lần, báo cho người dùng qua điện thoại và nhắc họ đổi lại ở trang hồ sơ. Xác minh đúng người trước khi đặt lại (ví dụ gọi lại số điện thoại đã đăng ký).
+- **Gỡ xe, hủy đơn có tranh chấp:** làm ở `/admin/vehicles` và `/admin/bookings`, luôn kèm lý do (chủ xe và khách đọc được). Khi hủy đơn, admin chọn phần trăm tiền thuê hoàn cho khách; tiền cọc luôn hoàn đủ.
+- **Xem ai đã can thiệp gì** (khóa, đặt lại mật khẩu, gỡ xe, hủy đơn). Bảng `admin_actions` chỉ thêm dòng, không sửa hay xóa được:
+
+  ```bash
+  $COMPOSE exec db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "select a.created_at, u.email as admin, a.action, a.reason, a.details from admin_actions a join users u on u.id = a.admin_id order by a.created_at desc limit 20"'
+  ```
 - **Xem ai đã mở ảnh GPLX:**
 
   ```bash

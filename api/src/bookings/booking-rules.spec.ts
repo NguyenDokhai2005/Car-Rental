@@ -1,5 +1,5 @@
 import { MAX_PRICE_PER_DAY } from "../vehicles/dto/vehicle-fields";
-import {
+import { adminCancelSettlement,
   cancelSettlement,
   DAY_MS,
   handoverProblem,
@@ -200,3 +200,25 @@ describe("handoverProblem (khung giờ được xác nhận giao xe)", () => {
     expect(handoverProblem(start, end, end)).toEqual(expect.any(String));
   });
 });
+
+describe("adminCancelSettlement", () => {
+  const booking = { paid: true, totalAmount: 1_000_001, depositAmount: 300_000 };
+
+  it.each([0, 1, 33, 50, 99, 100])("hoàn %i%% tiền thuê: cọc về khách đủ, hai khoản cộng lại đúng số đã trả", (percent) => {
+    const { refundAmount, ownerPayoutAmount } = adminCancelSettlement(booking, percent);
+    expect(refundAmount + ownerPayoutAmount).toBe(1_300_001);
+    expect(refundAmount).toBeGreaterThanOrEqual(300_000);
+    expect(ownerPayoutAmount).toBeLessThanOrEqual(1_000_001);
+    expect(ownerPayoutAmount).toBeGreaterThanOrEqual(0);
+  });
+
+  it("hai đầu mút", () => {
+    expect(adminCancelSettlement(booking, 100)).toEqual({ refundAmount: 1_300_001, ownerPayoutAmount: 0 });
+    expect(adminCancelSettlement(booking, 0)).toEqual({ refundAmount: 300_000, ownerPayoutAmount: 1_000_001 });
+  });
+
+  it("đơn chưa thanh toán: không có tiền nào để chia", () => {
+    expect(adminCancelSettlement({ ...booking, paid: false }, 50)).toEqual({ refundAmount: 0, ownerPayoutAmount: 0 });
+  });
+});
+

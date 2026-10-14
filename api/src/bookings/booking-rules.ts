@@ -91,6 +91,18 @@ export function cancelSettlement(
   return { refundAmount: booking.depositAmount + rentalRefund, ownerPayoutAmount: booking.totalAmount - rentalRefund };
 }
 
+// Chia tiền khi ADMIN hủy đơn có tranh chấp (SPEC §4). Admin quyết định bao nhiêu phần trăm tiền thuê về lại khách; phần
+// còn lại thuộc về chủ xe. Tiền cọc luôn về khách. Kết quả là số tuyệt đối, thay cho mọi khoản đã ghi nhận trước đó (ví dụ
+// 50% chủ xe nhận lúc giao xe), và luôn cộng lại đúng bằng số khách đã trả.
+export function adminCancelSettlement(
+  booking: { paid: boolean; totalAmount: number; depositAmount: number },
+  rentalRefundPercent: number,
+): Settlement {
+  if (!booking.paid) return { refundAmount: 0, ownerPayoutAmount: 0 };
+  const rentalRefund = Math.round((booking.totalAmount * rentalRefundPercent) / 100);
+  return { refundAmount: booking.depositAmount + rentalRefund, ownerPayoutAmount: booking.totalAmount - rentalRefund };
+}
+
 // Phần tiền thuê ghi nhận cho chủ xe ngay khi hai bên xác nhận giao xe: 50%, làm tròn xuống. Phần còn lại ghi nhận khi trả xe,
 // nên tổng hai lần luôn đúng bằng tiền thuê dù tiền thuê là số lẻ.
 export function pickupPayout(totalAmount: number): number {

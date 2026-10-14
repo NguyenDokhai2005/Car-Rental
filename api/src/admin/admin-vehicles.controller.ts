@@ -2,10 +2,10 @@ import { Body, Controller, Get, HttpCode, Param, Post, Query } from "@nestjs/com
 import { AuthUser, CurrentUser } from "../common/decorators/current-user.decorator";
 import { Roles } from "../common/decorators/roles.decorator";
 import { uuidParam } from "../common/pipes/uuid-param.pipe";
-import { ListVehiclesQuery } from "../vehicles/dto/list-vehicles.query";
 import type { Page } from "../vehicles/vehicle.view";
 import { AdminVehiclesService } from "./admin-vehicles.service";
 import type { AdminVehicle } from "./admin-vehicle.view";
+import { ListAdminVehiclesQuery, ReasonDto } from "./dto/admin-actions.dto";
 import { RejectVehicleDto } from "./dto/reject-vehicle.dto";
 
 // Chỉ admin. Admin xem được xe của mọi chủ xe nên không có kiểm tra sở hữu; người thực hiện luôn lấy từ access token.
@@ -15,7 +15,7 @@ export class AdminVehiclesController {
   constructor(private readonly vehicles: AdminVehiclesService) {}
 
   @Get()
-  list(@Query() query: ListVehiclesQuery): Promise<Page<AdminVehicle>> {
+  list(@Query() query: ListAdminVehiclesQuery): Promise<Page<AdminVehicle>> {
     return this.vehicles.list(query);
   }
 
@@ -33,5 +33,11 @@ export class AdminVehiclesController {
     @Body() dto: RejectVehicleDto,
   ): Promise<AdminVehicle> {
     return this.vehicles.reject(admin.id, id, dto.reason);
+  }
+
+  @HttpCode(200)
+  @Post(":id/takedown")
+  takedown(@CurrentUser() admin: AuthUser, @Param("id", uuidParam) id: string, @Body() dto: ReasonDto): Promise<AdminVehicle> {
+    return this.vehicles.takedown(admin.id, id, dto.reason);
   }
 }

@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icon";
+import { Pager } from "@/components/pager";
 import { PrivateImage } from "@/components/private-image";
-import { AdminUser, listUsers } from "@/lib/admin/api";
+import { ADMIN_PAGE_SIZE, AdminUser, listUsers } from "@/lib/admin/api";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { AdminLicense, formatLicenseDate, getUserLicense, LicenseSide, rejectLicense, userLicenseImagePath, verifyLicense } from "@/lib/licenses/api";
 
@@ -22,6 +23,9 @@ function formatDate(iso: string): string {
 
 export function AdminLicenses() {
   const [queue, setQueue] = useState<Queue>({ status: "loading" });
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [q, setQ] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<Detail>({ status: "idle" });
   const [checked, setChecked] = useState<boolean[]>(CHECKLIST.map(() => false));
@@ -31,13 +35,18 @@ export function AdminLicenses() {
 
   const loadQueue = useCallback(async () => {
     try {
-      const page = await listUsers({ licenseStatus: "pending", limit: 50 });
-      setQueue({ status: "ready", items: page.items, total: page.total });
-      setSelectedId((current) => (page.items.some((u) => u.id === current) ? current : (page.items[0]?.id ?? null)));
+      const result = await listUsers({ licenseStatus: "pending", page, q: q || undefined });
+      // Duyệt xong hồ sơ cuối của trang cuối thì trang đó không còn: lùi về trang trước.
+      if (result.items.length === 0 && page > 1) {
+        setPage(page - 1);
+        return;
+      }
+      setQueue({ status: "ready", items: result.items, total: result.total });
+      setSelectedId((current) => (result.items.some((u) => u.id === current) ? current : (result.items[0]?.id ?? null)));
     } catch (e) {
       setQueue({ status: "error", message: apiErrorMessage(e) });
     }
-  }, []);
+  }, [page, q]);
 
   useEffect(() => {
     void loadQueue();
@@ -89,6 +98,31 @@ export function AdminLicenses() {
         </p>
       </div>
 
+      <form
+        className={`flex flex-wrap items-center gap-space-sm ${CARD}`}
+        onSubmit={(e) => {
+          e.preventDefault();
+          setPage(1);
+          setQ(search.trim());
+        }}
+      >
+        <label className="flex h-11 min-w-[240px] flex-1 items-center gap-space-sm rounded-xl bg-surface-container-low px-space-md">
+          <Icon name="search" className="!text-[20px] text-outline" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            maxLength={100}
+            placeholder="Tìm hồ sơ chờ duyệt theo họ tên, email hoặc số điện thoại..."
+            aria-label="Tìm hồ sơ"
+            className="min-w-0 flex-1 bg-transparent text-body-md text-on-surface outline-none placeholder:text-outline"
+          />
+        </label>
+        <button type="submit" className="flex h-11 items-center gap-space-sm rounded-xl bg-primary px-space-md text-label-lg text-on-primary">
+          <Icon name="search" className="!text-[18px]" />
+          Tìm
+        </button>
+      </form>
+
       {queue.status === "loading" && <p className="text-body-md text-on-surface-variant">Đang tải hồ sơ chờ duyệt...</p>}
       {queue.status === "error" && (
         <p role="alert" className="rounded-xl bg-error-container px-space-md py-space-sm text-body-md text-on-error-container">
@@ -98,13 +132,14 @@ export function AdminLicenses() {
       {queue.status === "ready" && queue.items.length === 0 && (
         <div className={`flex flex-col items-center gap-space-sm py-space-xl text-center ${CARD}`}>
           <Icon name="task_alt" className="!text-[40px] text-tertiary" />
-          <p className="text-body-md text-on-surface-variant">Không còn hồ sơ nào chờ duyệt.</p>
+          <p className="text-body-md text-on-surface-variant">{q ? "Không có hồ sơ chờ duyệt nào khớp từ khóa." : "Không còn hồ sơ nào chờ duyệt."}</p>
         </div>
       )}
 
       {queue.status === "ready" && queue.items.length > 0 && (
         <div className="grid items-start gap-gutter xl:grid-cols-12">
-          <ul className={`flex flex-col gap-1 xl:col-span-4 ${CARD}`}>
+          <div className={`flex flex-col gap-space-md xl:col-span-4 ${CARD}`}>
+          <ul className="flex flex-col gap-1">
             {queue.items.map((u) => {
               const selected = u.id === selectedId;
               return (
@@ -125,6 +160,8 @@ export function AdminLicenses() {
               );
             })}
           </ul>
+          <Pager page={page} total={queue.total} pageSize={ADMIN_PAGE_SIZE} unit="hồ sơ" onPage={setPage} />
+          </div>
 
           <section className={`flex flex-col gap-space-md xl:col-span-8 ${CARD}`}>
             {detail.status === "loading" && <p className="text-body-md text-on-surface-variant">Đang tải hồ sơ...</p>}

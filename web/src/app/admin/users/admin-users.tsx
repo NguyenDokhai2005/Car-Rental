@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/icon";
 import { Pager } from "@/components/pager";
+import { ReasonForm } from "@/components/reason-form";
 import { ADMIN_PAGE_SIZE, AdminUser, listUsers, Page, setUserBlocked, UserFilters } from "@/lib/admin/api";
 import { apiErrorMessage } from "@/lib/api/error-message";
 import { useAuth } from "@/lib/auth/auth-context";
@@ -95,12 +97,12 @@ export function AdminUsers() {
 
   const change = (patch: UserFilters) => setFilters((prev) => ({ ...prev, ...patch, page: patch.page ?? 1 }));
 
-  async function toggle(target: AdminUser) {
+  async function toggle(target: AdminUser, reason?: string) {
     setBusyId(target.id);
     setConfirmId(null);
     setError(null);
     try {
-      const updated = await setUserBlocked(target.id, target.status === "active");
+      const updated = await setUserBlocked(target.id, target.status === "active", reason);
       setLoad((prev) =>
         prev.status === "ready" ? { status: "ready", page: { ...prev.page, items: prev.page.items.map((u) => (u.id === updated.id ? updated : u)) } } : prev,
       );
@@ -209,14 +211,17 @@ export function AdminUsers() {
                   // API cũng từ chối khóa chính mình hay admin khác; ẩn nút để khỏi mời bấm vào thao tác chắc chắn lỗi.
                   const lockable = u.role !== "admin" && u.id !== me?.id;
                   return (
-                    <tr key={u.id} className={blocked ? "bg-error-container/40" : undefined}>
+                    <Fragment key={u.id}>
+                    <tr className={blocked ? "bg-error-container/40" : undefined}>
                       <td className="px-space-sm py-space-md">
                         <div className="flex items-center gap-space-md">
                           <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-fixed text-label-lg text-primary">
                             {initials(u.fullName)}
                           </span>
                           <span className="flex min-w-0 flex-col">
-                            <span className={`text-label-lg ${blocked ? "text-error" : "text-on-surface"}`}>{u.fullName}</span>
+                            <Link href={`/admin/users/${u.id}`} className={`text-label-lg hover:underline ${blocked ? "text-error" : "text-on-surface"}`}>
+                              {u.fullName}
+                            </Link>
                             <span className="truncate text-label-md text-on-surface-variant">{u.email}</span>
                             <span className="text-label-md text-outline">{u.phone}</span>
                           </span>
@@ -263,20 +268,6 @@ export function AdminUsers() {
                               <Icon name="lock_open" className="!text-[16px]" />
                               Mở khóa
                             </button>
-                          ) : confirmId === u.id ? (
-                            <>
-                              <button
-                                type="button"
-                                disabled={busyId === u.id}
-                                onClick={() => void toggle(u)}
-                                className="h-9 rounded-lg bg-error px-space-sm text-label-md text-on-error disabled:opacity-50"
-                              >
-                                Xác nhận khóa
-                              </button>
-                              <button type="button" onClick={() => setConfirmId(null)} className="h-9 rounded-lg bg-surface-container-low px-space-sm text-label-md text-on-surface">
-                                Thôi
-                              </button>
-                            </>
                           ) : (
                             <button
                               type="button"
@@ -290,6 +281,21 @@ export function AdminUsers() {
                         </div>
                       </td>
                     </tr>
+                    {confirmId === u.id && (
+                      <tr>
+                        <td colSpan={6} className="px-space-sm pb-space-md">
+                          <ReasonForm
+                            label={`Lý do khóa tài khoản ${u.fullName}`}
+                            placeholder="Ví dụ: đặt xe rồi không đến nhận nhiều lần"
+                            confirmLabel="Xác nhận khóa"
+                            busy={busyId === u.id}
+                            onConfirm={(reason) => void toggle(u, reason)}
+                            onCancel={() => setConfirmId(null)}
+                          />
+                        </td>
+                      </tr>
+                    )}
+                    </Fragment>
                   );
                 })}
               </tbody>
