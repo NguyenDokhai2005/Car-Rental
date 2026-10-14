@@ -1,0 +1,9569 @@
+{
+ "models": [
+  {
+   "slug": "toyota-vios",
+   "brand": "Toyota",
+   "model": "Vios",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 650000,
+   "trims": [
+    {
+     "name": "1.5E MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "1.5E CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5G CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-vios/00-0.jpg",
+      "photos/toyota-vios/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-vios/01-0.jpg",
+      "photos/toyota-vios/01-1.jpg",
+      "photos/toyota-vios/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-vios/02-0.jpg",
+      "photos/toyota-vios/02-1.jpg",
+      "photos/toyota-vios/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-vios/03-0.jpg",
+      "photos/toyota-vios/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-vios/04-0.jpg",
+      "photos/toyota-vios/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-vios/05-0.jpg",
+      "photos/toyota-vios/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-vios/06-0.jpg",
+      "photos/toyota-vios/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-vios/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-vios/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-vios/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-vios/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-vios/11-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-corolla-altis",
+   "brand": "Toyota",
+   "model": "Corolla Altis",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "1.8G",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.8V",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    },
+    {
+     "name": "1.8HEV",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-corolla-altis/00-0.jpg",
+      "photos/toyota-corolla-altis/00-1.jpg",
+      "photos/toyota-corolla-altis/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-corolla-altis/01-0.jpg",
+      "photos/toyota-corolla-altis/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-corolla-altis/02-0.jpg",
+      "photos/toyota-corolla-altis/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-corolla-altis/03-0.jpg",
+      "photos/toyota-corolla-altis/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-corolla-altis/04-0.jpg",
+      "photos/toyota-corolla-altis/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-corolla-altis/05-0.jpg",
+      "photos/toyota-corolla-altis/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-corolla-altis/06-0.jpg",
+      "photos/toyota-corolla-altis/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-corolla-altis/07-0.jpg",
+      "photos/toyota-corolla-altis/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-corolla-altis/08-0.jpg",
+      "photos/toyota-corolla-altis/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-corolla-altis/09-0.jpg",
+      "photos/toyota-corolla-altis/09-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-camry",
+   "brand": "Toyota",
+   "model": "Camry",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 1500000,
+   "trims": [
+    {
+     "name": "2.0G",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.0Q",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.5Q",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-camry/00-0.jpg",
+      "photos/toyota-camry/00-1.jpg",
+      "photos/toyota-camry/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-camry/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-camry/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-camry/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-camry/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-camry/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-camry/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-camry/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-camry/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-camry/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-camry/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-yaris",
+   "brand": "Toyota",
+   "model": "Yaris",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "hatchback",
+   "pricePerDay": 650000,
+   "trims": [
+    {
+     "name": "1.5G CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-yaris/00-0.jpg",
+      "photos/toyota-yaris/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-yaris/01-0.jpg",
+      "photos/toyota-yaris/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-yaris/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-yaris/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-yaris/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-yaris/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-yaris/06-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-wigo",
+   "brand": "Toyota",
+   "model": "Wigo",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "hatchback",
+   "pricePerDay": 450000,
+   "trims": [
+    {
+     "name": "1.2E MT",
+     "transmission": "manual",
+     "priceFactor": 0.92
+    },
+    {
+     "name": "1.2G AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-wigo/00-0.jpg",
+      "photos/toyota-wigo/00-1.jpg",
+      "photos/toyota-wigo/00-2.jpg",
+      "photos/toyota-wigo/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-wigo/01-0.jpg",
+      "photos/toyota-wigo/01-1.jpg",
+      "photos/toyota-wigo/01-2.jpg",
+      "photos/toyota-wigo/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-wigo/02-0.jpg",
+      "photos/toyota-wigo/02-1.jpg",
+      "photos/toyota-wigo/02-2.jpg",
+      "photos/toyota-wigo/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-wigo/03-0.jpg",
+      "photos/toyota-wigo/03-1.jpg",
+      "photos/toyota-wigo/03-2.jpg",
+      "photos/toyota-wigo/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-wigo/04-0.jpg",
+      "photos/toyota-wigo/04-1.jpg",
+      "photos/toyota-wigo/04-2.jpg",
+      "photos/toyota-wigo/04-3.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-wigo/05-0.jpg",
+      "photos/toyota-wigo/05-1.jpg",
+      "photos/toyota-wigo/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-wigo/06-0.jpg",
+      "photos/toyota-wigo/06-1.jpg",
+      "photos/toyota-wigo/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-wigo/07-0.jpg",
+      "photos/toyota-wigo/07-1.jpg",
+      "photos/toyota-wigo/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-wigo/08-0.jpg",
+      "photos/toyota-wigo/08-1.jpg",
+      "photos/toyota-wigo/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-wigo/09-0.jpg",
+      "photos/toyota-wigo/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-wigo/10-0.jpg",
+      "photos/toyota-wigo/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-wigo/11-0.jpg",
+      "photos/toyota-wigo/11-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-raize",
+   "brand": "Toyota",
+   "model": "Raize",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 650000,
+   "trims": [
+    {
+     "name": "1.0 Turbo",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-raize/00-0.jpg",
+      "photos/toyota-raize/00-1.jpg",
+      "photos/toyota-raize/00-2.jpg",
+      "photos/toyota-raize/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-raize/01-0.jpg",
+      "photos/toyota-raize/01-1.jpg",
+      "photos/toyota-raize/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-raize/02-0.jpg",
+      "photos/toyota-raize/02-1.jpg",
+      "photos/toyota-raize/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-raize/03-0.jpg",
+      "photos/toyota-raize/03-1.jpg",
+      "photos/toyota-raize/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-raize/04-0.jpg",
+      "photos/toyota-raize/04-1.jpg",
+      "photos/toyota-raize/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-raize/05-0.jpg",
+      "photos/toyota-raize/05-1.jpg",
+      "photos/toyota-raize/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-raize/06-0.jpg",
+      "photos/toyota-raize/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-raize/07-0.jpg",
+      "photos/toyota-raize/07-1.jpg",
+      "photos/toyota-raize/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-raize/08-0.jpg",
+      "photos/toyota-raize/08-1.jpg",
+      "photos/toyota-raize/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-raize/09-0.jpg",
+      "photos/toyota-raize/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-raize/10-0.jpg",
+      "photos/toyota-raize/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-raize/11-0.jpg",
+      "photos/toyota-raize/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-raize/12-0.jpg",
+      "photos/toyota-raize/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-raize/13-0.jpg",
+      "photos/toyota-raize/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-raize/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-raize/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-raize/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-raize/17-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-corolla-cross",
+   "brand": "Toyota",
+   "model": "Corolla Cross",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 950000,
+   "trims": [
+    {
+     "name": "1.8G",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.8V",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.8HV",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-corolla-cross/00-0.jpg",
+      "photos/toyota-corolla-cross/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-corolla-cross/01-0.jpg",
+      "photos/toyota-corolla-cross/01-1.jpg",
+      "photos/toyota-corolla-cross/01-2.jpg",
+      "photos/toyota-corolla-cross/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-corolla-cross/02-0.jpg",
+      "photos/toyota-corolla-cross/02-1.jpg",
+      "photos/toyota-corolla-cross/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-corolla-cross/03-0.jpg",
+      "photos/toyota-corolla-cross/03-1.jpg",
+      "photos/toyota-corolla-cross/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-corolla-cross/04-0.jpg",
+      "photos/toyota-corolla-cross/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-corolla-cross/05-0.jpg",
+      "photos/toyota-corolla-cross/05-1.jpg",
+      "photos/toyota-corolla-cross/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-corolla-cross/06-0.jpg",
+      "photos/toyota-corolla-cross/06-1.jpg",
+      "photos/toyota-corolla-cross/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-corolla-cross/07-0.jpg",
+      "photos/toyota-corolla-cross/07-1.jpg",
+      "photos/toyota-corolla-cross/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-corolla-cross/08-0.jpg",
+      "photos/toyota-corolla-cross/08-1.jpg",
+      "photos/toyota-corolla-cross/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-corolla-cross/09-0.jpg",
+      "photos/toyota-corolla-cross/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-corolla-cross/10-0.jpg",
+      "photos/toyota-corolla-cross/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-corolla-cross/11-0.jpg",
+      "photos/toyota-corolla-cross/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-corolla-cross/12-0.jpg",
+      "photos/toyota-corolla-cross/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/toyota-corolla-cross/13-0.jpg",
+      "photos/toyota-corolla-cross/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-corolla-cross/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-corolla-cross/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-corolla-cross/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-corolla-cross/17-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-fortuner",
+   "brand": "Toyota",
+   "model": "Fortuner",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "suv",
+   "pricePerDay": 1300000,
+   "trims": [
+    {
+     "name": "2.4G MT 4x2",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "2.4G AT 4x2",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.7V 4x2",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    },
+    {
+     "name": "Legender 2.4 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-fortuner/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-fortuner/01-0.jpg",
+      "photos/toyota-fortuner/01-1.jpg",
+      "photos/toyota-fortuner/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-fortuner/02-0.jpg",
+      "photos/toyota-fortuner/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-fortuner/03-0.jpg",
+      "photos/toyota-fortuner/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-fortuner/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-fortuner/05-0.jpg",
+      "photos/toyota-fortuner/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-fortuner/06-0.jpg",
+      "photos/toyota-fortuner/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-fortuner/07-0.jpg",
+      "photos/toyota-fortuner/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-fortuner/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-fortuner/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-fortuner/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-fortuner/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-fortuner/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-fortuner/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-fortuner/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-fortuner/15-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-innova",
+   "brand": "Toyota",
+   "model": "Innova",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "2.0E MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "2.0G AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Venturer",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    },
+    {
+     "name": "Cross 2.0V",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-innova/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-innova/01-0.jpg",
+      "photos/toyota-innova/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-innova/02-0.jpg",
+      "photos/toyota-innova/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-innova/03-0.jpg",
+      "photos/toyota-innova/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-innova/04-0.jpg",
+      "photos/toyota-innova/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-innova/05-0.jpg",
+      "photos/toyota-innova/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-innova/06-0.jpg",
+      "photos/toyota-innova/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-innova/07-0.jpg",
+      "photos/toyota-innova/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-innova/08-0.jpg",
+      "photos/toyota-innova/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-innova/09-0.jpg",
+      "photos/toyota-innova/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-innova/10-0.jpg",
+      "photos/toyota-innova/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-innova/11-0.jpg",
+      "photos/toyota-innova/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-innova/12-0.jpg",
+      "photos/toyota-innova/12-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-veloz",
+   "brand": "Toyota",
+   "model": "Veloz Cross",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "CVT Top",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-veloz/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-veloz/01-0.jpg",
+      "photos/toyota-veloz/01-1.jpg",
+      "photos/toyota-veloz/01-2.jpg",
+      "photos/toyota-veloz/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-veloz/02-0.jpg",
+      "photos/toyota-veloz/02-1.jpg",
+      "photos/toyota-veloz/02-2.jpg",
+      "photos/toyota-veloz/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-veloz/03-0.jpg",
+      "photos/toyota-veloz/03-1.jpg",
+      "photos/toyota-veloz/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-veloz/04-0.jpg",
+      "photos/toyota-veloz/04-1.jpg",
+      "photos/toyota-veloz/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-veloz/05-0.jpg",
+      "photos/toyota-veloz/05-1.jpg",
+      "photos/toyota-veloz/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-veloz/06-0.jpg",
+      "photos/toyota-veloz/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-veloz/07-0.jpg",
+      "photos/toyota-veloz/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-veloz/08-0.jpg",
+      "photos/toyota-veloz/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-veloz/09-0.jpg",
+      "photos/toyota-veloz/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-veloz/10-0.jpg",
+      "photos/toyota-veloz/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-veloz/11-0.jpg",
+      "photos/toyota-veloz/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-veloz/12-0.jpg",
+      "photos/toyota-veloz/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-veloz/13-0.jpg",
+      "photos/toyota-veloz/13-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-avanza",
+   "brand": "Toyota",
+   "model": "Avanza Premio",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 750000,
+   "trims": [
+    {
+     "name": "MT",
+     "transmission": "manual",
+     "priceFactor": 0.92
+    },
+    {
+     "name": "CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-avanza/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-avanza/01-0.jpg",
+      "photos/toyota-avanza/01-1.jpg",
+      "photos/toyota-avanza/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-avanza/02-0.jpg",
+      "photos/toyota-avanza/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-avanza/03-0.jpg",
+      "photos/toyota-avanza/03-1.jpg",
+      "photos/toyota-avanza/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-avanza/04-0.jpg",
+      "photos/toyota-avanza/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-avanza/05-0.jpg",
+      "photos/toyota-avanza/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-avanza/06-0.jpg",
+      "photos/toyota-avanza/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-avanza/07-0.jpg",
+      "photos/toyota-avanza/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-avanza/08-0.jpg",
+      "photos/toyota-avanza/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-avanza/09-0.jpg",
+      "photos/toyota-avanza/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-avanza/10-0.jpg",
+      "photos/toyota-avanza/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-avanza/11-0.jpg",
+      "photos/toyota-avanza/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-avanza/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-avanza/13-0.jpg",
+      "photos/toyota-avanza/13-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-rush",
+   "brand": "Toyota",
+   "model": "Rush",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 800000,
+   "trims": [
+    {
+     "name": "1.5S AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-rush/00-0.jpg",
+      "photos/toyota-rush/00-1.jpg",
+      "photos/toyota-rush/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-rush/01-0.jpg",
+      "photos/toyota-rush/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-rush/02-0.jpg",
+      "photos/toyota-rush/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-rush/03-0.jpg",
+      "photos/toyota-rush/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-rush/04-0.jpg",
+      "photos/toyota-rush/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-rush/05-0.jpg",
+      "photos/toyota-rush/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-rush/06-0.jpg",
+      "photos/toyota-rush/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-rush/07-0.jpg",
+      "photos/toyota-rush/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-rush/08-0.jpg",
+      "photos/toyota-rush/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-rush/09-0.jpg",
+      "photos/toyota-rush/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-rush/10-0.jpg",
+      "photos/toyota-rush/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-rush/11-0.jpg",
+      "photos/toyota-rush/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-rush/12-0.jpg",
+      "photos/toyota-rush/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-rush/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-rush/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-rush/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/toyota-rush/16-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-hilux",
+   "brand": "Toyota",
+   "model": "Hilux",
+   "seats": 5,
+   "fuel": "diesel",
+   "body": "pickup",
+   "pricePerDay": 950000,
+   "trims": [
+    {
+     "name": "2.4E 4x2 MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "2.4E 4x2 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.8 Adventure 4x4",
+     "transmission": "automatic",
+     "priceFactor": 1.18
+    }
+   ],
+   "sets": [
+    {
+     "year": 2026,
+     "photos": [
+      "photos/toyota-hilux/00-0.jpg",
+      "photos/toyota-hilux/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-hilux/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-hilux/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/toyota-hilux/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-hilux/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/toyota-hilux/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-hilux/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/toyota-hilux/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/toyota-hilux/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-hilux/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-hilux/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/toyota-hilux/11-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "toyota-prado",
+   "brand": "Toyota",
+   "model": "Land Cruiser Prado",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 2800000,
+   "trims": [
+    {
+     "name": "VX",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2026,
+     "photos": [
+      "photos/toyota-prado/00-0.jpg",
+      "photos/toyota-prado/00-1.jpg",
+      "photos/toyota-prado/00-2.jpg",
+      "photos/toyota-prado/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-prado/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/toyota-prado/02-0.jpg",
+      "photos/toyota-prado/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-prado/03-0.jpg",
+      "photos/toyota-prado/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/toyota-prado/04-0.jpg",
+      "photos/toyota-prado/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/toyota-prado/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/toyota-prado/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/toyota-prado/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/toyota-prado/08-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "honda-city",
+   "brand": "Honda",
+   "model": "City",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 700000,
+   "trims": [
+    {
+     "name": "1.5G",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5L",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5RS",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-city/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/honda-city/01-0.jpg",
+      "photos/honda-city/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/honda-city/02-0.jpg",
+      "photos/honda-city/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-city/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-city/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-city/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/honda-city/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/honda-city/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/honda-city/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/honda-city/09-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "honda-civic",
+   "brand": "Honda",
+   "model": "Civic",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 1000000,
+   "trims": [
+    {
+     "name": "1.5E",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5G",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5RS",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-civic/00-0.jpg",
+      "photos/honda-civic/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-civic/01-0.jpg",
+      "photos/honda-civic/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-civic/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-civic/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/honda-civic/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-civic/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-civic/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/honda-civic/07-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "honda-accord",
+   "brand": "Honda",
+   "model": "Accord",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 1600000,
+   "trims": [
+    {
+     "name": "1.5 Turbo",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-accord/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/honda-accord/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/honda-accord/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-accord/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-accord/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-accord/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/honda-accord/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/honda-accord/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/honda-accord/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/honda-accord/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-accord/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-accord/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/honda-accord/12-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "honda-crv",
+   "brand": "Honda",
+   "model": "CR-V",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1200000,
+   "trims": [
+    {
+     "name": "1.5E",
+     "transmission": "automatic",
+     "priceFactor": 0.93
+    },
+    {
+     "name": "1.5G",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5L",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-crv/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-crv/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/honda-crv/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/honda-crv/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-crv/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-crv/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-crv/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-crv/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-crv/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-crv/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-crv/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "honda-hrv",
+   "brand": "Honda",
+   "model": "HR-V",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 950000,
+   "trims": [
+    {
+     "name": "1.5G",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5L",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5RS",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-hrv/00-0.jpg",
+      "photos/honda-hrv/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/honda-hrv/01-0.jpg",
+      "photos/honda-hrv/01-1.jpg",
+      "photos/honda-hrv/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-hrv/02-0.jpg",
+      "photos/honda-hrv/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/honda-hrv/03-0.jpg",
+      "photos/honda-hrv/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/honda-hrv/04-0.jpg",
+      "photos/honda-hrv/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-hrv/05-0.jpg",
+      "photos/honda-hrv/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-hrv/06-0.jpg",
+      "photos/honda-hrv/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-hrv/07-0.jpg",
+      "photos/honda-hrv/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-hrv/08-0.jpg",
+      "photos/honda-hrv/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/honda-hrv/09-0.jpg",
+      "photos/honda-hrv/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/honda-hrv/10-0.jpg",
+      "photos/honda-hrv/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/honda-hrv/11-0.jpg",
+      "photos/honda-hrv/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-hrv/12-0.jpg",
+      "photos/honda-hrv/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/honda-hrv/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-hrv/14-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "honda-brv",
+   "brand": "Honda",
+   "model": "BR-V",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "1.5G",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "1.5L",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-brv/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-brv/01-0.jpg",
+      "photos/honda-brv/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-brv/02-0.jpg",
+      "photos/honda-brv/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/honda-brv/03-0.jpg",
+      "photos/honda-brv/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-brv/04-0.jpg",
+      "photos/honda-brv/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-brv/05-0.jpg",
+      "photos/honda-brv/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-brv/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-brv/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/honda-brv/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/honda-brv/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/honda-brv/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-brv/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-brv/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/honda-brv/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "honda-brio",
+   "brand": "Honda",
+   "model": "Brio",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "hatchback",
+   "pricePerDay": 450000,
+   "trims": [
+    {
+     "name": "1.2G",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.2RS",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-brio/00-0.jpg",
+      "photos/honda-brio/00-1.jpg",
+      "photos/honda-brio/00-2.jpg",
+      "photos/honda-brio/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/honda-brio/01-0.jpg",
+      "photos/honda-brio/01-1.jpg",
+      "photos/honda-brio/01-2.jpg",
+      "photos/honda-brio/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/honda-brio/02-0.jpg",
+      "photos/honda-brio/02-1.jpg",
+      "photos/honda-brio/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/honda-brio/03-0.jpg",
+      "photos/honda-brio/03-1.jpg",
+      "photos/honda-brio/03-2.jpg",
+      "photos/honda-brio/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/honda-brio/04-0.jpg",
+      "photos/honda-brio/04-1.jpg",
+      "photos/honda-brio/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/honda-brio/05-0.jpg",
+      "photos/honda-brio/05-1.jpg",
+      "photos/honda-brio/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/honda-brio/06-0.jpg",
+      "photos/honda-brio/06-1.jpg",
+      "photos/honda-brio/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-brio/07-0.jpg",
+      "photos/honda-brio/07-1.jpg",
+      "photos/honda-brio/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/honda-brio/08-0.jpg",
+      "photos/honda-brio/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/honda-brio/09-0.jpg",
+      "photos/honda-brio/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/honda-brio/10-0.jpg",
+      "photos/honda-brio/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-brio/11-0.jpg",
+      "photos/honda-brio/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/honda-brio/12-0.jpg",
+      "photos/honda-brio/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/honda-brio/13-0.jpg",
+      "photos/honda-brio/13-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-accent",
+   "brand": "Hyundai",
+   "model": "Accent",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 650000,
+   "trims": [
+    {
+     "name": "1.4 MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "1.4 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.4 AT Đặc biệt",
+     "transmission": "automatic",
+     "priceFactor": 1.07
+    }
+   ],
+   "sets": [
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-accent/00-0.jpg",
+      "photos/hyundai-accent/00-1.jpg",
+      "photos/hyundai-accent/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/hyundai-accent/01-0.jpg",
+      "photos/hyundai-accent/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-accent/02-0.jpg",
+      "photos/hyundai-accent/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-accent/03-0.jpg",
+      "photos/hyundai-accent/03-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-elantra",
+   "brand": "Hyundai",
+   "model": "Elantra",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "1.6 AT Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.6 AT Đặc biệt",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.0 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-elantra/00-0.jpg",
+      "photos/hyundai-elantra/00-1.jpg",
+      "photos/hyundai-elantra/00-2.jpg",
+      "photos/hyundai-elantra/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/hyundai-elantra/01-0.jpg",
+      "photos/hyundai-elantra/01-1.jpg",
+      "photos/hyundai-elantra/01-2.jpg",
+      "photos/hyundai-elantra/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/hyundai-elantra/02-0.jpg",
+      "photos/hyundai-elantra/02-1.jpg",
+      "photos/hyundai-elantra/02-2.jpg",
+      "photos/hyundai-elantra/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/hyundai-elantra/03-0.jpg",
+      "photos/hyundai-elantra/03-1.jpg",
+      "photos/hyundai-elantra/03-2.jpg",
+      "photos/hyundai-elantra/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-elantra/04-0.jpg",
+      "photos/hyundai-elantra/04-1.jpg",
+      "photos/hyundai-elantra/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-elantra/05-0.jpg",
+      "photos/hyundai-elantra/05-1.jpg",
+      "photos/hyundai-elantra/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/hyundai-elantra/06-0.jpg",
+      "photos/hyundai-elantra/06-1.jpg",
+      "photos/hyundai-elantra/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/hyundai-elantra/07-0.jpg",
+      "photos/hyundai-elantra/07-1.jpg",
+      "photos/hyundai-elantra/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/hyundai-elantra/08-0.jpg",
+      "photos/hyundai-elantra/08-1.jpg",
+      "photos/hyundai-elantra/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-elantra/09-0.jpg",
+      "photos/hyundai-elantra/09-1.jpg",
+      "photos/hyundai-elantra/09-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-elantra/10-0.jpg",
+      "photos/hyundai-elantra/10-1.jpg",
+      "photos/hyundai-elantra/10-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-elantra/11-0.jpg",
+      "photos/hyundai-elantra/11-1.jpg",
+      "photos/hyundai-elantra/11-2.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-elantra/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/hyundai-elantra/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-i10",
+   "brand": "Hyundai",
+   "model": "Grand i10",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "hatchback",
+   "pricePerDay": 450000,
+   "trims": [
+    {
+     "name": "1.2 MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "1.2 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Sedan 1.2 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.03
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-i10/00-0.jpg",
+      "photos/hyundai-i10/00-1.jpg",
+      "photos/hyundai-i10/00-2.jpg",
+      "photos/hyundai-i10/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-i10/01-0.jpg",
+      "photos/hyundai-i10/01-1.jpg",
+      "photos/hyundai-i10/01-2.jpg",
+      "photos/hyundai-i10/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-i10/02-0.jpg",
+      "photos/hyundai-i10/02-1.jpg",
+      "photos/hyundai-i10/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/hyundai-i10/03-0.jpg",
+      "photos/hyundai-i10/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-i10/04-0.jpg",
+      "photos/hyundai-i10/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-i10/05-0.jpg",
+      "photos/hyundai-i10/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-i10/06-0.jpg",
+      "photos/hyundai-i10/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/hyundai-i10/07-0.jpg",
+      "photos/hyundai-i10/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/hyundai-i10/08-0.jpg",
+      "photos/hyundai-i10/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-i10/09-0.jpg",
+      "photos/hyundai-i10/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/hyundai-i10/10-0.jpg",
+      "photos/hyundai-i10/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/hyundai-i10/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/hyundai-i10/12-0.jpg",
+      "photos/hyundai-i10/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-i10/13-0.jpg",
+      "photos/hyundai-i10/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-i10/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/hyundai-i10/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/hyundai-i10/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-i10/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/hyundai-i10/18-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/hyundai-i10/19-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/hyundai-i10/20-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-creta",
+   "brand": "Hyundai",
+   "model": "Creta",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "1.5 Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5 Đặc biệt",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5 Cao cấp",
+     "transmission": "automatic",
+     "priceFactor": 1.07
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-creta/00-0.jpg",
+      "photos/hyundai-creta/00-1.jpg",
+      "photos/hyundai-creta/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-creta/01-0.jpg",
+      "photos/hyundai-creta/01-1.jpg",
+      "photos/hyundai-creta/01-2.jpg",
+      "photos/hyundai-creta/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-creta/02-0.jpg",
+      "photos/hyundai-creta/02-1.jpg",
+      "photos/hyundai-creta/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-creta/03-0.jpg",
+      "photos/hyundai-creta/03-1.jpg",
+      "photos/hyundai-creta/03-2.jpg",
+      "photos/hyundai-creta/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-creta/04-0.jpg",
+      "photos/hyundai-creta/04-1.jpg",
+      "photos/hyundai-creta/04-2.jpg",
+      "photos/hyundai-creta/04-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-creta/05-0.jpg",
+      "photos/hyundai-creta/05-1.jpg",
+      "photos/hyundai-creta/05-2.jpg",
+      "photos/hyundai-creta/05-3.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/hyundai-creta/06-0.jpg",
+      "photos/hyundai-creta/06-1.jpg",
+      "photos/hyundai-creta/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-creta/07-0.jpg",
+      "photos/hyundai-creta/07-1.jpg",
+      "photos/hyundai-creta/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-creta/08-0.jpg",
+      "photos/hyundai-creta/08-1.jpg",
+      "photos/hyundai-creta/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-creta/09-0.jpg",
+      "photos/hyundai-creta/09-1.jpg",
+      "photos/hyundai-creta/09-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-creta/10-0.jpg",
+      "photos/hyundai-creta/10-1.jpg",
+      "photos/hyundai-creta/10-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-creta/11-0.jpg",
+      "photos/hyundai-creta/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-creta/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-creta/13-0.jpg",
+      "photos/hyundai-creta/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-creta/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/hyundai-creta/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-creta/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/hyundai-creta/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/hyundai-creta/18-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-creta/19-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-tucson",
+   "brand": "Hyundai",
+   "model": "Tucson",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1100000,
+   "trims": [
+    {
+     "name": "2.0 Xăng Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.0 Xăng Đặc biệt",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.0 Dầu Đặc biệt",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    },
+    {
+     "name": "1.6 Turbo",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-tucson/00-0.jpg",
+      "photos/hyundai-tucson/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-tucson/01-0.jpg",
+      "photos/hyundai-tucson/01-1.jpg",
+      "photos/hyundai-tucson/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-tucson/02-0.jpg",
+      "photos/hyundai-tucson/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-tucson/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-tucson/04-0.jpg",
+      "photos/hyundai-tucson/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-tucson/05-0.jpg",
+      "photos/hyundai-tucson/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-tucson/06-0.jpg",
+      "photos/hyundai-tucson/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-tucson/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-tucson/08-0.jpg",
+      "photos/hyundai-tucson/08-1.jpg",
+      "photos/hyundai-tucson/08-2.jpg",
+      "photos/hyundai-tucson/08-3.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-tucson/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/hyundai-tucson/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-tucson/11-0.jpg",
+      "photos/hyundai-tucson/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-tucson/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-tucson/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/hyundai-tucson/14-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-santafe",
+   "brand": "Hyundai",
+   "model": "Santa Fe",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "suv",
+   "pricePerDay": 1400000,
+   "trims": [
+    {
+     "name": "2.5 Xăng",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.2 Dầu",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.2 Dầu Cao cấp",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-santafe/00-0.jpg",
+      "photos/hyundai-santafe/00-1.jpg",
+      "photos/hyundai-santafe/00-2.jpg",
+      "photos/hyundai-santafe/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-santafe/01-0.jpg",
+      "photos/hyundai-santafe/01-1.jpg",
+      "photos/hyundai-santafe/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-santafe/02-0.jpg",
+      "photos/hyundai-santafe/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-santafe/03-0.jpg",
+      "photos/hyundai-santafe/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-santafe/04-0.jpg",
+      "photos/hyundai-santafe/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-santafe/05-0.jpg",
+      "photos/hyundai-santafe/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-santafe/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-santafe/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-santafe/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-santafe/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/hyundai-santafe/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/hyundai-santafe/11-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-kona",
+   "brand": "Hyundai",
+   "model": "Kona",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 800000,
+   "trims": [
+    {
+     "name": "2.0 AT Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "2.0 AT Đặc biệt",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.6 Turbo",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-kona/00-0.jpg",
+      "photos/hyundai-kona/00-1.jpg",
+      "photos/hyundai-kona/00-2.jpg",
+      "photos/hyundai-kona/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-kona/01-0.jpg",
+      "photos/hyundai-kona/01-1.jpg",
+      "photos/hyundai-kona/01-2.jpg",
+      "photos/hyundai-kona/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-kona/02-0.jpg",
+      "photos/hyundai-kona/02-1.jpg",
+      "photos/hyundai-kona/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-kona/03-0.jpg",
+      "photos/hyundai-kona/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-kona/04-0.jpg",
+      "photos/hyundai-kona/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/hyundai-kona/05-0.jpg",
+      "photos/hyundai-kona/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-kona/06-0.jpg",
+      "photos/hyundai-kona/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-kona/07-0.jpg",
+      "photos/hyundai-kona/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-kona/08-0.jpg",
+      "photos/hyundai-kona/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-kona/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-kona/10-0.jpg",
+      "photos/hyundai-kona/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-kona/11-0.jpg",
+      "photos/hyundai-kona/11-1.jpg",
+      "photos/hyundai-kona/11-2.jpg",
+      "photos/hyundai-kona/11-3.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/hyundai-kona/12-0.jpg",
+      "photos/hyundai-kona/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/hyundai-kona/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-kona/14-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-stargazer",
+   "brand": "Hyundai",
+   "model": "Stargazer",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 800000,
+   "trims": [
+    {
+     "name": "1.5 Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5 Đặc biệt",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5 Cao cấp",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-stargazer/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-stargazer/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/hyundai-stargazer/02-0.jpg",
+      "photos/hyundai-stargazer/02-1.jpg",
+      "photos/hyundai-stargazer/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-stargazer/03-0.jpg",
+      "photos/hyundai-stargazer/03-1.jpg",
+      "photos/hyundai-stargazer/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-stargazer/04-0.jpg",
+      "photos/hyundai-stargazer/04-1.jpg",
+      "photos/hyundai-stargazer/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-stargazer/05-0.jpg",
+      "photos/hyundai-stargazer/05-1.jpg",
+      "photos/hyundai-stargazer/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-stargazer/06-0.jpg",
+      "photos/hyundai-stargazer/06-1.jpg",
+      "photos/hyundai-stargazer/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-stargazer/07-0.jpg",
+      "photos/hyundai-stargazer/07-1.jpg",
+      "photos/hyundai-stargazer/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-stargazer/08-0.jpg",
+      "photos/hyundai-stargazer/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-stargazer/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-stargazer/10-0.jpg",
+      "photos/hyundai-stargazer/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/hyundai-stargazer/11-0.jpg",
+      "photos/hyundai-stargazer/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-stargazer/12-0.jpg",
+      "photos/hyundai-stargazer/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-stargazer/13-0.jpg",
+      "photos/hyundai-stargazer/13-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "hyundai-palisade",
+   "brand": "Hyundai",
+   "model": "Palisade",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "suv",
+   "pricePerDay": 2000000,
+   "trims": [
+    {
+     "name": "2.2 Dầu Exclusive",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.2 Dầu Prestige",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/00-0.jpg",
+      "photos/hyundai-palisade/00-1.jpg",
+      "photos/hyundai-palisade/00-2.jpg",
+      "photos/hyundai-palisade/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/02-0.jpg",
+      "photos/hyundai-palisade/02-1.jpg",
+      "photos/hyundai-palisade/02-2.jpg",
+      "photos/hyundai-palisade/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/03-0.jpg",
+      "photos/hyundai-palisade/03-1.jpg",
+      "photos/hyundai-palisade/03-2.jpg",
+      "photos/hyundai-palisade/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/hyundai-palisade/05-0.jpg",
+      "photos/hyundai-palisade/05-1.jpg",
+      "photos/hyundai-palisade/05-2.jpg",
+      "photos/hyundai-palisade/05-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/06-0.jpg",
+      "photos/hyundai-palisade/06-1.jpg",
+      "photos/hyundai-palisade/06-2.jpg",
+      "photos/hyundai-palisade/06-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/07-0.jpg",
+      "photos/hyundai-palisade/07-1.jpg",
+      "photos/hyundai-palisade/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/hyundai-palisade/08-0.jpg",
+      "photos/hyundai-palisade/08-1.jpg",
+      "photos/hyundai-palisade/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-palisade/09-0.jpg",
+      "photos/hyundai-palisade/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-palisade/10-0.jpg",
+      "photos/hyundai-palisade/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-palisade/11-0.jpg",
+      "photos/hyundai-palisade/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/hyundai-palisade/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-palisade/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/hyundai-palisade/14-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-morning",
+   "brand": "Kia",
+   "model": "Morning",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "hatchback",
+   "pricePerDay": 420000,
+   "trims": [
+    {
+     "name": "MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "X-Line",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    },
+    {
+     "name": "GT-Line",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/kia-morning/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-morning/01-0.jpg",
+      "photos/kia-morning/01-1.jpg",
+      "photos/kia-morning/01-2.jpg",
+      "photos/kia-morning/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-morning/02-0.jpg",
+      "photos/kia-morning/02-1.jpg",
+      "photos/kia-morning/02-2.jpg",
+      "photos/kia-morning/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-morning/03-0.jpg",
+      "photos/kia-morning/03-1.jpg",
+      "photos/kia-morning/03-2.jpg",
+      "photos/kia-morning/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-morning/04-0.jpg",
+      "photos/kia-morning/04-1.jpg",
+      "photos/kia-morning/04-2.jpg",
+      "photos/kia-morning/04-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-morning/05-0.jpg",
+      "photos/kia-morning/05-1.jpg",
+      "photos/kia-morning/05-2.jpg",
+      "photos/kia-morning/05-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-morning/06-0.jpg",
+      "photos/kia-morning/06-1.jpg",
+      "photos/kia-morning/06-2.jpg",
+      "photos/kia-morning/06-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-morning/07-0.jpg",
+      "photos/kia-morning/07-1.jpg",
+      "photos/kia-morning/07-2.jpg",
+      "photos/kia-morning/07-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-morning/08-0.jpg",
+      "photos/kia-morning/08-1.jpg",
+      "photos/kia-morning/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-morning/09-0.jpg",
+      "photos/kia-morning/09-1.jpg",
+      "photos/kia-morning/09-2.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/kia-morning/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-soluto",
+   "brand": "Kia",
+   "model": "Soluto",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 500000,
+   "trims": [
+    {
+     "name": "MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "AT Deluxe",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "AT Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/kia-soluto/00-0.jpg",
+      "photos/kia-soluto/00-1.jpg",
+      "photos/kia-soluto/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-soluto/01-0.jpg",
+      "photos/kia-soluto/01-1.jpg",
+      "photos/kia-soluto/01-2.jpg",
+      "photos/kia-soluto/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-soluto/02-0.jpg",
+      "photos/kia-soluto/02-1.jpg",
+      "photos/kia-soluto/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-soluto/03-0.jpg",
+      "photos/kia-soluto/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-soluto/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-soluto/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-soluto/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-soluto/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-soluto/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-soluto/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-soluto/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-soluto/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/kia-soluto/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-soluto/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-soluto/14-0.jpg",
+      "photos/kia-soluto/14-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-soluto/15-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-k3",
+   "brand": "Kia",
+   "model": "K3",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 800000,
+   "trims": [
+    {
+     "name": "1.6 MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "1.6 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.6 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    },
+    {
+     "name": "2.0 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2015,
+     "photos": [
+      "photos/kia-k3/00-0.jpg",
+      "photos/kia-k3/00-1.jpg",
+      "photos/kia-k3/00-2.jpg",
+      "photos/kia-k3/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-k3/01-0.jpg",
+      "photos/kia-k3/01-1.jpg",
+      "photos/kia-k3/01-2.jpg",
+      "photos/kia-k3/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/kia-k3/02-0.jpg",
+      "photos/kia-k3/02-1.jpg",
+      "photos/kia-k3/02-2.jpg",
+      "photos/kia-k3/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-k3/03-0.jpg",
+      "photos/kia-k3/03-1.jpg",
+      "photos/kia-k3/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-k3/04-0.jpg",
+      "photos/kia-k3/04-1.jpg",
+      "photos/kia-k3/04-2.jpg",
+      "photos/kia-k3/04-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-k3/05-0.jpg",
+      "photos/kia-k3/05-1.jpg",
+      "photos/kia-k3/05-2.jpg",
+      "photos/kia-k3/05-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-k3/06-0.jpg",
+      "photos/kia-k3/06-1.jpg",
+      "photos/kia-k3/06-2.jpg",
+      "photos/kia-k3/06-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-k3/07-0.jpg",
+      "photos/kia-k3/07-1.jpg",
+      "photos/kia-k3/07-2.jpg",
+      "photos/kia-k3/07-3.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-k3/08-0.jpg",
+      "photos/kia-k3/08-1.jpg",
+      "photos/kia-k3/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-k3/09-0.jpg",
+      "photos/kia-k3/09-1.jpg",
+      "photos/kia-k3/09-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-k3/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-k5",
+   "brand": "Kia",
+   "model": "K5",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 1300000,
+   "trims": [
+    {
+     "name": "2.0 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "2.0 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.5 GT-Line",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-k5/00-0.jpg",
+      "photos/kia-k5/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-k5/01-0.jpg",
+      "photos/kia-k5/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-k5/02-0.jpg",
+      "photos/kia-k5/02-1.jpg",
+      "photos/kia-k5/02-2.jpg",
+      "photos/kia-k5/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-k5/03-0.jpg",
+      "photos/kia-k5/03-1.jpg",
+      "photos/kia-k5/03-2.jpg",
+      "photos/kia-k5/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-k5/04-0.jpg",
+      "photos/kia-k5/04-1.jpg",
+      "photos/kia-k5/04-2.jpg",
+      "photos/kia-k5/04-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-k5/05-0.jpg",
+      "photos/kia-k5/05-1.jpg",
+      "photos/kia-k5/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-k5/06-0.jpg",
+      "photos/kia-k5/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-k5/07-0.jpg",
+      "photos/kia-k5/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-k5/08-0.jpg",
+      "photos/kia-k5/08-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-seltos",
+   "brand": "Kia",
+   "model": "Seltos",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "1.4 Turbo Deluxe",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.4 Turbo Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.4 Turbo Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.07
+    },
+    {
+     "name": "1.6 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.03
+    }
+   ],
+   "sets": [
+    {
+     "year": 2020,
+     "photos": [
+      "photos/kia-seltos/00-0.jpg",
+      "photos/kia-seltos/00-1.jpg",
+      "photos/kia-seltos/00-2.jpg",
+      "photos/kia-seltos/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-seltos/01-0.jpg",
+      "photos/kia-seltos/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-seltos/02-0.jpg",
+      "photos/kia-seltos/02-1.jpg",
+      "photos/kia-seltos/02-2.jpg",
+      "photos/kia-seltos/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-seltos/03-0.jpg",
+      "photos/kia-seltos/03-1.jpg",
+      "photos/kia-seltos/03-2.jpg",
+      "photos/kia-seltos/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-seltos/04-0.jpg",
+      "photos/kia-seltos/04-1.jpg",
+      "photos/kia-seltos/04-2.jpg",
+      "photos/kia-seltos/04-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-seltos/05-0.jpg",
+      "photos/kia-seltos/05-1.jpg",
+      "photos/kia-seltos/05-2.jpg",
+      "photos/kia-seltos/05-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-seltos/06-0.jpg",
+      "photos/kia-seltos/06-1.jpg",
+      "photos/kia-seltos/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-seltos/07-0.jpg",
+      "photos/kia-seltos/07-1.jpg",
+      "photos/kia-seltos/07-2.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/kia-seltos/08-0.jpg",
+      "photos/kia-seltos/08-1.jpg",
+      "photos/kia-seltos/08-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-seltos/09-0.jpg",
+      "photos/kia-seltos/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-seltos/10-0.jpg",
+      "photos/kia-seltos/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-seltos/11-0.jpg",
+      "photos/kia-seltos/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-seltos/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-seltos/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-sonet",
+   "brand": "Kia",
+   "model": "Sonet",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 700000,
+   "trims": [
+    {
+     "name": "1.5 Deluxe",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-sonet/00-0.jpg",
+      "photos/kia-sonet/00-1.jpg",
+      "photos/kia-sonet/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sonet/01-0.jpg",
+      "photos/kia-sonet/01-1.jpg",
+      "photos/kia-sonet/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sonet/02-0.jpg",
+      "photos/kia-sonet/02-1.jpg",
+      "photos/kia-sonet/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sonet/03-0.jpg",
+      "photos/kia-sonet/03-1.jpg",
+      "photos/kia-sonet/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sonet/04-0.jpg",
+      "photos/kia-sonet/04-1.jpg",
+      "photos/kia-sonet/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-sonet/05-0.jpg",
+      "photos/kia-sonet/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-sonet/06-0.jpg",
+      "photos/kia-sonet/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-sonet/07-0.jpg",
+      "photos/kia-sonet/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-sonet/08-0.jpg",
+      "photos/kia-sonet/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-sonet/09-0.jpg",
+      "photos/kia-sonet/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-sonet/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-sonet/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-sonet/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-sonet/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-sonet/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-sonet/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sonet/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sonet/17-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-sportage",
+   "brand": "Kia",
+   "model": "Sportage",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1150000,
+   "trims": [
+    {
+     "name": "2.0G Luxury",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.0G Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.0D Signature",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sportage/00-0.jpg",
+      "photos/kia-sportage/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sportage/01-0.jpg",
+      "photos/kia-sportage/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sportage/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sportage/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sportage/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sportage/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sportage/06-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-sorento",
+   "brand": "Kia",
+   "model": "Sorento",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "suv",
+   "pricePerDay": 1400000,
+   "trims": [
+    {
+     "name": "2.2D Luxury",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.2D Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.2D Signature",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    },
+    {
+     "name": "2.5G Premium",
+     "transmission": "automatic",
+     "priceFactor": 0.98
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sorento/00-0.jpg",
+      "photos/kia-sorento/00-1.jpg",
+      "photos/kia-sorento/00-2.jpg",
+      "photos/kia-sorento/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sorento/01-0.jpg",
+      "photos/kia-sorento/01-1.jpg",
+      "photos/kia-sorento/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sorento/02-0.jpg",
+      "photos/kia-sorento/02-1.jpg",
+      "photos/kia-sorento/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-sorento/03-0.jpg",
+      "photos/kia-sorento/03-1.jpg",
+      "photos/kia-sorento/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-sorento/04-0.jpg",
+      "photos/kia-sorento/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sorento/05-0.jpg",
+      "photos/kia-sorento/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sorento/06-0.jpg",
+      "photos/kia-sorento/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-sorento/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-sorento/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sorento/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-sorento/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-carnival",
+   "brand": "Kia",
+   "model": "Carnival",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "mpv",
+   "pricePerDay": 1800000,
+   "trims": [
+    {
+     "name": "2.2D Luxury",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.2D Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.2D Signature",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-carnival/00-0.jpg",
+      "photos/kia-carnival/00-1.jpg",
+      "photos/kia-carnival/00-2.jpg",
+      "photos/kia-carnival/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-carnival/01-0.jpg",
+      "photos/kia-carnival/01-1.jpg",
+      "photos/kia-carnival/01-2.jpg",
+      "photos/kia-carnival/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-carnival/02-0.jpg",
+      "photos/kia-carnival/02-1.jpg",
+      "photos/kia-carnival/02-2.jpg",
+      "photos/kia-carnival/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-carnival/03-0.jpg",
+      "photos/kia-carnival/03-1.jpg",
+      "photos/kia-carnival/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-carnival/04-0.jpg",
+      "photos/kia-carnival/04-1.jpg",
+      "photos/kia-carnival/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/kia-carnival/05-0.jpg",
+      "photos/kia-carnival/05-1.jpg",
+      "photos/kia-carnival/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-carnival/06-0.jpg",
+      "photos/kia-carnival/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-carnival/07-0.jpg",
+      "photos/kia-carnival/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/kia-carnival/08-0.jpg",
+      "photos/kia-carnival/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/kia-carnival/09-0.jpg",
+      "photos/kia-carnival/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/kia-carnival/10-0.jpg",
+      "photos/kia-carnival/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-carnival/11-0.jpg",
+      "photos/kia-carnival/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/kia-carnival/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/kia-carnival/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "kia-carens",
+   "brand": "Kia",
+   "model": "Carens",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "1.5G Deluxe",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5G Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.4T Signature",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/kia-carens/00-0.jpg",
+      "photos/kia-carens/00-1.jpg",
+      "photos/kia-carens/00-2.jpg",
+      "photos/kia-carens/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-carens/01-0.jpg",
+      "photos/kia-carens/01-1.jpg",
+      "photos/kia-carens/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/kia-carens/02-0.jpg",
+      "photos/kia-carens/02-1.jpg",
+      "photos/kia-carens/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/kia-carens/03-0.jpg",
+      "photos/kia-carens/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-carens/04-0.jpg",
+      "photos/kia-carens/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/kia-carens/05-0.jpg",
+      "photos/kia-carens/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/kia-carens/06-0.jpg",
+      "photos/kia-carens/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/kia-carens/07-0.jpg",
+      "photos/kia-carens/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/kia-carens/08-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-2",
+   "brand": "Mazda",
+   "model": "2",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 600000,
+   "trims": [
+    {
+     "name": "1.5 AT",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "1.5 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Sport 1.5 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.04
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-2/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-2/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-2/02-0.jpg",
+      "photos/mazda-2/02-1.jpg",
+      "photos/mazda-2/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-2/03-0.jpg",
+      "photos/mazda-2/03-1.jpg",
+      "photos/mazda-2/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-2/04-0.jpg",
+      "photos/mazda-2/04-1.jpg",
+      "photos/mazda-2/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mazda-2/05-0.jpg",
+      "photos/mazda-2/05-1.jpg",
+      "photos/mazda-2/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-2/06-0.jpg",
+      "photos/mazda-2/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-2/07-0.jpg",
+      "photos/mazda-2/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-2/08-0.jpg",
+      "photos/mazda-2/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-2/09-0.jpg",
+      "photos/mazda-2/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-2/10-0.jpg",
+      "photos/mazda-2/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-2/11-0.jpg",
+      "photos/mazda-2/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-2/12-0.jpg",
+      "photos/mazda-2/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-2/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-3",
+   "brand": "Mazda",
+   "model": "3",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "1.5 Deluxe",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "1.5 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.07
+    },
+    {
+     "name": "Sport 1.5 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.03
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-3/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-3/01-0.jpg",
+      "photos/mazda-3/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-3/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-3/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-3/04-0.jpg",
+      "photos/mazda-3/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-3/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-3/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-3/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-3/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-3/09-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-6",
+   "brand": "Mazda",
+   "model": "6",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 1200000,
+   "trims": [
+    {
+     "name": "2.0 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "2.0 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.5 Signature Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-6/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-6/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-6/02-0.jpg",
+      "photos/mazda-6/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mazda-6/03-0.jpg",
+      "photos/mazda-6/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mazda-6/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-6/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-6/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-6/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-6/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-6/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-6/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-6/11-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-cx3",
+   "brand": "Mazda",
+   "model": "CX-3",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 750000,
+   "trims": [
+    {
+     "name": "1.5 AT",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "1.5 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.5 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    }
+   ],
+   "sets": [
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-cx3/00-0.jpg",
+      "photos/mazda-cx3/00-1.jpg",
+      "photos/mazda-cx3/00-2.jpg",
+      "photos/mazda-cx3/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx3/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-cx3/02-0.jpg",
+      "photos/mazda-cx3/02-1.jpg",
+      "photos/mazda-cx3/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-cx3/03-0.jpg",
+      "photos/mazda-cx3/03-1.jpg",
+      "photos/mazda-cx3/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-cx3/04-0.jpg",
+      "photos/mazda-cx3/04-1.jpg",
+      "photos/mazda-cx3/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx3/05-0.jpg",
+      "photos/mazda-cx3/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx3/06-0.jpg",
+      "photos/mazda-cx3/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-cx3/07-0.jpg",
+      "photos/mazda-cx3/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-cx3/08-0.jpg",
+      "photos/mazda-cx3/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-cx3/09-0.jpg",
+      "photos/mazda-cx3/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx3/10-0.jpg",
+      "photos/mazda-cx3/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-cx3/11-0.jpg",
+      "photos/mazda-cx3/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx3/12-0.jpg",
+      "photos/mazda-cx3/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx3/13-0.jpg",
+      "photos/mazda-cx3/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-cx3/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx3/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-cx3/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-cx3/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-cx3/18-0.jpg",
+      "photos/mazda-cx3/18-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-cx3/19-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx3/20-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-cx3/21-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx3/22-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-cx30",
+   "brand": "Mazda",
+   "model": "CX-30",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "2.0 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.0 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/00-0.jpg",
+      "photos/mazda-cx30/00-1.jpg",
+      "photos/mazda-cx30/00-2.jpg",
+      "photos/mazda-cx30/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-cx30/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx30/02-0.jpg",
+      "photos/mazda-cx30/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx30/03-0.jpg",
+      "photos/mazda-cx30/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/04-0.jpg",
+      "photos/mazda-cx30/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/05-0.jpg",
+      "photos/mazda-cx30/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/06-0.jpg",
+      "photos/mazda-cx30/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-cx30/07-0.jpg",
+      "photos/mazda-cx30/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-cx30/08-0.jpg",
+      "photos/mazda-cx30/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx30/09-0.jpg",
+      "photos/mazda-cx30/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/10-0.jpg",
+      "photos/mazda-cx30/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx30/11-0.jpg",
+      "photos/mazda-cx30/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-cx30/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-cx30/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx30/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx30/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx30/18-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-cx30/19-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx30/20-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-cx5",
+   "brand": "Mazda",
+   "model": "CX-5",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1050000,
+   "trims": [
+    {
+     "name": "2.0 Deluxe",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.0 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.0 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    },
+    {
+     "name": "2.5 Signature",
+     "transmission": "automatic",
+     "priceFactor": 1.14
+    }
+   ],
+   "sets": [
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mazda-cx5/00-0.jpg",
+      "photos/mazda-cx5/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx5/01-0.jpg",
+      "photos/mazda-cx5/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx5/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-cx5/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx5/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-cx5/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-cx5/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-cx5/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mazda-cx5/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mazda-cx5/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-cx5/10-0.jpg",
+      "photos/mazda-cx5/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-cx5/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx5/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx5/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-cx5/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-cx5/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-cx5/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-cx5/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-cx5/18-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-cx5/19-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-cx8",
+   "brand": "Mazda",
+   "model": "CX-8",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1400000,
+   "trims": [
+    {
+     "name": "2.5 Luxury",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "2.5 Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.5 Premium AWD",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx8/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx8/01-0.jpg",
+      "photos/mazda-cx8/01-1.jpg",
+      "photos/mazda-cx8/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx8/02-0.jpg",
+      "photos/mazda-cx8/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-cx8/03-0.jpg",
+      "photos/mazda-cx8/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mazda-cx8/04-0.jpg",
+      "photos/mazda-cx8/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-cx8/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx8/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mazda-cx8/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx8/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-cx8/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-cx8/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-cx8/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-cx8/12-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mazda-bt50",
+   "brand": "Mazda",
+   "model": "BT-50",
+   "seats": 5,
+   "fuel": "diesel",
+   "body": "pickup",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "1.9 MT 4x2",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "1.9 AT 4x2",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "1.9 Premium 4x4",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mazda-bt50/00-0.jpg",
+      "photos/mazda-bt50/00-1.jpg",
+      "photos/mazda-bt50/00-2.jpg",
+      "photos/mazda-bt50/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-bt50/01-0.jpg",
+      "photos/mazda-bt50/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-bt50/02-0.jpg",
+      "photos/mazda-bt50/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-bt50/03-0.jpg",
+      "photos/mazda-bt50/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-bt50/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-bt50/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-bt50/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-bt50/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mazda-bt50/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-bt50/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-bt50/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mazda-bt50/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mazda-bt50/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mazda-bt50/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-bt50/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mazda-bt50/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-bt50/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mazda-bt50/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mazda-bt50/18-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mazda-bt50/19-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mitsubishi-xpander",
+   "brand": "Mitsubishi",
+   "model": "Xpander",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 800000,
+   "trims": [
+    {
+     "name": "MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "AT Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    },
+    {
+     "name": "Cross",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mitsubishi-xpander/00-0.jpg",
+      "photos/mitsubishi-xpander/00-1.jpg",
+      "photos/mitsubishi-xpander/00-2.jpg",
+      "photos/mitsubishi-xpander/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-xpander/01-0.jpg",
+      "photos/mitsubishi-xpander/01-1.jpg",
+      "photos/mitsubishi-xpander/01-2.jpg",
+      "photos/mitsubishi-xpander/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mitsubishi-xpander/02-0.jpg",
+      "photos/mitsubishi-xpander/02-1.jpg",
+      "photos/mitsubishi-xpander/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-xpander/03-0.jpg",
+      "photos/mitsubishi-xpander/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mitsubishi-xpander/04-0.jpg",
+      "photos/mitsubishi-xpander/04-1.jpg",
+      "photos/mitsubishi-xpander/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mitsubishi-xpander/05-0.jpg",
+      "photos/mitsubishi-xpander/05-1.jpg",
+      "photos/mitsubishi-xpander/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mitsubishi-xpander/06-0.jpg",
+      "photos/mitsubishi-xpander/06-1.jpg",
+      "photos/mitsubishi-xpander/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mitsubishi-xpander/07-0.jpg",
+      "photos/mitsubishi-xpander/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-xpander/08-0.jpg",
+      "photos/mitsubishi-xpander/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-xpander/09-0.jpg",
+      "photos/mitsubishi-xpander/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-xpander/10-0.jpg",
+      "photos/mitsubishi-xpander/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-xpander/11-0.jpg",
+      "photos/mitsubishi-xpander/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mitsubishi-xpander/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mitsubishi-xpander/13-0.jpg",
+      "photos/mitsubishi-xpander/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mitsubishi-xpander/14-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mitsubishi-attrage",
+   "brand": "Mitsubishi",
+   "model": "Attrage",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 500000,
+   "trims": [
+    {
+     "name": "MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "CVT Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-attrage/00-0.jpg",
+      "photos/mitsubishi-attrage/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-attrage/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mitsubishi-attrage/02-0.jpg",
+      "photos/mitsubishi-attrage/02-1.jpg",
+      "photos/mitsubishi-attrage/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mitsubishi-attrage/03-0.jpg",
+      "photos/mitsubishi-attrage/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-attrage/04-0.jpg",
+      "photos/mitsubishi-attrage/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mitsubishi-attrage/05-0.jpg",
+      "photos/mitsubishi-attrage/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mitsubishi-attrage/06-0.jpg",
+      "photos/mitsubishi-attrage/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-attrage/07-0.jpg",
+      "photos/mitsubishi-attrage/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-attrage/08-0.jpg",
+      "photos/mitsubishi-attrage/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mitsubishi-attrage/09-0.jpg",
+      "photos/mitsubishi-attrage/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-attrage/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mitsubishi-attrage/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mitsubishi-attrage/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-attrage/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mitsubishi-outlander",
+   "brand": "Mitsubishi",
+   "model": "Outlander",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1100000,
+   "trims": [
+    {
+     "name": "2.0 CVT",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "2.0 CVT Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.4 CVT Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mitsubishi-outlander/00-0.jpg",
+      "photos/mitsubishi-outlander/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mitsubishi-outlander/01-0.jpg",
+      "photos/mitsubishi-outlander/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mitsubishi-outlander/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mitsubishi-outlander/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mitsubishi-outlander/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mitsubishi-outlander/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mitsubishi-outlander/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mitsubishi-outlander/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mitsubishi-outlander/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mitsubishi-outlander/09-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mitsubishi-pajero-sport",
+   "brand": "Mitsubishi",
+   "model": "Pajero Sport",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "suv",
+   "pricePerDay": 1300000,
+   "trims": [
+    {
+     "name": "2.4D 4x2 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.4D 4x4 AT Premium",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/00-0.jpg",
+      "photos/mitsubishi-pajero-sport/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/01-0.jpg",
+      "photos/mitsubishi-pajero-sport/01-1.jpg",
+      "photos/mitsubishi-pajero-sport/01-2.jpg",
+      "photos/mitsubishi-pajero-sport/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/02-0.jpg",
+      "photos/mitsubishi-pajero-sport/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/03-0.jpg",
+      "photos/mitsubishi-pajero-sport/03-1.jpg",
+      "photos/mitsubishi-pajero-sport/03-2.jpg",
+      "photos/mitsubishi-pajero-sport/03-3.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/04-0.jpg",
+      "photos/mitsubishi-pajero-sport/04-1.jpg",
+      "photos/mitsubishi-pajero-sport/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/05-0.jpg",
+      "photos/mitsubishi-pajero-sport/05-1.jpg",
+      "photos/mitsubishi-pajero-sport/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/06-0.jpg",
+      "photos/mitsubishi-pajero-sport/06-1.jpg",
+      "photos/mitsubishi-pajero-sport/06-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/08-0.jpg",
+      "photos/mitsubishi-pajero-sport/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/09-0.jpg",
+      "photos/mitsubishi-pajero-sport/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/10-0.jpg",
+      "photos/mitsubishi-pajero-sport/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/11-0.jpg",
+      "photos/mitsubishi-pajero-sport/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/12-0.jpg",
+      "photos/mitsubishi-pajero-sport/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mitsubishi-pajero-sport/13-0.jpg",
+      "photos/mitsubishi-pajero-sport/13-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mitsubishi-triton",
+   "brand": "Mitsubishi",
+   "model": "Triton",
+   "seats": 5,
+   "fuel": "diesel",
+   "body": "pickup",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "4x2 MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "4x2 AT Mivec",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "4x4 AT Athlete",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-triton/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-triton/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mitsubishi-triton/02-0.jpg",
+      "photos/mitsubishi-triton/02-1.jpg",
+      "photos/mitsubishi-triton/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-triton/03-0.jpg",
+      "photos/mitsubishi-triton/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mitsubishi-triton/04-0.jpg",
+      "photos/mitsubishi-triton/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-triton/05-0.jpg",
+      "photos/mitsubishi-triton/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mitsubishi-triton/06-0.jpg",
+      "photos/mitsubishi-triton/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mitsubishi-triton/07-0.jpg",
+      "photos/mitsubishi-triton/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mitsubishi-triton/08-0.jpg",
+      "photos/mitsubishi-triton/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mitsubishi-triton/09-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "ford-ranger",
+   "brand": "Ford",
+   "model": "Ranger",
+   "seats": 5,
+   "fuel": "diesel",
+   "body": "pickup",
+   "pricePerDay": 1000000,
+   "trims": [
+    {
+     "name": "XL 2.0 4x4 MT",
+     "transmission": "manual",
+     "priceFactor": 0.88
+    },
+    {
+     "name": "XLS 2.0 4x2 AT",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "XLT 2.0 4x4 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.02
+    },
+    {
+     "name": "Wildtrak 2.0 4x4 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-ranger/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-ranger/01-0.jpg",
+      "photos/ford-ranger/01-1.jpg",
+      "photos/ford-ranger/01-2.jpg",
+      "photos/ford-ranger/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-ranger/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-ranger/03-0.jpg",
+      "photos/ford-ranger/03-1.jpg",
+      "photos/ford-ranger/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/ford-ranger/04-0.jpg",
+      "photos/ford-ranger/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/ford-ranger/05-0.jpg",
+      "photos/ford-ranger/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/ford-ranger/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/ford-ranger/07-0.jpg",
+      "photos/ford-ranger/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/ford-ranger/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/ford-ranger/09-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "ford-everest",
+   "brand": "Ford",
+   "model": "Everest",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "suv",
+   "pricePerDay": 1400000,
+   "trims": [
+    {
+     "name": "Ambiente 2.0 AT 4x2",
+     "transmission": "automatic",
+     "priceFactor": 0.93
+    },
+    {
+     "name": "Sport 2.0 AT 4x2",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Titanium 2.0 AT 4x2",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    },
+    {
+     "name": "Titanium+ 2.0 AT 4x4",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-everest/00-0.jpg",
+      "photos/ford-everest/00-1.jpg",
+      "photos/ford-everest/00-2.jpg",
+      "photos/ford-everest/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/ford-everest/01-0.jpg",
+      "photos/ford-everest/01-1.jpg",
+      "photos/ford-everest/01-2.jpg",
+      "photos/ford-everest/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/ford-everest/02-0.jpg",
+      "photos/ford-everest/02-1.jpg",
+      "photos/ford-everest/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-everest/03-0.jpg",
+      "photos/ford-everest/03-1.jpg",
+      "photos/ford-everest/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/ford-everest/04-0.jpg",
+      "photos/ford-everest/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/ford-everest/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-everest/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/ford-everest/07-0.jpg",
+      "photos/ford-everest/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/ford-everest/08-0.jpg",
+      "photos/ford-everest/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-everest/09-0.jpg",
+      "photos/ford-everest/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-everest/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/ford-everest/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/ford-everest/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/ford-everest/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "ford-territory",
+   "brand": "Ford",
+   "model": "Territory",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1000000,
+   "trims": [
+    {
+     "name": "Trend 1.5",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "Titanium 1.5",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Titanium X 1.5",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-territory/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-territory/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-territory/02-0.jpg",
+      "photos/ford-territory/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/ford-territory/03-0.jpg",
+      "photos/ford-territory/03-1.jpg",
+      "photos/ford-territory/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/ford-territory/04-0.jpg",
+      "photos/ford-territory/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-territory/05-0.jpg",
+      "photos/ford-territory/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/ford-territory/06-0.jpg",
+      "photos/ford-territory/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-territory/07-0.jpg",
+      "photos/ford-territory/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/ford-territory/08-0.jpg",
+      "photos/ford-territory/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/ford-territory/09-0.jpg",
+      "photos/ford-territory/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/ford-territory/10-0.jpg",
+      "photos/ford-territory/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/ford-territory/11-0.jpg",
+      "photos/ford-territory/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/ford-territory/12-0.jpg",
+      "photos/ford-territory/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/ford-territory/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "ford-explorer",
+   "brand": "Ford",
+   "model": "Explorer",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 2500000,
+   "trims": [
+    {
+     "name": "Limited 2.3 EcoBoost",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2020,
+     "photos": [
+      "photos/ford-explorer/00-0.jpg",
+      "photos/ford-explorer/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/ford-explorer/01-0.jpg",
+      "photos/ford-explorer/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/ford-explorer/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/ford-explorer/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/ford-explorer/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/ford-explorer/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/ford-explorer/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/ford-explorer/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/ford-explorer/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/ford-explorer/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/ford-explorer/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "nissan-almera",
+   "brand": "Nissan",
+   "model": "Almera",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 600000,
+   "trims": [
+    {
+     "name": "MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "CVT Cao cấp",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-almera/00-0.jpg",
+      "photos/nissan-almera/00-1.jpg",
+      "photos/nissan-almera/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/nissan-almera/01-0.jpg",
+      "photos/nissan-almera/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/nissan-almera/02-0.jpg",
+      "photos/nissan-almera/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/nissan-almera/03-0.jpg",
+      "photos/nissan-almera/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-almera/04-0.jpg",
+      "photos/nissan-almera/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/nissan-almera/05-0.jpg",
+      "photos/nissan-almera/05-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "nissan-navara",
+   "brand": "Nissan",
+   "model": "Navara",
+   "seats": 5,
+   "fuel": "diesel",
+   "body": "pickup",
+   "pricePerDay": 950000,
+   "trims": [
+    {
+     "name": "EL 2WD",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "VL 4WD",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    },
+    {
+     "name": "Pro-4X",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-navara/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/nissan-navara/01-0.jpg",
+      "photos/nissan-navara/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-navara/02-0.jpg",
+      "photos/nissan-navara/02-1.jpg",
+      "photos/nissan-navara/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/nissan-navara/03-0.jpg",
+      "photos/nissan-navara/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-navara/04-0.jpg",
+      "photos/nissan-navara/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/nissan-navara/05-0.jpg",
+      "photos/nissan-navara/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/nissan-navara/06-0.jpg",
+      "photos/nissan-navara/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/nissan-navara/07-0.jpg",
+      "photos/nissan-navara/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/nissan-navara/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-navara/09-0.jpg",
+      "photos/nissan-navara/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/nissan-navara/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/nissan-navara/11-0.jpg",
+      "photos/nissan-navara/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/nissan-navara/12-0.jpg",
+      "photos/nissan-navara/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/nissan-navara/13-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "nissan-kicks",
+   "brand": "Nissan",
+   "model": "Kicks",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "e-Power E",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "e-Power V",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2026,
+     "photos": [
+      "photos/nissan-kicks/00-0.jpg",
+      "photos/nissan-kicks/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/nissan-kicks/01-0.jpg",
+      "photos/nissan-kicks/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-kicks/02-0.jpg",
+      "photos/nissan-kicks/02-1.jpg",
+      "photos/nissan-kicks/02-2.jpg",
+      "photos/nissan-kicks/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/nissan-kicks/03-0.jpg",
+      "photos/nissan-kicks/03-1.jpg",
+      "photos/nissan-kicks/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/nissan-kicks/04-0.jpg",
+      "photos/nissan-kicks/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/nissan-kicks/05-0.jpg",
+      "photos/nissan-kicks/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/nissan-kicks/06-0.jpg",
+      "photos/nissan-kicks/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/nissan-kicks/07-0.jpg",
+      "photos/nissan-kicks/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/nissan-kicks/08-0.jpg",
+      "photos/nissan-kicks/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/nissan-kicks/09-0.jpg",
+      "photos/nissan-kicks/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/nissan-kicks/10-0.jpg",
+      "photos/nissan-kicks/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/nissan-kicks/11-0.jpg",
+      "photos/nissan-kicks/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/nissan-kicks/12-0.jpg",
+      "photos/nissan-kicks/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/nissan-kicks/13-0.jpg",
+      "photos/nissan-kicks/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/nissan-kicks/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/nissan-kicks/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/nissan-kicks/16-0.jpg",
+      "photos/nissan-kicks/16-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/nissan-kicks/17-0.jpg",
+      "photos/nissan-kicks/17-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/nissan-kicks/18-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/nissan-kicks/19-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/nissan-kicks/20-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/nissan-kicks/21-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "suzuki-xl7",
+   "brand": "Suzuki",
+   "model": "XL7",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 750000,
+   "trims": [
+    {
+     "name": "GLX AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Sport Limited",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/suzuki-xl7/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/suzuki-xl7/01-0.jpg",
+      "photos/suzuki-xl7/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/suzuki-xl7/02-0.jpg",
+      "photos/suzuki-xl7/02-1.jpg",
+      "photos/suzuki-xl7/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/suzuki-xl7/03-0.jpg",
+      "photos/suzuki-xl7/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/suzuki-xl7/04-0.jpg",
+      "photos/suzuki-xl7/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/suzuki-xl7/05-0.jpg",
+      "photos/suzuki-xl7/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/suzuki-xl7/06-0.jpg",
+      "photos/suzuki-xl7/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/suzuki-xl7/07-0.jpg",
+      "photos/suzuki-xl7/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/suzuki-xl7/08-0.jpg",
+      "photos/suzuki-xl7/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/suzuki-xl7/09-0.jpg",
+      "photos/suzuki-xl7/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/suzuki-xl7/10-0.jpg",
+      "photos/suzuki-xl7/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/suzuki-xl7/11-0.jpg",
+      "photos/suzuki-xl7/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/suzuki-xl7/12-0.jpg",
+      "photos/suzuki-xl7/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-xl7/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-xl7/14-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "suzuki-ertiga",
+   "brand": "Suzuki",
+   "model": "Ertiga",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "mpv",
+   "pricePerDay": 700000,
+   "trims": [
+    {
+     "name": "GL MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "GLX AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Hybrid AT",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/suzuki-ertiga/00-0.jpg",
+      "photos/suzuki-ertiga/00-1.jpg",
+      "photos/suzuki-ertiga/00-2.jpg",
+      "photos/suzuki-ertiga/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/suzuki-ertiga/01-0.jpg",
+      "photos/suzuki-ertiga/01-1.jpg",
+      "photos/suzuki-ertiga/01-2.jpg",
+      "photos/suzuki-ertiga/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/suzuki-ertiga/02-0.jpg",
+      "photos/suzuki-ertiga/02-1.jpg",
+      "photos/suzuki-ertiga/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/suzuki-ertiga/03-0.jpg",
+      "photos/suzuki-ertiga/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/suzuki-ertiga/04-0.jpg",
+      "photos/suzuki-ertiga/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/suzuki-ertiga/05-0.jpg",
+      "photos/suzuki-ertiga/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/suzuki-ertiga/06-0.jpg",
+      "photos/suzuki-ertiga/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/suzuki-ertiga/07-0.jpg",
+      "photos/suzuki-ertiga/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/suzuki-ertiga/08-0.jpg",
+      "photos/suzuki-ertiga/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/suzuki-ertiga/09-0.jpg",
+      "photos/suzuki-ertiga/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/suzuki-ertiga/10-0.jpg",
+      "photos/suzuki-ertiga/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/suzuki-ertiga/11-0.jpg",
+      "photos/suzuki-ertiga/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/suzuki-ertiga/12-0.jpg",
+      "photos/suzuki-ertiga/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/suzuki-ertiga/13-0.jpg",
+      "photos/suzuki-ertiga/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/suzuki-ertiga/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/suzuki-ertiga/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/suzuki-ertiga/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/suzuki-ertiga/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/suzuki-ertiga/18-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "suzuki-swift",
+   "brand": "Suzuki",
+   "model": "Swift",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "hatchback",
+   "pricePerDay": 600000,
+   "trims": [
+    {
+     "name": "GL CVT",
+     "transmission": "automatic",
+     "priceFactor": 0.97
+    },
+    {
+     "name": "GLX CVT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2018,
+     "photos": [
+      "photos/suzuki-swift/00-0.jpg",
+      "photos/suzuki-swift/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/suzuki-swift/01-0.jpg",
+      "photos/suzuki-swift/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/suzuki-swift/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/suzuki-swift/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/suzuki-swift/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/suzuki-swift/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-swift/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-swift/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-swift/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-swift/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-swift/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/suzuki-swift/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/suzuki-swift/12-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "subaru-forester",
+   "brand": "Subaru",
+   "model": "Forester",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1300000,
+   "trims": [
+    {
+     "name": "2.0i-L",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "2.0i-S",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.0i-S EyeSight",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2015,
+     "photos": [
+      "photos/subaru-forester/00-0.jpg",
+      "photos/subaru-forester/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/subaru-forester/01-0.jpg",
+      "photos/subaru-forester/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/subaru-forester/02-0.jpg",
+      "photos/subaru-forester/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/subaru-forester/03-0.jpg",
+      "photos/subaru-forester/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/subaru-forester/04-0.jpg",
+      "photos/subaru-forester/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/subaru-forester/05-0.jpg",
+      "photos/subaru-forester/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/subaru-forester/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/subaru-forester/07-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "isuzu-dmax",
+   "brand": "Isuzu",
+   "model": "D-Max",
+   "seats": 5,
+   "fuel": "diesel",
+   "body": "pickup",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "Prestige 1.9 4x2 MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "Prestige 1.9 4x2 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Type Z 1.9 4x4 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.14
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/isuzu-dmax/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/isuzu-dmax/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/isuzu-dmax/02-0.jpg",
+      "photos/isuzu-dmax/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/isuzu-dmax/03-0.jpg",
+      "photos/isuzu-dmax/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/isuzu-dmax/04-0.jpg",
+      "photos/isuzu-dmax/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/isuzu-dmax/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/isuzu-dmax/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/isuzu-dmax/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/isuzu-dmax/08-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "isuzu-mux",
+   "brand": "Isuzu",
+   "model": "mu-X",
+   "seats": 7,
+   "fuel": "diesel",
+   "body": "suv",
+   "pricePerDay": 1200000,
+   "trims": [
+    {
+     "name": "B7 1.9 4x2 MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "Prestige 1.9 4x2 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Premium 1.9 4x4 AT",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/isuzu-mux/00-0.jpg",
+      "photos/isuzu-mux/00-1.jpg",
+      "photos/isuzu-mux/00-2.jpg",
+      "photos/isuzu-mux/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/isuzu-mux/01-0.jpg",
+      "photos/isuzu-mux/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/isuzu-mux/02-0.jpg",
+      "photos/isuzu-mux/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/isuzu-mux/03-0.jpg",
+      "photos/isuzu-mux/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/isuzu-mux/04-0.jpg",
+      "photos/isuzu-mux/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/isuzu-mux/05-0.jpg",
+      "photos/isuzu-mux/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/isuzu-mux/06-0.jpg",
+      "photos/isuzu-mux/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/isuzu-mux/07-0.jpg",
+      "photos/isuzu-mux/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/isuzu-mux/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/isuzu-mux/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/isuzu-mux/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-fadil",
+   "brand": "VinFast",
+   "model": "Fadil",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "hatchback",
+   "pricePerDay": 450000,
+   "trims": [
+    {
+     "name": "Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "Nâng cao",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Cao cấp",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/vinfast-fadil/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-fadil/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-fadil/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/vinfast-fadil/03-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-lux-a",
+   "brand": "VinFast",
+   "model": "Lux A2.0",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 1200000,
+   "trims": [
+    {
+     "name": "Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "Nâng cao",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Cao cấp",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-lux-a/00-0.jpg",
+      "photos/vinfast-lux-a/00-1.jpg",
+      "photos/vinfast-lux-a/00-2.jpg",
+      "photos/vinfast-lux-a/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/vinfast-lux-a/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/vinfast-lux-a/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-lux-a/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-lux-a/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-lux-a/05-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-lux-sa",
+   "brand": "VinFast",
+   "model": "Lux SA2.0",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1500000,
+   "trims": [
+    {
+     "name": "Tiêu chuẩn",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "Nâng cao",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "Cao cấp",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-lux-sa/00-0.jpg",
+      "photos/vinfast-lux-sa/00-1.jpg",
+      "photos/vinfast-lux-sa/00-2.jpg",
+      "photos/vinfast-lux-sa/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-lux-sa/01-0.jpg",
+      "photos/vinfast-lux-sa/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/vinfast-lux-sa/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/vinfast-lux-sa/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/vinfast-lux-sa/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/vinfast-lux-sa/05-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-vfe34",
+   "brand": "VinFast",
+   "model": "VF e34",
+   "seats": 5,
+   "fuel": "electric",
+   "body": "suv",
+   "pricePerDay": 800000,
+   "trims": [
+    {
+     "name": "",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/vinfast-vfe34/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-vfe34/01-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-vf5",
+   "brand": "VinFast",
+   "model": "VF 5",
+   "seats": 5,
+   "fuel": "electric",
+   "body": "suv",
+   "pricePerDay": 600000,
+   "trims": [
+    {
+     "name": "Plus",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-vf5/00-0.jpg",
+      "photos/vinfast-vf5/00-1.jpg",
+      "photos/vinfast-vf5/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/vinfast-vf5/01-0.jpg",
+      "photos/vinfast-vf5/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/vinfast-vf5/02-0.jpg",
+      "photos/vinfast-vf5/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf5/03-0.jpg",
+      "photos/vinfast-vf5/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf5/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf5/05-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-vf6",
+   "brand": "VinFast",
+   "model": "VF 6",
+   "seats": 5,
+   "fuel": "electric",
+   "body": "suv",
+   "pricePerDay": 850000,
+   "trims": [
+    {
+     "name": "Eco",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "Plus",
+     "transmission": "automatic",
+     "priceFactor": 1.04
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf6/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf6/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf6/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf6/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf6/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/vinfast-vf6/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/vinfast-vf6/06-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-vf8",
+   "brand": "VinFast",
+   "model": "VF 8",
+   "seats": 5,
+   "fuel": "electric",
+   "body": "suv",
+   "pricePerDay": 1300000,
+   "trims": [
+    {
+     "name": "Eco",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "Plus",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-vf8/00-0.jpg",
+      "photos/vinfast-vf8/00-1.jpg",
+      "photos/vinfast-vf8/00-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-vf8/01-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf8/02-0.jpg",
+      "photos/vinfast-vf8/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/vinfast-vf8/03-0.jpg",
+      "photos/vinfast-vf8/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/vinfast-vf8/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf8/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf8/06-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "vinfast-vf9",
+   "brand": "VinFast",
+   "model": "VF 9",
+   "seats": 7,
+   "fuel": "electric",
+   "body": "suv",
+   "pricePerDay": 2000000,
+   "trims": [
+    {
+     "name": "Eco",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "Plus",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf9/00-0.jpg",
+      "photos/vinfast-vf9/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/vinfast-vf9/01-0.jpg",
+      "photos/vinfast-vf9/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/vinfast-vf9/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf9/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/vinfast-vf9/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-vf9/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/vinfast-vf9/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-vf9/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/vinfast-vf9/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/vinfast-vf9/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/vinfast-vf9/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mg-zs",
+   "brand": "MG",
+   "model": "ZS",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 700000,
+   "trims": [
+    {
+     "name": "STD+",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "COM+",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "LUX+",
+     "transmission": "automatic",
+     "priceFactor": 1.05
+    }
+   ],
+   "sets": [
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-zs/00-0.jpg",
+      "photos/mg-zs/00-1.jpg",
+      "photos/mg-zs/00-2.jpg",
+      "photos/mg-zs/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-zs/01-0.jpg",
+      "photos/mg-zs/01-1.jpg",
+      "photos/mg-zs/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-zs/02-0.jpg",
+      "photos/mg-zs/02-1.jpg",
+      "photos/mg-zs/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-zs/03-0.jpg",
+      "photos/mg-zs/03-1.jpg",
+      "photos/mg-zs/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-zs/04-0.jpg",
+      "photos/mg-zs/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mg-zs/05-0.jpg",
+      "photos/mg-zs/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-zs/06-0.jpg",
+      "photos/mg-zs/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-zs/07-0.jpg",
+      "photos/mg-zs/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-zs/08-0.jpg",
+      "photos/mg-zs/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mg-zs/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mg-zs/10-0.jpg",
+      "photos/mg-zs/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mg-zs/11-0.jpg",
+      "photos/mg-zs/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mg-zs/12-0.jpg",
+      "photos/mg-zs/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mg-zs/13-0.jpg",
+      "photos/mg-zs/13-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-zs/14-0.jpg",
+      "photos/mg-zs/14-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mg-zs/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mg-zs/16-0.jpg",
+      "photos/mg-zs/16-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-zs/17-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mg-5",
+   "brand": "MG",
+   "model": "5",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 600000,
+   "trims": [
+    {
+     "name": "MT",
+     "transmission": "manual",
+     "priceFactor": 0.9
+    },
+    {
+     "name": "STD",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "LUX",
+     "transmission": "automatic",
+     "priceFactor": 1.06
+    }
+   ],
+   "sets": [
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-5/00-0.jpg",
+      "photos/mg-5/00-1.jpg",
+      "photos/mg-5/00-2.jpg",
+      "photos/mg-5/00-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-5/01-0.jpg",
+      "photos/mg-5/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-5/02-0.jpg",
+      "photos/mg-5/02-1.jpg",
+      "photos/mg-5/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mg-5/03-0.jpg",
+      "photos/mg-5/03-1.jpg",
+      "photos/mg-5/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-5/04-0.jpg",
+      "photos/mg-5/04-1.jpg",
+      "photos/mg-5/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-5/05-0.jpg",
+      "photos/mg-5/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mg-5/06-0.jpg",
+      "photos/mg-5/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-5/07-0.jpg",
+      "photos/mg-5/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-5/08-0.jpg",
+      "photos/mg-5/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mg-5/09-0.jpg",
+      "photos/mg-5/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-5/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mg-hs",
+   "brand": "MG",
+   "model": "HS",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 900000,
+   "trims": [
+    {
+     "name": "1.5T STD",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "1.5T LUX",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "2.0T Trophy",
+     "transmission": "automatic",
+     "priceFactor": 1.1
+    }
+   ],
+   "sets": [
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mg-hs/00-0.jpg",
+      "photos/mg-hs/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-hs/01-0.jpg",
+      "photos/mg-hs/01-1.jpg",
+      "photos/mg-hs/01-2.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-hs/02-0.jpg",
+      "photos/mg-hs/02-1.jpg",
+      "photos/mg-hs/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-hs/03-0.jpg",
+      "photos/mg-hs/03-1.jpg",
+      "photos/mg-hs/03-2.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-hs/04-0.jpg",
+      "photos/mg-hs/04-1.jpg",
+      "photos/mg-hs/04-2.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mg-hs/05-0.jpg",
+      "photos/mg-hs/05-1.jpg",
+      "photos/mg-hs/05-2.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mg-hs/06-0.jpg",
+      "photos/mg-hs/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mg-hs/07-0.jpg",
+      "photos/mg-hs/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mg-hs/08-0.jpg",
+      "photos/mg-hs/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mg-hs/09-0.jpg",
+      "photos/mg-hs/09-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mg-hs/10-0.jpg",
+      "photos/mg-hs/10-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mg-hs/11-0.jpg",
+      "photos/mg-hs/11-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mg-hs/12-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-hs/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-hs/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-hs/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mg-hs/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mg-hs/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mg-hs/18-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "peugeot-3008",
+   "brand": "Peugeot",
+   "model": "3008",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1300000,
+   "trims": [
+    {
+     "name": "Active",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "Allure",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "GT",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/peugeot-3008/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-3008/01-0.jpg",
+      "photos/peugeot-3008/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/peugeot-3008/02-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/peugeot-3008/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/peugeot-3008/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/peugeot-3008/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/peugeot-3008/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-3008/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-3008/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-3008/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-3008/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-3008/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/peugeot-3008/12-0.jpg",
+      "photos/peugeot-3008/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/peugeot-3008/13-0.jpg",
+      "photos/peugeot-3008/13-1.jpg",
+      "photos/peugeot-3008/13-2.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/peugeot-3008/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/peugeot-3008/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/peugeot-3008/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/peugeot-3008/17-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/peugeot-3008/18-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/peugeot-3008/19-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/peugeot-3008/20-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "peugeot-5008",
+   "brand": "Peugeot",
+   "model": "5008",
+   "seats": 7,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 1500000,
+   "trims": [
+    {
+     "name": "Allure",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "GT",
+     "transmission": "automatic",
+     "priceFactor": 1.08
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/peugeot-5008/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/peugeot-5008/01-0.jpg",
+      "photos/peugeot-5008/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/peugeot-5008/02-0.jpg",
+      "photos/peugeot-5008/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-5008/03-0.jpg",
+      "photos/peugeot-5008/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/peugeot-5008/04-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/peugeot-5008/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/peugeot-5008/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-5008/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-5008/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/peugeot-5008/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/peugeot-5008/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/peugeot-5008/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/peugeot-5008/12-0.jpg",
+      "photos/peugeot-5008/12-1.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/peugeot-5008/13-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/peugeot-5008/14-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/peugeot-5008/15-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/peugeot-5008/16-0.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/peugeot-5008/17-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mercedes-c",
+   "brand": "Mercedes-Benz",
+   "model": "C-Class",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 2200000,
+   "trims": [
+    {
+     "name": "C 200 Avantgarde",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "C 200 Exclusive",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "C 300 AMG",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mercedes-c/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mercedes-c/01-0.jpg",
+      "photos/mercedes-c/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/mercedes-c/02-0.jpg",
+      "photos/mercedes-c/02-1.jpg",
+      "photos/mercedes-c/02-2.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mercedes-c/03-0.jpg",
+      "photos/mercedes-c/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mercedes-c/04-0.jpg",
+      "photos/mercedes-c/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2015,
+     "photos": [
+      "photos/mercedes-c/05-0.jpg",
+      "photos/mercedes-c/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mercedes-c/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mercedes-c/07-0.jpg",
+      "photos/mercedes-c/07-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mercedes-e",
+   "brand": "Mercedes-Benz",
+   "model": "E-Class",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 3000000,
+   "trims": [
+    {
+     "name": "E 180",
+     "transmission": "automatic",
+     "priceFactor": 0.92
+    },
+    {
+     "name": "E 200 Exclusive",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "E 300 AMG",
+     "transmission": "automatic",
+     "priceFactor": 1.15
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mercedes-e/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mercedes-e/01-0.jpg",
+      "photos/mercedes-e/01-1.jpg",
+      "photos/mercedes-e/01-2.jpg",
+      "photos/mercedes-e/01-3.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mercedes-e/02-0.jpg",
+      "photos/mercedes-e/02-1.jpg",
+      "photos/mercedes-e/02-2.jpg",
+      "photos/mercedes-e/02-3.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mercedes-e/03-0.jpg",
+      "photos/mercedes-e/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/mercedes-e/04-0.jpg",
+      "photos/mercedes-e/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mercedes-e/05-0.jpg",
+      "photos/mercedes-e/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/mercedes-e/06-0.jpg",
+      "photos/mercedes-e/06-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mercedes-e/07-0.jpg",
+      "photos/mercedes-e/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mercedes-e/08-0.jpg",
+      "photos/mercedes-e/08-1.jpg"
+     ]
+    },
+    {
+     "year": 2025,
+     "photos": [
+      "photos/mercedes-e/09-0.jpg",
+      "photos/mercedes-e/09-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mercedes-glc",
+   "brand": "Mercedes-Benz",
+   "model": "GLC",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 2800000,
+   "trims": [
+    {
+     "name": "200",
+     "transmission": "automatic",
+     "priceFactor": 0.95
+    },
+    {
+     "name": "200 4MATIC",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "300 4MATIC",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mercedes-glc/00-0.jpg"
+     ]
+    },
+    {
+     "year": 2018,
+     "photos": [
+      "photos/mercedes-glc/01-0.jpg",
+      "photos/mercedes-glc/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mercedes-glc/02-0.jpg",
+      "photos/mercedes-glc/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2020,
+     "photos": [
+      "photos/mercedes-glc/03-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/mercedes-glc/04-0.jpg",
+      "photos/mercedes-glc/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mercedes-glc/05-0.jpg",
+      "photos/mercedes-glc/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/mercedes-glc/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/mercedes-glc/07-0.jpg",
+      "photos/mercedes-glc/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mercedes-glc/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/mercedes-glc/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/mercedes-glc/10-0.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "bmw-3",
+   "brand": "BMW",
+   "model": "3 Series",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "sedan",
+   "pricePerDay": 2300000,
+   "trims": [
+    {
+     "name": "320i Sport Line",
+     "transmission": "automatic",
+     "priceFactor": 0.97
+    },
+    {
+     "name": "320i M Sport",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "330i M Sport",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2016,
+     "photos": [
+      "photos/bmw-3/00-0.jpg",
+      "photos/bmw-3/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2016,
+     "photos": [
+      "photos/bmw-3/01-0.jpg",
+      "photos/bmw-3/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2019,
+     "photos": [
+      "photos/bmw-3/02-0.jpg",
+      "photos/bmw-3/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/bmw-3/03-0.jpg",
+      "photos/bmw-3/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2026,
+     "photos": [
+      "photos/bmw-3/04-0.jpg",
+      "photos/bmw-3/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/bmw-3/05-0.jpg",
+      "photos/bmw-3/05-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/bmw-3/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/bmw-3/07-0.jpg",
+      "photos/bmw-3/07-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/bmw-3/08-0.jpg",
+      "photos/bmw-3/08-1.jpg"
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "bmw-x3",
+   "brand": "BMW",
+   "model": "X3",
+   "seats": 5,
+   "fuel": "petrol",
+   "body": "suv",
+   "pricePerDay": 2800000,
+   "trims": [
+    {
+     "name": "sDrive20i",
+     "transmission": "automatic",
+     "priceFactor": 0.96
+    },
+    {
+     "name": "xDrive20i xLine",
+     "transmission": "automatic",
+     "priceFactor": 1.0
+    },
+    {
+     "name": "xDrive30i M Sport",
+     "transmission": "automatic",
+     "priceFactor": 1.12
+    }
+   ],
+   "sets": [
+    {
+     "year": 2019,
+     "photos": [
+      "photos/bmw-x3/00-0.jpg",
+      "photos/bmw-x3/00-1.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/bmw-x3/01-0.jpg",
+      "photos/bmw-x3/01-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/bmw-x3/02-0.jpg",
+      "photos/bmw-x3/02-1.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/bmw-x3/03-0.jpg",
+      "photos/bmw-x3/03-1.jpg"
+     ]
+    },
+    {
+     "year": 2021,
+     "photos": [
+      "photos/bmw-x3/04-0.jpg",
+      "photos/bmw-x3/04-1.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/bmw-x3/05-0.jpg"
+     ]
+    },
+    {
+     "year": 2022,
+     "photos": [
+      "photos/bmw-x3/06-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/bmw-x3/07-0.jpg"
+     ]
+    },
+    {
+     "year": 2024,
+     "photos": [
+      "photos/bmw-x3/08-0.jpg"
+     ]
+    },
+    {
+     "year": 2023,
+     "photos": [
+      "photos/bmw-x3/09-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/bmw-x3/10-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/bmw-x3/11-0.jpg"
+     ]
+    },
+    {
+     "year": 2017,
+     "photos": [
+      "photos/bmw-x3/12-0.jpg"
+     ]
+    }
+   ]
+  }
+ ]
+}

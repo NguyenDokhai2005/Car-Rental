@@ -15,3 +15,6 @@ private-uploads/
 # Ảnh thử tay do api/scripts/make-test-images.mjs tạo
 api/test/manual-images/
 test-results/
+
+# Ảnh xe của bộ dữ liệu mẫu (~500 MB): không đưa vào git, xem docs/demo-data.md
+api/demo-data/photos/

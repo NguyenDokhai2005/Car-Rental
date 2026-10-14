@@ -1,0 +1,174 @@
+{
+  "admin": {
+    "email": "demo.admin@autorent.test",
+    "fullName": "Quản Trị Viên Mẫu",
+    "phone": "0900999000"
+  },
+  "owners": [
+    {
+      "key": 1,
+      "email": "demo.chuxe1@autorent.test",
+      "fullName": "Nguyễn Hoàng Minh",
+      "phone": "0901000001"
+    },
+    {
+      "key": 2,
+      "email": "demo.chuxe2@autorent.test",
+      "fullName": "Trần Thu Hà",
+      "phone": "0901000002"
+    },
+    {
+      "key": 3,
+      "email": "demo.chuxe3@autorent.test",
+      "fullName": "Lê Quốc Bảo",
+      "phone": "0901000003"
+    },
+    {
+      "key": 4,
+      "email": "demo.chuxe4@autorent.test",
+      "fullName": "Phạm Thị Ngọc Ánh",
+      "phone": "0901000004"
+    },
+    {
+      "key": 5,
+      "email": "demo.chuxe5@autorent.test",
+      "fullName": "Võ Thành Đạt",
+      "phone": "0901000005"
+    },
+    {
+      "key": 6,
+      "email": "demo.chuxe6@autorent.test",
+      "fullName": "Đặng Minh Khôi",
+      "phone": "0901000006"
+    }
+  ],
+  "renters": [
+    {
+      "email": "demo.khach1@autorent.test",
+      "fullName": "Nguyễn Văn An",
+      "phone": "0912000001",
+      "license": {
+        "status": "verified",
+        "number": "790201000001",
+        "class": "B2",
+        "expiresOn": "2031-05-20"
+      }
+    },
+    {
+      "email": "demo.khach2@autorent.test",
+      "fullName": "Trần Thị Bích Ngọc",
+      "phone": "0912000002",
+      "license": {
+        "status": "verified",
+        "number": "010201000002",
+        "class": "B1",
+        "expiresOn": "2030-11-02"
+      }
+    },
+    {
+      "email": "demo.khach3@autorent.test",
+      "fullName": "Lê Minh Tuấn",
+      "phone": "0912000003",
+      "license": {
+        "status": "verified",
+        "number": "480201000003",
+        "class": "B2",
+        "expiresOn": "2032-03-15"
+      }
+    },
+    {
+      "email": "demo.khach4@autorent.test",
+      "fullName": "Phạm Quỳnh Như",
+      "phone": "0912000004",
+      "license": {
+        "status": "verified",
+        "number": "790201000004",
+        "class": "B",
+        "expiresOn": "2033-08-09"
+      }
+    },
+    {
+      "email": "demo.khach5@autorent.test",
+      "fullName": "Hoàng Đức Long",
+      "phone": "0912000005",
+      "license": {
+        "status": "verified",
+        "number": "010201000005",
+        "class": "C",
+        "expiresOn": "2029-12-30"
+      }
+    },
+    {
+      "email": "demo.khach6@autorent.test",
+      "fullName": "Vũ Thị Mai Anh",
+      "phone": "0912000006",
+      "license": {
+        "status": "verified",
+        "number": "920201000006",
+        "class": "B2",
+        "expiresOn": "2031-07-18"
+      }
+    },
+    {
+      "email": "demo.khach7@autorent.test",
+      "fullName": "Đỗ Gia Huy",
+      "phone": "0912000007",
+      "license": {
+        "status": "verified",
+        "number": "560201000007",
+        "class": "B2",
+        "expiresOn": "2030-04-25"
+      }
+    },
+    {
+      "email": "demo.khach8@autorent.test",
+      "fullName": "Bùi Thanh Tâm",
+      "phone": "0912000008",
+      "license": {
+        "status": "pending",
+        "number": "790201000008",
+        "class": "B2",
+        "expiresOn": "2032-09-12"
+      }
+    },
+    {
+      "email": "demo.khach9@autorent.test",
+      "fullName": "Ngô Bảo Châu",
+      "phone": "0912000009",
+      "license": {
+        "status": "pending",
+        "number": "010201000009",
+        "class": "B1",
+        "expiresOn": "2031-01-07"
+      }
+    },
+    {
+      "email": "demo.khach10@autorent.test",
+      "fullName": "Dương Nhật Nam",
+      "phone": "0912000010",
+      "license": {
+        "status": "pending",
+        "number": "480201000010",
+        "class": "B",
+        "expiresOn": "2034-06-21"
+      }
+    },
+    {
+      "email": "demo.khach11@autorent.test",
+      "fullName": "Lý Hải Yến",
+      "phone": "0912000011",
+      "license": {
+        "status": "rejected",
+        "number": "790201000011",
+        "class": "B2",
+        "expiresOn": "2030-10-10",
+        "rejectReason": "Ảnh mặt trước bị lóa, không đọc được số giấy phép. Vui lòng chụp lại ở nơi đủ sáng."
+      }
+    },
+    {
+      "email": "demo.khach12@autorent.test",
+      "fullName": "Trịnh Công Sơn Hà",
+      "phone": "0912000012"
+    }
+  ]
+}
